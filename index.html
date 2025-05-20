@@ -404,7 +404,7 @@ function Map() {
     }
 
     self.getSortString = function(address) {
-        let parts = address.split(", ")
+        let parts = address.replace("?", "ZZZ").split(", ")
         parts.forEach(function(part, p) {
             let words = part.split(" ")
             words.forEach(function(word, w) {
@@ -472,7 +472,6 @@ function Map() {
             }).filter(function(item) {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
             })
-            self.sortLandmarks()
             self.landmarks.forEach(function(landmark) {
                 landmark.igNameAndAddress = that.getLandmarkNameAndAddress(landmark.igAddress)
                 landmark.irlNameAndAddress = that.getLandmarkNameAndAddress(landmark.irlAddress)
@@ -495,6 +494,7 @@ function Map() {
                 self.markers[landmark.id].title = landmark.title
                 self.markersLayer.appendChild(self.markers[landmark.id])
             })
+            self.sortLandmarks(self.landmarksSort)
 
             self.listPanel = document.createElement("div")
             self.listPanel.className = "panel"
@@ -996,10 +996,8 @@ function Map() {
         }
     }
 
-    self.sortLandmarks = function(option=null) {
-        if (option !== null) {
-            self.landmarksSort = option
-        }
+    self.sortLandmarks = function(option) {
+        self.landmarksSort = option
         self.landmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.landmarksSort == "igAddress") {
