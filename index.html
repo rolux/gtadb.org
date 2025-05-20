@@ -466,6 +466,7 @@ function Map() {
                     "irlAddress": item[3],
                     "irlCoordinates": item[4],
                     "type": item[5] || "other",
+                    "color": item[6],
                     "status": item[0][0] == "b" ? "included" : "not included"
                 }
             }).filter(function(item) {
@@ -483,10 +484,14 @@ function Map() {
             }, {})
 
             self.markers = {}
-            self.landmarks.forEach(function(landmark) {
+            self.landmarks.sort(function(a, b) {
+                return b.igCoordinates[1] - a.igCoordinates[1]
+            }).forEach(function(landmark) {
                 self.markers[landmark.id] = document.createElement("div")
                 self.markers[landmark.id].id = "marker_" + landmark.id
-                self.markers[landmark.id].classList.add("marker", landmark.type)
+                // self.markers[landmark.id].classList.add("marker", landmark.type)
+                self.markers[landmark.id].className = "marker"
+                self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
                 self.markers[landmark.id].title = landmark.title
                 self.markersLayer.appendChild(self.markers[landmark.id])
             })
