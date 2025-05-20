@@ -299,10 +299,7 @@ function Map() {
     }
 
     that.getLandmarkTitle = function(landmark) {
-        return (
-            landmark.igAddress && landmark.igAddress[0] != "?"
-            ? landmark.igAddress : landmark.irlAddress
-        ).split(", ")[0]
+        return landmark.igAddress.split(", ")[0] + "\n" + landmark.irlAddress.split(", ")[0]
     }
 
     self.animate = function(immediate=false) {
