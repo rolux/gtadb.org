@@ -96,11 +96,11 @@
                 top: 50%;
                 transform: rotate(45deg);
                 width: 12px;
-                z-index: 1000;
+                z-index: 100;
             }
             .marker.selected {
                 border: 2px solid rgb(255, 255, 255);
-                z-index: 1001;
+                z-index: 101;
             }
             .marker.dragging {
                 border: 2px solid rgb(128, 128,128);
@@ -121,7 +121,7 @@
                 background-color: rgb(0, 255, 255);
             }
             .marker.infrastructure {
-                background-color: rgb(64, 64, 64);
+                background-color: rgb(128, 128, 128);
             }
             .marker.industry {
                 background-color: rgb(255, 255, 0);
@@ -130,7 +130,7 @@
                 background-color: rgb(128, 0, 0);
             }
             .marker.other {
-                background-color: rgb(192, 192, 192);
+                background-color: transparent;
             }
             .marker.public {
                 background-color: rgb(255, 0, 255);
@@ -142,15 +142,15 @@
                 background-color: rgb(0, 255, 0);
             }
             .marker.transport {
-                background-color: rgb(128, 128, 128);
+                background-color: rgb(192, 192, 192);
             }
             .panel {
                 background-color: rgba(255, 255, 255, 0.75);
                 bottom: 0;
-                font-family: sans-serif;
                 position: absolute;
                 top: 0;
                 width: 256px;
+                z-index: 1000;
             }
             #listPanel {
                 left: 16px;
@@ -171,6 +171,7 @@
             }
             #listPanel .item .ig {
                 font-size: 11px;
+                font-weight: bold;
                 height: 13px;
                 padding: 4px 8px 1px 8px
             }
@@ -211,7 +212,25 @@
             }
             #itemPanel {
                 display: none;
-                right: 16px
+                font-size: 13px;
+                right: 16px;
+            }
+            #itemPanel > div {
+                float: left;
+                margin: 2px 8px;
+                width: 240px;
+            }
+            #itemPanel > div.name {
+                font-size: 15px;
+                font-weight: bold;
+                margin-top: 8px;
+            }
+            #itemPanel > div.coordinates {
+                font-size: 11px;
+            }
+            #itemPanel > div.photo {
+                background-color: rgba(0, 0, 0, 0.25);
+                height: 135px
             }
         </style>
     </head>
@@ -280,7 +299,8 @@ function Map() {
             irlAddress: "real-life address",
             irlLatitude: "real-life latitude",
             irlLongitude: "real-life longitude",
-            type: "type"
+            type: "type",
+            status: "status"
         },
         markers: {},
         l: null,
@@ -301,6 +321,14 @@ function Map() {
 
     that.debug = function() {
         console.log(self)
+    }
+
+    that.getLandmarkNameAndAddress = function(address) {
+        const parts = address.split(", ")
+        if ("0123456789".includes(address[0])) {
+            return [parts[0], address]
+        }
+        return [parts[0], parts.slice(1).join(", ")]
     }
 
     that.getLandmarkTitle = function(landmark) {
@@ -347,6 +375,13 @@ function Map() {
             return `<span style="font-weight: bold">${parts[0]}</span>${comma}${parts.slice(1).join(", ")}`
         }
         return address
+    }
+
+    self.formatCoordinates = function(coordinates) {
+        if (coordinates[0] == 0 && coordinates[1] == 0) {
+            return "?"
+        }
+        return coordinates.join(",")
     }
 
     self.getHash = function() {
@@ -406,7 +441,8 @@ function Map() {
                     "igCoordinates": item[2],
                     "irlAddress": item[3],
                     "irlCoordinates": item[4],
-                    "type": item[5] || "other"
+                    "type": item[5] || "other",
+                    "status": item[0][0] == "b" ? "included" : "not included"
                 }
             }).filter(function(item) {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
@@ -414,6 +450,8 @@ function Map() {
             self.sortLandmarks()
             console.log(":L", self.landmarks)
             self.landmarks.forEach(function(landmark) {
+                landmark.igNameAndAddress = that.getLandmarkNameAndAddress(landmark.igAddress)
+                landmark.irlNameAndAddress = that.getLandmarkNameAndAddress(landmark.irlAddress)
                 landmark.title = that.getLandmarkTitle(landmark)
             })
             self.landmarksById = self.landmarks.reduce(function(a, v) {
@@ -453,7 +491,7 @@ function Map() {
 
             self.listStatus = document.createElement("div")
             self.listStatus.id = "listStatus"
-            self.listStatus.innerHTML = self.landmarks.length + " Landmarks"
+            self.listStatus.innerHTML = self.landmarks.length + " Landmarks".toUpperCase()
             self.listPanel.appendChild(self.listStatus)
 
             self.renderList()
@@ -461,6 +499,37 @@ function Map() {
             self.itemPanel = document.createElement("div")
             self.itemPanel.className = "panel"
             self.itemPanel.id = "itemPanel"
+
+            self.itemIgName = document.createElement("div")
+            self.itemIgName.className = "name"
+            self.itemPanel.appendChild(self.itemIgName)
+
+            self.itemIgAddress = document.createElement("div")
+            self.itemPanel.appendChild(self.itemIgAddress)
+
+            self.itemIgCoordinates = document.createElement("div")
+            self.itemIgCoordinates.className = "coordinates"
+            self.itemPanel.appendChild(self.itemIgCoordinates)
+
+            self.itemIgPhoto = document.createElement("div")
+            self.itemIgPhoto.className = "photo"
+            self.itemPanel.appendChild(self.itemIgPhoto)
+
+            self.itemIrlName = document.createElement("div")
+            self.itemIrlName.className = "name"
+            self.itemPanel.appendChild(self.itemIrlName)
+
+            self.itemIrlAddress = document.createElement("div")
+            self.itemPanel.appendChild(self.itemIrlAddress)
+
+            self.itemIrlCoordinates = document.createElement("div")
+            self.itemIrlCoordinates.className = "coordinates"
+            self.itemPanel.appendChild(self.itemIrlCoordinates)
+
+            self.itemIrlPhoto = document.createElement("div")
+            self.itemIrlPhoto.className = "photo"
+            self.itemPanel.appendChild(self.itemIrlPhoto)
+
             self.element.appendChild(self.itemPanel)
 
             document.addEventListener("keydown", function(e) {
@@ -468,7 +537,9 @@ function Map() {
                 if (self.focus != "list") {
                     return
                 }
-                e.preventDefault()
+                if (["ArrowDown", "ArrowUp"].includes(e.key)) {
+                    e.preventDefault()
+                }
                 if (self.l === null) {
                     return
                 }
@@ -574,7 +645,7 @@ function Map() {
             self.setHash(self.hashX, self.hashY, parseInt(e.key))
         }
         if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
-            //e.preventDefault()
+            e.preventDefault()
             (function keydownFn() {
                 if (e.key == "-") {
                     self.setHash(self.hashX, self.hashY, self.hashZ - self.zoomAmount)
@@ -750,7 +821,20 @@ function Map() {
     }
 
     self.renderItem = function() {
+        if (self.l) {
+            landmark = self.landmarksById[self.l]
+            self.itemIgName.innerHTML = landmark.igNameAndAddress[0]
+            self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
+            self.itemIgCoordinates.innerHTML = landmark.igCoordinates.join(",")
+            self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
+            self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
+            self.itemIrlCoordinates.innerHTML = landmark.irlCoordinates.join(",")
+            self.itemPanel.style.display = "block"
+        } else {
+            self.itemPanel.style.display = "none"
+        }
 
+        /*
         self.itemPanel.innerHTML = ""
         self.inputs = {}
 
@@ -791,6 +875,7 @@ function Map() {
             })
             self.itemPanel.appendChild(input)
         })
+        */
 
     }
 
@@ -805,11 +890,16 @@ function Map() {
             itemElement.id = "item_" + landmark.id
             const igElement = document.createElement("div")
             igElement.className = "ig"
-            igElement.innerHTML = self.formatAddress(landmark.igAddress)
+            igElement.innerHTML = self.landmarksSort.includes("Address") ? landmark.igAddress
+                    : landmark.igAddress + " &nbsp;|&nbsp; " + landmark.irlAddress
             itemElement.appendChild(igElement)
             const irlElement = document.createElement("div")
             irlElement.className = "irl"
-            irlElement.innerHTML = self.formatAddress(landmark.irlAddress)
+            irlElement.innerHTML = self.landmarksSort.includes("Address") ? landmark.irlAddress
+                    : self.landmarksSort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates)
+                    : self.landmarksSort.includes("irlL") ? self.formatCoordinates(landmark.irlCoordinates)
+                    : self.landmarksSort == "type" ? landmark.type.toUpperCase()
+                    : landmark.status.toUpperCase()
             itemElement.appendChild(irlElement)
             self.listBody.appendChild(itemElement)
         })
@@ -838,12 +928,13 @@ function Map() {
                 const top = 32, bottom = window.innerHeight - 64
                 const y = element.getBoundingClientRect().y
                 if (y < top) {
-                    self.listBody.scrollTop -= top - y
+                    self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
                 } else if (y > bottom) {
-                    self.listBody.scrollTop += y - bottom
+                    self.listBody.scrollTo (0, self.listBody.scrollTop + y - bottom)
                 }
             }
         }
+        self.renderItem()
     }
 
     self.setHash = function(x, y, z, immediate=false) {
@@ -880,17 +971,19 @@ function Map() {
                 if (self.landmarksSort == "igAddress") {
                     return v.igAddress.split(", ").reverse().concat([v.igAddress]).join(", ")
                 } else if (self.landmarksSort == "igLatitude") {
-                    return -v.igCoordinates[1]
+                    return -v.igCoordinates[1] || 1000
                 } else if (self.landmarksSort == "igLongitude") {
-                    return v.igCoordinates[0]
+                    return v.igCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlAddress") {
                     return v.irlAddress.split(", ").reverse().concat([v.irlAddress]).join(", ")
                 } else if (self.landmarksSort == "irlLatitude") {
-                    return -v.irlCoordinates[0]
+                    return -v.irlCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlLongitude") {
-                    return v.irlCoordinates[1]
+                    return v.irlCoordinates[1] || 1000
                 } else if (self.landmarksSort == "type") {
                     return [v.type].concat(v.igAddress.split(", ").reverse()).join(", ")   
+                } else if (self.landmarksSort == "status") {
+                    return [v.status].concat(v.igAddress.split(", ").reverse()).join(", ")   
                 }
             })
             return sortValues[0] < sortValues[1] ? -1 : sortValues[0] > sortValues[1] ? 1 : 0
