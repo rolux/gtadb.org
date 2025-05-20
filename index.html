@@ -403,6 +403,20 @@ function Map() {
         return self.mapW / (self.tileSize * Math.pow(2, z))
     }
 
+    self.getSortString = function(address) {
+        let parts = address.split(", ")
+        parts.forEach(function(part, p) {
+            let words = part.split(" ")
+            words.forEach(function(word, w) {
+                if (/^\d+$/.test(word)) {
+                    words[w] = "0".repeat(10 - word.length) + word
+                }
+            })
+            parts[p] = words.join(" ")
+        })
+        return parts.reverse().join(", ")
+    }
+
     self.init = function() {
 
         self.element = document.createElement("div")
@@ -984,13 +998,13 @@ function Map() {
         self.landmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.landmarksSort == "igAddress") {
-                    return v.igAddress.split(", ").reverse().concat([v.igAddress]).join(", ")
+                    return self.getSortString(v.igAddress) + ", " + self.getSortString(v.irlAddress)
                 } else if (self.landmarksSort == "igLatitude") {
                     return -v.igCoordinates[1] || 1000
                 } else if (self.landmarksSort == "igLongitude") {
                     return v.igCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlAddress") {
-                    return v.irlAddress.split(", ").reverse().concat([v.irlAddress]).join(", ")
+                    return self.getSortString(v.irlAddress) + ", " + self.getSortString(v.igAddress)
                 } else if (self.landmarksSort == "irlLatitude") {
                     return -v.irlCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlLongitude") {
