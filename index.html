@@ -762,9 +762,6 @@ function Map() {
             self.wheelTimeout = null
         }
         const targetZ = self.clamp(self.z - e.deltaY * self.wheelAmount, self.minZ, self.maxZ)
-        if (targetZ == self.z) {
-            return
-        }
         const mppx = self.getMppx()
         const targetMppx = self.getMppx(targetZ)
         const offsetX = e.clientX - canvas.width / 2
