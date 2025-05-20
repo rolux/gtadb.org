@@ -652,7 +652,10 @@ function Map() {
             self.setHash(self.hashX, self.hashY, parseInt(e.key))
         }
         if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
-            //e.preventDefault()
+            if (self.keydownTimeout) {
+                clearTimeout(self.keydownTimeout)
+                self.keydownTimeout = null
+            }
             (function keydownFn() {
                 if (e.key == "-") {
                     self.setHash(self.hashX, self.hashY, self.hashZ - self.zoomAmount)
@@ -684,11 +687,6 @@ function Map() {
             clearTimeout(self.keydownTimeout)
             self.keydownTimeout = null
         }
-        /*
-        if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
-
-        }
-        */
     }
 
     self.onMousedown = function(e) {
