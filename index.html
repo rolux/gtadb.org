@@ -81,7 +81,7 @@
                 cursor: grabbing;
             }
             #canvas {
-                filter: saturate(0);
+                filter: saturate(0.2);
             }
             .marker {
                 background-color: rgb(192, 192, 192);
@@ -96,9 +96,11 @@
                 top: 50%;
                 transform: rotate(45deg);
                 width: 12px;
+                z-index: 1000;
             }
             .marker.selected {
                 border: 2px solid rgb(255, 255, 255);
+                z-index: 1001;
             }
             .marker.dragging {
                 border: 2px solid rgb(128, 128,128);
@@ -117,6 +119,9 @@
             }
             .marker.hotel {
                 background-color: rgb(0, 255, 255);
+            }
+            .marker.infrastructure {
+                background-color: rgb(64, 64, 64);
             }
             .marker.industry {
                 background-color: rgb(255, 255, 0);
@@ -645,11 +650,10 @@ function Map() {
                 clearTimeout(self.mouseTimeout)
                 self.mouseTimeout = null
                 //console.log("click", "animating?", self.isAnimating)
-                self.setHash(
-                    originalX + mppx * (clientX - canvas.width / 2),
-                    originalY - mppx * (clientY - canvas.height / 2),
-                    originalZ
-                )
+                const x = originalX + mppx * (clientX - canvas.width / 2)
+                const y = originalY - mppx * (clientY - canvas.height / 2)
+                self.setHash(x, y, originalZ)
+                navigator.clipboard.writeText(Math.round(x) + "," + Math.round(y))
             } else if (self.isDragging) {
                 self.isDragging = false
                 self.element.classList.remove("dragging")
