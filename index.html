@@ -15,6 +15,13 @@
                 padding: 0;
                 width: 100%;
             }
+            a {
+                color: rgb(0, 0, 0);
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
             input[type="text"] {
                 all: unset;
                 appearance: none;
@@ -75,13 +82,13 @@
             #map {
                 cursor: default;
                 inset: 0;
-                user-select: none;
             }
             #map.dragging {
                 cursor: grabbing;
             }
             #canvas {
                 filter: saturate(0.2);
+                user-select: none;
             }
             .marker {
                 background-color: rgb(192, 192, 192);
@@ -154,7 +161,7 @@
                 z-index: 1000;
             }
             #listPanel {
-                left: 16px;
+                left: 0;
             }
             #listPanel .item {
                 cursor: pointer;
@@ -214,7 +221,7 @@
             #itemPanel {
                 display: none;
                 font-size: 13px;
-                right: 16px;
+                right: 0
             }
             #itemPanel > div {
                 float: left;
@@ -231,7 +238,9 @@
             }
             #itemPanel > div.photo {
                 background-color: rgba(0, 0, 0, 0.25);
-                height: 135px
+                height: 144px;
+                margin: 2px 0;
+                width: 256px;
             }
         </style>
     </head>
@@ -826,10 +835,15 @@ function Map() {
             landmark = self.landmarksById[self.l]
             self.itemIgName.innerHTML = landmark.igNameAndAddress[0]
             self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
-            self.itemIgCoordinates.innerHTML = landmark.igCoordinates.join(",")
+            self.itemIgCoordinates.innerHTML = '<a href="#'
+                    + landmark.igCoordinates.join(",") + ',5.000">'
+                    + landmark.igCoordinates.join(",") + "</a>"
             self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
             self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
-            self.itemIrlCoordinates.innerHTML = landmark.irlCoordinates.join(",")
+            self.itemIrlCoordinates.innerHTML = landmark.irlCoordinates[0] == 0 ? "?"
+                    : '<a href="https://google.com/maps/search/'
+                    + encodeURIComponent(landmark.irlAddress)
+                    + '" target="_blank">' + landmark.irlCoordinates.join(",") + "</a>"
             self.itemPanel.style.display = "block"
         } else {
             self.itemPanel.style.display = "none"
