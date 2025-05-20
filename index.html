@@ -333,7 +333,7 @@ function Map() {
 
     self.formatAddress = function(address) {
         address = address || "?"
-        if (!"0123456789".includes(address[0])) {
+        if (!"0123456789?".includes(address[0])) {
             const parts = address.split(", ")
             const comma = parts.length == 1 ? "" : ", "
             return `<span style="font-weight: bold">${parts[0]}</span>${comma}${parts.slice(1).join(", ")}`
@@ -828,6 +828,13 @@ function Map() {
             element = document.querySelector("#item_" + self.l)
             if (element) {
                 element.classList.add("selected")
+                const top = 32, bottom = window.innerHeight - 64
+                const y = element.getBoundingClientRect().y
+                if (y < top) {
+                    self.listBody.scrollTop -= top - y
+                } else if (y > bottom) {
+                    self.listBody.scrollTop += y - bottom
+                }
             }
         }
     }
