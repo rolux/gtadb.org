@@ -7,6 +7,8 @@
         <style>
             html, body {
                 background: rgb(0, 0, 0);
+                font-family: sans-serif;
+                font-size: 11px;
                 height: 100%;
                 margin: 0;
                 overflow: hidden;
@@ -171,7 +173,8 @@
                 padding: 1px 8px 2px 8px
             }
             #listMenu {
-                height: 32px;
+                border-bottom: 1px solid rgb(192, 192, 192);
+                height: 31px;
                 left: 0;
                 position: absolute;
                 top: 0;
@@ -180,15 +183,24 @@
             #listMenu select {
                 left: 4px;
                 position: absolute;
-                top: 4px;
+                top: 6px;
             }
             #listBody {
-                bottom: 0;
+                bottom: 32px;
                 left: 0;
                 overflow-y: scroll;
                 position: absolute;
                 top: 32px;
                 width: 256px;
+            }
+            #listStatus {
+                border-top: 1px solid rgb(192, 192, 192);
+                bottom: 0;
+                height: 9px;
+                left: 0;
+                padding: 11px 8px;
+                position: absolute;
+                width: 240px;
             }
             #itemPanel {
                 display: none;
@@ -425,6 +437,11 @@ function Map() {
             self.listBody = document.createElement("div")
             self.listBody.id = "listBody"
             self.listPanel.appendChild(self.listBody)
+
+            self.listStatus = document.createElement("div")
+            self.listStatus.id = "listStatus"
+            self.listStatus.innerHTML = self.landmarks.length + " Landmarks"
+            self.listPanel.appendChild(self.listStatus)
 
             self.renderList()
 
