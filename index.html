@@ -92,22 +92,24 @@
             }
             .marker {
                 background-color: rgb(192, 192, 192);
-                border: 2px solid rgb(0, 0, 0);
+                border: 1px solid rgb(0, 0, 0);
                 border-radius: 8px 8px 0 8px;
                 cursor: pointer;
                 display: none;
-                height: 12px;
+                height: 14px;
                 left: 50%;
                 margin-left: -8px;
                 margin-top: -19.314px;
                 position: absolute;
                 top: 50%;
                 transform: rotate(45deg);
-                width: 12px;
+                width: 14px;
                 z-index: 100;
             }
             .marker.selected {
                 border: 2px solid rgb(255, 255, 255);
+                height: 12px;
+                width: 12px;
                 z-index: 101;
             }
             .marker.dragging {
@@ -166,6 +168,7 @@
             #listPanel .item {
                 cursor: pointer;
                 height: 32px;
+                position: absolute;
                 width: 256px;
             }
             #listPanel .item.selected {
@@ -173,20 +176,32 @@
             }
             #listPanel .item div {
                 overflow-x: hidden;
+                position: absolute;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                width: 240px;
+            }
+            #listPanel .item .color {
+                height: 32px;
+                left: 0;
+                top: 0;
+                width: 8px;
             }
             #listPanel .item .ig {
                 font-size: 11px;
                 font-weight: bold;
                 height: 13px;
-                padding: 4px 8px 1px 8px
+                left: 8px;
+                padding: 4px 8px 1px 8px;
+                top: 0;
+                width: 232px;
             }
             #listPanel .item .irl {
+                bottom: 0;
                 font-size: 9px;
                 height: 11px;
-                padding: 1px 8px 2px 8px
+                left: 8px;
+                padding: 1px 8px 2px 8px;
+                width: 232px;
             }
             #listMenu {
                 border-bottom: 1px solid rgb(192, 192, 192);
@@ -915,13 +930,18 @@ function Map() {
 
     self.renderList = function() {
         self.listBody.innerHTML = ""
-        self.landmarks.forEach(function(landmark) {
+        self.landmarks.forEach(function(landmark, i) {
             const itemElement = document.createElement("div")
             itemElement.classList.add("item")
             if (landmark.id == self.l) {
                 itemElement.classList.add("selected")
             }
             itemElement.id = "item_" + landmark.id
+            itemElement.style.top = i * 32 + "px"
+            const colorElement = document.createElement("div")
+            colorElement.classList.add("color")
+            colorElement.style.backgroundColor = "#" + landmark.color
+            itemElement.appendChild(colorElement)
             const igElement = document.createElement("div")
             igElement.className = "ig"
             igElement.innerHTML = self.landmarksSort.includes("Address") ? landmark.igAddress
