@@ -163,7 +163,6 @@
             }
             #listPanel .item .ig {
                 font-size: 11px;
-                font-weight: bold;
                 height: 13px;
                 padding: 4px 8px 1px 8px
             }
@@ -333,7 +332,13 @@ function Map() {
     }
 
     self.formatAddress = function(address) {
-        return address || '<span class="unknown">unknown</span>'
+        address = address || "?"
+        if (!"0123456789".includes(address[0])) {
+            const parts = address.split(", ")
+            const comma = parts.length == 1 ? "" : ", "
+            return `<span style="font-weight: bold">${parts[0]}</span>${comma}${parts.slice(1).join(", ")}`
+        }
+        return address
     }
 
     self.getHash = function() {
@@ -859,19 +864,19 @@ function Map() {
         self.landmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.landmarksSort == "igAddress") {
-                    return v.igAddress.split(", ").reverse().concat([v.igName]).join(", ")
+                    return v.igAddress.split(", ").reverse().concat([v.igAddress]).join(", ")
                 } else if (self.landmarksSort == "igLatitude") {
                     return -v.igCoordinates[1]
                 } else if (self.landmarksSort == "igLongitude") {
                     return v.igCoordinates[0]
                 } else if (self.landmarksSort == "irlAddress") {
-                    return v.irlAddress.split(", ").reverse().concat([v.irlName]).join(", ")
+                    return v.irlAddress.split(", ").reverse().concat([v.irlAddress]).join(", ")
                 } else if (self.landmarksSort == "irlLatitude") {
                     return -v.irlCoordinates[0]
                 } else if (self.landmarksSort == "irlLongitude") {
                     return v.irlCoordinates[1]
                 } else if (self.landmarksSort == "type") {
-                    return [v.type].concat(v.igAddress.split(", ").reverse()).concat([v.igName]).join(", ")   
+                    return [v.type].concat(v.igAddress.split(", ").reverse()).join(", ")   
                 }
             })
             return sortValues[0] < sortValues[1] ? -1 : sortValues[0] > sortValues[1] ? 1 : 0
