@@ -88,6 +88,7 @@
                 border: 2px solid rgb(0, 0, 0);
                 border-radius: 8px 8px 0 8px;
                 cursor: pointer;
+                display: none;
                 height: 12px;
                 left: 50%;
                 margin-left: -8px;
@@ -401,9 +402,9 @@ function Map() {
         self.canvas.id = "canvas"
         self.element.appendChild(self.canvas)
         self.context = self.canvas.getContext("2d")
-        self.markers = document.createElement("div")
-        self.markers.id = "markers"
-        self.element.appendChild(self.markers)
+        self.markersLayer = document.createElement("div")
+        self.markersLayer.id = "markers"
+        self.element.appendChild(self.markersLayer)
         document.body.appendChild(self.element)
 
         const zInt = Math.ceil(self.z)
@@ -422,13 +423,13 @@ function Map() {
             }
         }
 
-        self.markers.addEventListener("click", self.onClick)
+        self.markersLayer.addEventListener("click", self.onClick)
         window.addEventListener("hashchange", self.onHashchange)
         document.addEventListener("keydown", self.onKeydown)
         document.addEventListener("keyup", self.onKeyup)
-        self.markers.addEventListener('mousedown',self.onMousedown)
+        self.markersLayer.addEventListener('mousedown',self.onMousedown)
         window.addEventListener("resize", self.onResize)
-        self.markers.addEventListener("wheel", self.onWheel, {passive: false})
+        self.markersLayer.addEventListener("wheel", self.onWheel, {passive: false})
 
         self.onResize(false)
         self.onHashchange()
@@ -448,7 +449,6 @@ function Map() {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
             })
             self.sortLandmarks()
-            console.log(":L", self.landmarks)
             self.landmarks.forEach(function(landmark) {
                 landmark.igNameAndAddress = that.getLandmarkNameAndAddress(landmark.igAddress)
                 landmark.irlNameAndAddress = that.getLandmarkNameAndAddress(landmark.irlAddress)
@@ -458,7 +458,15 @@ function Map() {
                 a[v.id] = v
                 return a
             }, {})
-            console.log("???", self.landmarkIndexById)
+
+            self.markers = {}
+            self.landmarks.forEach(function(landmark) {
+                self.markers[landmark.id] = document.createElement("div")
+                self.markers[landmark.id].id = "marker_" + landmark.id
+                self.markers[landmark.id].classList.add("marker", landmark.type)
+                self.markers[landmark.id].title = landmark.title
+                self.markersLayer.appendChild(self.markers[landmark.id])
+            })
 
             self.listPanel = document.createElement("div")
             self.listPanel.className = "panel"
@@ -533,7 +541,6 @@ function Map() {
             self.element.appendChild(self.itemPanel)
 
             document.addEventListener("keydown", function(e) {
-                console.log("LIST KEYDOWN")
                 if (self.focus != "list") {
                     return
                 }
@@ -645,7 +652,7 @@ function Map() {
             self.setHash(self.hashX, self.hashY, parseInt(e.key))
         }
         if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
-            e.preventDefault()
+            //e.preventDefault()
             (function keydownFn() {
                 if (e.key == "-") {
                     self.setHash(self.hashX, self.hashY, self.hashZ - self.zoomAmount)
@@ -815,7 +822,6 @@ function Map() {
                 }
             }
         }
-
         self.updateMarkers()
 
     }
@@ -1001,35 +1007,18 @@ function Map() {
         const minY = self.y - mppx * self.canvas.height / 2
         const maxY = self.y + mppx * self.canvas.height / 2
         self.landmarks.forEach(function(landmark) {
+            let markerElement = self.markers[landmark.id]
             const [x, y] = landmark.igCoordinates
             if (x >= minX - 16 && x <= maxX + 16 && y >= minY -16 && y <= maxY + 16) {
-                if (!self.markers[landmark.id]) {
-                    self.markers[landmark.id] = Marker({
-                        id: landmark.id,
-                        title: landmark.title,
-                        type: landmark.type
-                    })
-                }
-                let append = false
-                let markerElement = document.getElementById("marker_" + landmark.id)
-                if (!markerElement) {
-                    markerElement = self.markers[landmark.id].getElement()
-                    append = true
-                }
-                if (landmark.id == self.l) {
-                    markerElement.classList.add("selected")
-                }
-                markerElement.style.display = "block"
                 markerElement.style.left = (x - minX) / mppx + "px"
                 markerElement.style.top = (maxY - y) / mppx + "px"
-                if (append) {
-                    self.markers.appendChild(markerElement)
-                }
+                markerElement.style.display = "block"
+                markerElement.classList.remove("no")
+                markerElement.classList.add("ok")
             } else {
-                let markerElement = document.getElementById("marker_" + landmark.id)
-                if (markerElement) {
-                    markerElement.style.display = "none"
-                }
+                markerElement.style.display = "none"
+                markerElement.classList.remove("ok")
+                markerElement.classList.add("no")
             }
         })
     }
@@ -1043,15 +1032,12 @@ function Marker(options) {
     let self = {
         options: options
     }
-    that.getElement = function() {
-        return self.element
-    }
     self.init = function() {
         self.map = self.options.map
-        self.element = document.createElement("div")
-        self.element.id = "marker_" + self.options.id
-        self.element.classList.add("marker", self.options.type)
-        self.element.title = self.options.title
+        that.element = document.createElement("div")
+        that.element.id = "marker_" + self.options.id
+        that.element.classList.add("marker", self.options.type)
+        that.element.title = self.options.title
         return that
     }
     return self.init()
