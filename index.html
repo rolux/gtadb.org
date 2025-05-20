@@ -119,6 +119,9 @@
             .marker.monument {
                 background-color: rgb(128, 0, 0);
             }
+            .marker.other {
+                background-color: rgb(192, 192, 192);
+            }
             .marker.public {
                 background-color: rgb(255, 0, 255);
             }
@@ -128,7 +131,7 @@
             .marker.residence {
                 background-color: rgb(0, 255, 0);
             }
-            .marker.transportation {
+            .marker.transport {
                 background-color: rgb(128, 128, 128);
             }
             .panel {
@@ -378,7 +381,7 @@ function Map() {
                     "igCoordinates": item[2],
                     "irlAddress": item[3],
                     "irlCoordinates": item[4],
-                    "type": null
+                    "type": item[5] || "other"
                 }
             }).filter(function(item) {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
@@ -874,7 +877,7 @@ function Map() {
                 if (!self.markers[landmark.id]) {
                     self.markers[landmark.id] = Marker({
                         id: landmark.id,
-                        title: (landmark.irlAddress || landmark.igAddress).split(", ")[0],
+                        title: (landmark.igAddress || landmark.irlAddress).split(", ")[0],
                         type: landmark.type
                     })
                 }
