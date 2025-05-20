@@ -2,7 +2,8 @@
     <html lang="en">
     <head>
         <title>GTA VI Landmarks</title>
-        <meta charset="utf-8">
+        <meta charset="utf-8"/>
+        <link rel="icon" href="gta6map.png"/>
         <style>
             html, body {
                 background: rgb(0, 0, 0);
@@ -25,7 +26,6 @@
                 font-size: 12px;
                 padding: 2px 8px;
                 position: absolute;
-
             }
             input[type="text"]:focus {
                 border: 1px solid rgb(0, 0, 0);
@@ -864,17 +864,17 @@ function Map() {
 
     self.updateMarkers = function() {
         const mppx = self.getMppx()
-        const minX = self.x - mppx * self.canvas.width / 2 - 16
-        const maxX = self.x + mppx * self.canvas.width / 2 + 16
-        const minY = self.y - mppx * self.canvas.height / 2 - 16
-        const maxY = self.y + mppx * self.canvas.height / 2 + 16
+        const minX = self.x - mppx * self.canvas.width / 2
+        const maxX = self.x + mppx * self.canvas.width / 2
+        const minY = self.y - mppx * self.canvas.height / 2
+        const maxY = self.y + mppx * self.canvas.height / 2
         self.landmarks.forEach(function(landmark) {
             const [x, y] = landmark.igCoordinates
-            if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+            if (x >= minX - 16 && x <= maxX + 16 && y >= minY -16 && y <= maxY + 16) {
                 if (!self.markers[landmark.id]) {
                     self.markers[landmark.id] = Marker({
                         id: landmark.id,
-                        title: landmark.irlName || landmark.igName,
+                        title: (landmark.irlAddress || landmark.igAddress).split(", ")[0],
                         type: landmark.type
                     })
                 }
