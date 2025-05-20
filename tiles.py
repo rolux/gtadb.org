@@ -2,6 +2,11 @@ import os
 import sys
 from PIL import Image
 
+"""
+given the original map image, this script creates 6 levels
+of 1024x1024 px tiles, so that level 5 has as scale of 1 px/m
+"""
+
 filename = sys.argv[1]
 
 image = Image.open(filename)
