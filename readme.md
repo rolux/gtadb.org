@@ -1,9 +1,9 @@
 # gta6map
 
-This is a speculative map of Grand Theft Auto VI, including all landmarks that have been identified.
+This is a speculative map of Grand Theft Auto VI, including all landmarks that have been identified so far.
 
-See it live here: https://rolux.github.io/gta6map
+You can see the map here: https://rolux.github.io/gta6map
 
-You can also use the tiles or landmark data for your own purposes.
+You're also free to use the landmark data or map tiles for your own purposes.
 
 Public Domain. Thanks to all contributors!
