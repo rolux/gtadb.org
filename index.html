@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>GTA VI Landmarks</title>
+        <meta charset="utf-8">
+        <style>
+            html, body {
+                background: rgb(0, 0, 0);
+                height: 100%;
+                margin: 0;
+                overflow: hidden;
+                padding: 0;
+                width: 100%;
+            }
+            input[type="text"] {
+                all: unset;
+                appearance: none;
+                -moz-appearance: none;
+                -ms-appearance: none;
+                -webkit-appearance: none;
+                border: 1px solid rgba(0, 0, 0, 0);
+                border-radius: 12px;
+                box-sizing: border-box;
+                font-family: sans-serif;
+                font-size: 12px;
+                padding: 2px 8px;
+                position: absolute;
+
+            }
+            input[type="text"]:focus {
+                border: 1px solid rgb(0, 0, 0);
+                outline: none;
+            }
+            input[type="text"]::placeholder {
+                color: rgb(128, 128, 128)
+            }
+            select {
+                all: unset;
+                appearance: none;
+                -moz-appearance: none;
+                -ms-appearance: none;
+                -webkit-appearance: none;
+                background: transparent;
+                background-image: none;
+                border: 1px solid transparent;
+                border-radius: 4px;
+                box-sizing: border-box;
+                color: inherit;
+                cursor: pointer;
+                font: inherit;
+                font-family: sans-serif;
+                font-size: 11px;
+                margin: 0;
+                padding: 2px;
+            }
+            select:focus {
+                border: 1px solid rgb(0, 0, 0);
+                outline: none;
+            }
+            select::-ms-expand {
+                display: none
+            }
+            span.unknown {
+                color: rgb(255, 0, 0);
+            }
+            #map, #canvas, #markers {
+                bottom: 0;
+                left: 0;
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+            #map {
+                cursor: default;
+                inset: 0;
+                user-select: none;
+            }
+            #map.dragging {
+                cursor: grabbing;
+            }
+            .marker {
+                background-color: rgb(255, 255, 0);
+                border: 2px solid rgb(0, 0, 0);
+                border-radius: 8px 8px 0 8px;
+                cursor: pointer;
+                height: 12px;
+                left: 50%;
+                margin-left: -8px;
+                margin-top: -19.314px;
+                position: absolute;
+                top: 50%;
+                transform: rotate(45deg);
+                width: 12px;
+            }
+            .marker.selected {
+                border: 2px solid rgb(255, 255, 255);
+            }
+            .marker.dragging {
+                border: 2px solid rgb(128, 128,128);
+            }
+            .marker.agriculture {
+                background-color: rgb(192, 192, 0);
+            }
+            .marker.commerce {
+                background-color: rgb(0, 0, 255);
+            }
+            .marker.entertainment {
+                background-color: rgb(255, 128, 0);
+            }
+            .marker.government {
+                background-color: rgb(255, 0, 0);
+            }
+            .marker.hotel {
+                background-color: rgb(0, 255, 255);
+            }
+            .marker.industry {
+                background-color: rgb(255, 255, 0);
+            }
+            .marker.monument {
+                background-color: rgb(128, 0, 0);
+            }
+            .marker.public {
+                background-color: rgb(255, 0, 255);
+            }
+            .marker.nature {
+                background-color: rgb(0, 128, 0);
+            }
+            .marker.residence {
+                background-color: rgb(0, 255, 0);
+            }
+            .marker.transportation {
+                background-color: rgb(128, 128, 128);
+            }
+            .panel {
+                background-color: rgba(255, 255, 255, 0.75);
+                bottom: 0;
+                font-family: sans-serif;
+                position: absolute;
+                top: 0;
+                width: 256px;
+            }
+            #listPanel {
+                left: 16px;
+            }
+            #listPanel .item {
+                cursor: pointer;
+                height: 32px;
+                width: 256px;
+            }
+            #listPanel .item.selected {
+                background-color: rgb(255, 255, 255);
+            }
+            #listPanel .item div {
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width: 240px;
+            }
+            #listPanel .item .ig {
+                font-size: 11px;
+                font-weight: bold;
+                height: 13px;
+                padding: 4px 8px 1px 8px
+            }
+            #listPanel .item .irl {
+                font-size: 9px;
+                height: 11px;
+                padding: 1px 8px 2px 8px
+            }
+            #listMenu {
+                height: 32px;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 256px
+            }
+            #listMenu select {
+                left: 4px;
+                position: absolute;
+                top: 4px;
+            }
+            #listBody {
+                bottom: 0;
+                left: 0;
+                overflow-y: scroll;
+                position: absolute;
+                top: 32px;
+                width: 256px;
+            }
+            #itemPanel {
+                display: none;
+                right: 16px
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+
+function Map() {
+
+    let that = this
+    let self = {
+        mapW: 32768,
+        mapH: 32768,
+        minX: -16000,
+        maxX: 4000,
+        minY: -8000,
+        maxY: 12000,
+        minZ: 1,
+        maxZ: 6,
+        zeroX: 22384,
+        zeroY: 18384,
+        tileSize: 1024,
+        tileRanges: {
+            1: [[ 0,  0], [ 1,  1]],
+            2: [[ 0,  0], [ 3,  3]],
+            3: [[ 1,  1], [ 6,  6]],
+            4: [[ 3,  3], [12, 12]],
+            5: [[ 6,  6], [25, 25]],
+            6: [[12, 12], [51, 51]]
+        },
+        tiles: {},
+        defaultX: 0,
+        defaultY: 0,
+        defaultZ: 3,
+        x: null,
+        y: null,
+        z: null,
+        targetX: 0,
+        targetY: 0,
+        isAnimating: false,
+        isDragging: false,
+        key: null,
+        panAmount: 0.025,
+        wheelAmount: 0.005,
+        zoomAmount: 0.025,
+        easeAmount: 0.2,
+        landmarks: [],
+        landmarksById: {},
+        landmarkTypes: [
+            "agriculture",
+            "commerce",
+            "entertainment",
+            "government",
+            "hotel",
+            "industry",
+            "monument",
+            "public",
+            "natural",
+            "residence",
+            "transportation"
+        ],
+        landmarksSort: "igAddress",
+        landmarksSortOptions: {
+            igAddress: "in-game address",
+            igLatitude: "in-game latitude",
+            igLongitude: "in-game longitude",
+            irlAddress: "real-life address",
+            irlLatitude: "real-life latitude",
+            irlLongitude: "real-life longitude",
+            type: "type"
+        },
+        markers: {},
+        l: null,
+        focus: "map"
+    }
+
+    /*
+    that.update = function(x, y, z) {
+        self.x = self.clamp(x, self.minX, self.maxX)
+        self.y = self.clamp(y, self.minY, self.maxY)
+        self.z = self.clamp(z, self.minZ, self.maxZ)
+        targetX = self.x
+        targetY = self.y
+        self.render()
+        return that
+    }
+    */
+
+    that.debug = function() {
+        console.log(self)
+    }
+
+    that.getLandmarkTitle = function(data) {
+        return data.igAddress || data.irlAddress
+    }
+
+    self.animate = function(immediate=false) {
+        //console.log("animate", immediate)
+        if (!immediate) {
+            self.isAnimating = true
+        }
+        const dx = self.hashX - self.x
+        const dy = self.hashY - self.y
+        const dz = self.hashZ - self.z
+        if (!immediate && Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001 && Math.abs(dz) <= 0.001) {
+            self.x = self.hashX
+            self.y = self.hashY
+            self.z = self.hashZ
+            //console.log("STOP ANIMATION", "immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
+            self.isAnimating = false
+            self.setHashURL()
+            return
+        }
+        //console.log("immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
+        easeAmount = immediate ? 1 : self.easeAmount
+        self.x += easeAmount * dx
+        self.y += easeAmount * dy
+        self.z += easeAmount * dz
+        self.render()
+        if (!immediate) {
+            requestAnimationFrame(function() {self.animate()})
+        }
+    }
+
+    self.clamp = function(n, min, max) {
+        return Math.min(Math.max(n, min), max)
+    }
+
+    self.formatAddress = function(address) {
+        return address || '<span class="unknown">unknown</span>'
+    }
+
+    self.getHash = function() {
+        return window.location.hash.slice(1).split(",").slice(0, 3).map(parseFloat)
+    }
+
+    self.getMppx = function(z=self.z) {
+        //console.log("getMppx", z==self.z)
+        return self.mapW / (self.tileSize * Math.pow(2, z))
+    }
+
+    self.init = function() {
+
+        self.element = document.createElement("div")
+        self.element.id = "map"
+        self.canvas = document.createElement("canvas")
+        self.canvas.id = "canvas"
+        self.element.appendChild(self.canvas)
+        self.context = self.canvas.getContext("2d")
+        self.markers = document.createElement("div")
+        self.markers.id = "markers"
+        self.element.appendChild(self.markers)
+        document.body.appendChild(self.element)
+
+        const zInt = Math.ceil(self.z)
+        for (let z = self.minZ; z <= self.maxZ; z++) {
+            self.tiles[z] = []
+            const [[x0, y0], [x1, y1]] = self.tileRanges[z]
+            for (let y = y0; y <= y1; y++) {
+                self.tiles[z][y] = []
+                for (let x = x0; x <= x1; x++) {
+                    self.tiles[z][y][x] = new Image()
+                    if (z == zInt) {
+                        self.tiles[z][y][x].onload = self.render
+                        self.tiles[z][y][x].src = `tiles/${z}/${z},${y},${x}.png`
+                    }
+                }
+            }
+        }
+
+        self.markers.addEventListener("click", self.onClick)
+        window.addEventListener("hashchange", self.onHashchange)
+        document.addEventListener("keydown", self.onKeydown)
+        document.addEventListener("keyup", self.onKeyup)
+        self.markers.addEventListener('mousedown',self.onMousedown)
+        window.addEventListener("resize", self.onResize)
+        self.markers.addEventListener("wheel", self.onWheel, {passive: false})
+
+        self.onResize(false)
+        self.onHashchange()
+
+        self.loadJSON("data/landmarks.json").then(function(data) {
+            self.landmarks = data.map(function(item) {
+                return {
+                    "id": item[0],
+                    "igAddress": item[1],
+                    "igCoordinates": item[2],
+                    "irlAddress": item[3],
+                    "irlCoordinates": item[4],
+                    "type": null
+                }
+            }).filter(function(item) {
+                return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
+            })
+            self.sortLandmarks()
+            console.log(":L", self.landmarks)
+            self.landmarks.forEach(function(landmark) {
+                landmark.title = that.getLandmarkTitle(landmark)
+            })
+            self.landmarksById = self.landmarks.reduce(function(a, v) {
+                a[v.id] = v
+                return a
+            }, {})
+            console.log("???", self.landmarkIndexById)
+
+            self.listPanel = document.createElement("div")
+            self.listPanel.className = "panel"
+            self.listPanel.id = "listPanel"
+            self.element.appendChild(self.listPanel)
+
+            self.listMenu = document.createElement("div")
+            self.listMenu.id = "listMenu"
+            self.listPanel.appendChild(self.listMenu)
+
+            self.listSortElement = document.createElement("select")
+            Object.entries(self.landmarksSortOptions).forEach(function([key, value]) {
+                const element = document.createElement("option")
+                element.value = key
+                element.textContent = ("Sort by " + value).toUpperCase()
+                element.selected = key == self.landmarksSort
+                self.listSortElement.appendChild(element)
+            })
+            self.listSortElement.addEventListener("change", function(e) {
+                console.log("CHANGE", e, self.listSortElement.value)
+                this.blur()
+                self.sortLandmarks(this.value)
+                self.renderList()
+            })
+            self.listMenu.appendChild(self.listSortElement)
+
+            self.listBody = document.createElement("div")
+            self.listBody.id = "listBody"
+            self.listPanel.appendChild(self.listBody)
+
+            self.renderList()
+
+            self.itemPanel = document.createElement("div")
+            self.itemPanel.className = "panel"
+            self.itemPanel.id = "itemPanel"
+            self.element.appendChild(self.itemPanel)
+
+            document.addEventListener("keydown", function(e) {
+                console.log("LIST KEYDOWN")
+                if (self.focus != "list") {
+                    return
+                }
+                e.preventDefault()
+                if (self.l === null) {
+                    return
+                }
+                if (e.key == "ArrowDown") {
+                    const index = self.landmarkIndexById[self.l]
+                    if (index < self.landmarks.length - 1) {
+                        self.selectLandmark(self.landmarks[index + 1].id)
+                        self.panToLandmark()
+                    }
+                } else if (e.key == "ArrowLeft") {
+                    const index = self.landmarkIndexById[self.l]
+                    if (index > 0) {
+                        self.selectLandmark(self.landmarks[0].id)
+                        self.panToLandmark()
+                    }
+                } else if (e.key == "ArrowRight") {
+                    const index = self.landmarkIndexById[self.l]
+                    if (index < self.landmarks.length - 1) {
+                        self.selectLandmark(self.landmarks[self.landmarks.length - 1].id)
+                        self.panToLandmark()
+                    }
+                } else if (e.key == "ArrowUp") {
+                    const index = self.landmarkIndexById[self.l]
+                    if (index > 0) {
+                        self.selectLandmark(self.landmarks[index - 1].id)
+                        self.panToLandmark()
+                    }
+                } else if (e.key == "Escape") {
+                    if (self.l) {
+                        self.selectLandmark(null)
+                    }
+                }
+            })
+            self.listPanel.addEventListener("mousedown", function(e) {
+                self.focus = "list"
+                console.log(e.target.parentElement.className)
+                if (e.target.parentElement.classList.contains("item")) {
+                    const id = e.target.parentElement.id.replace("item_", "")
+                    if (e.metaKey && e.target.parentElement.classList.contains("selected")) {
+                        self.selectLandmark(null)
+                    } else {
+                        self.selectLandmark(id)
+                        self.panToLandmark()
+                    }
+                }
+            })
+
+        }).catch(function(err) {
+            console.log("ERROR", err)
+        })
+
+        return that
+
+    }
+
+    self.loadJSON = async function(url) {
+        try {
+            const req = await fetch(url, {cache: "no-cache"})
+            if (!req.ok) {
+                throw new Error(req.status)
+            }
+            return await req.json()
+        } catch (err) {
+            throw err
+        }
+    }
+
+    self.onHashchange = function(e) {
+        let values = self.getHash()
+        if (values.length == 1) {
+            values = [self.defaultX, self.defaultY, values[0]]
+        } else if (values.length == 2) {
+            values = [values[0], values[1], self.defaultZ]
+        }
+        const hash = values.map(function(v, i) {
+            const defaultV = [self.defaultX, self.defaultY, self.defaultZ][i]
+            const minV = [self.minX, self.minY, self.minZ][i]
+            const maxV = [self.maxX, self.maxY, self.maxZ][i]
+            v = isNaN(v) ? defaultV : self.clamp(v, minV, maxV)
+            return v.toFixed(3)
+        }).join(",")
+        if (hash != window.location.hash.substr(1)) {
+            window.location.hash = hash
+            return
+        }
+        [self.hashX, self.hashY, self.hashZ] = values
+        if (!self.isAnimating) {
+            self.animate()
+        }
+        //that.update.apply(null, values)
+    }
+
+    self.onKeydown = function(e) {
+        const activeElement = document.activeElement
+        if (activeElement.tagName == "INPUT") {
+            return
+        }
+        if (self.focus != "map") {
+            return
+        }
+        console.log(e.key)
+        if (["1", "2", "3", "4", "5", "6"].includes(e.key)) {
+            self.setHash(self.hashX, self.hashY, parseInt(e.key))
+        }
+        if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
+            //e.preventDefault()
+            (function keydownFn() {
+                if (e.key == "-") {
+                    self.setHash(self.hashX, self.hashY, self.hashZ - self.zoomAmount)
+                } else if (e.key == "=") {
+                    self.setHash(self.hashX, self.hashY, self.hashZ + self.zoomAmount)
+                } else if (e.key == "ArrowDown") {
+                    self.setHash(self.hashX, self.hashY - self.getMppx() * canvas.height * self.panAmount, self.hashZ)
+                } else if (e.key == "ArrowLeft") {
+                    self.setHash(self.hashX - self.getMppx() * canvas.height * self.panAmount, self.hashY, self.hashZ)
+                } else if (e.key == "ArrowRight") {
+                    self.setHash(self.hashX + self.getMppx() * canvas.height * self.panAmount, self.hashY, self.hashZ)
+                } else if (e.key == "ArrowUp") {
+                    self.setHash(self.hashX, self.hashY + self.getMppx() * canvas.height * self.panAmount, self.hashZ)
+                }
+                self.keydownTimeout = setTimeout(keydownFn)
+            }())
+        }
+        if (e.key == "Escape") {
+            self.selectLandmark(null)
+        }
+    }
+
+    self.onKeyup = function(e) {
+        const activeElement = document.activeElement
+        if (activeElement.tagName == "INPUT") {
+            return
+        }
+        if (self.keydownTimeout) {
+            clearTimeout(self.keydownTimeout)
+            self.keydownTimeout = null
+        }
+        /*
+        if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
+
+        }
+        */
+    }
+
+    self.onMousedown = function(e) {
+        e.preventDefault()
+        self.focus = "map"
+        if (e.target.classList.contains("marker")) {
+            const id = e.target.id.replace("marker_", "")
+            console.log(e.metaKey)
+            if (e.target.classList.contains("selected") && e.metaKey) {
+                console.log("deselect")
+                self.selectLandmark(null)
+            } else if (!e.target.classList.contains("selected")) {
+                console.log("select")
+                self.selectLandmark(id)
+            }
+            return
+        }
+        self.isDragging = false
+        const clientX = e.clientX
+        const clientY = e.clientY
+        const [originalX, originalY, originalZ] = [self.hashX, self.hashY, self.hashZ]
+        const mppx = self.getMppx()
+        function onMousemove(e) {
+            if (!self.isDragging) {
+                self.isDragging = true
+                self.element.classList.add("dragging")
+            }
+            self.setHash(
+                originalX - mppx * (e.clientX - clientX),
+                originalY + mppx * (e.clientY - clientY),
+                originalZ,
+                true
+            )
+        }
+        function onMouseup(e) {
+            if (self.mouseTimeout) {
+                clearTimeout(self.mouseTimeout)
+                self.mouseTimeout = null
+                //console.log("click", "animating?", self.isAnimating)
+                self.setHash(
+                    originalX + mppx * (clientX - canvas.width / 2),
+                    originalY - mppx * (clientY - canvas.height / 2),
+                    originalZ
+                )
+            } else if (self.isDragging) {
+                self.isDragging = false
+                self.element.classList.remove("dragging")
+                self.setHashURL()
+            }
+            document.removeEventListener("mousemove", onMousemove)
+            document.removeEventListener("mouseup", onMouseup)
+        }
+        self.mouseTimeout = setTimeout(function() {
+            document.addEventListener("mousemove", onMousemove)
+            self.mouseTimeout = null
+        }, 250)
+        document.addEventListener("mouseup", onMouseup)
+    }
+
+    self.onResize = function(render=true) {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        canvas.style.width = window.innerWidth + "px"
+        canvas.style.height = window.innerHeight + "px"
+        if (render) {
+            self.render()
+        }
+    }
+
+    self.onWheel = function(e) {
+        e.preventDefault()
+        if (self.wheelTimeout) {
+            clearTimeout(self.wheelTimeout)
+            self.wheelTimeout = null
+        }
+        const targetZ = self.clamp(self.z - e.deltaY * self.wheelAmount, self.minZ, self.maxZ)
+        if (targetZ == self.z) {
+            return
+        }
+        const mppx = self.getMppx()
+        const targetMppx = self.getMppx(targetZ)
+        const offsetX = e.clientX - canvas.width / 2
+        const offsetY = e.clientY - canvas.height / 2
+        self.setHash(
+            self.x + mppx * offsetX - targetMppx * offsetX,
+            self.y - mppx * offsetY + targetMppx * offsetY,
+            targetZ,
+            true
+        )
+        self.wheelTimeout = setTimeout(function() {
+            self.setHashURL()
+        }, 100)
+    }
+
+    self.panToLandmark = function() {
+        const landmark = self.landmarksById[self.l]
+        self.setHash(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
+    }
+
+    self.render = function() {
+
+        const zInt = Math.ceil(self.z)
+        const mapSize = self.tileSize * Math.pow(2, self.z)
+        const mppx = mapSize / self.mapW
+        const pxC = (self.x + self.zeroX) * mppx
+        const pyC = (self.zeroY - self.y) * mppx
+        const offX = self.canvas.width / 2 - pxC;
+        const offY = self.canvas.height / 2 - pyC;
+        const tilePx = self.tileSize * Math.pow(2, self.z - zInt);
+
+        const [[x0, y0], [x1, y1]] = self.tileRanges[zInt]
+        const minTx = self.clamp(Math.floor(-offX / tilePx), x0, x1)
+        const maxTx = self.clamp(Math.ceil((self.canvas.width - offX) / tilePx), x0, x1)
+        const minTy = self.clamp(Math.floor(-offY / tilePx), y0, y1)
+        const maxTy = self.clamp(Math.ceil((self.canvas.height - offY) / tilePx), y0, y1)
+
+        for (let y = minTy; y <= maxTy; y++) {
+            for (let x = minTx; x <= maxTx; x++) {
+                const img = self.tiles[zInt][y][x];
+                if (!img.src) {
+                    img.onload = self.render
+                    img.src = `tiles/${zInt}/${zInt},${y},${x}.png`;
+                }
+                if (img.naturalWidth) {
+                    self.context.drawImage(
+                        img,
+                        offX + x * tilePx,
+                        offY + y * tilePx,
+                        tilePx,
+                        tilePx
+                    )
+                }
+            }
+        }
+
+        self.updateMarkers()
+
+    }
+
+    self.renderItem = function() {
+
+        self.itemPanel.innerHTML = ""
+        self.inputs = {}
+
+        self.inputs["igName"] = document.createElement("input")
+        self.inputs["igName"].placeholder = "In-game name: unknown"
+        self.inputs["igName"].style.top = 100 + "px"
+
+        //self.inputs["igAddress"] = document.createElement("input")
+        //self.inputs["igAddress"].placeholder = "In-game address: unknown"
+        //self.inputs["igAddress"].style.top = 132 + "px"
+
+        self.inputs["igCoordinates"] = document.createElement("input")
+        self.inputs["igCoordinates"].placeholder = "In-game coordinates: unknown"
+        self.inputs["igCoordinates"].style.top = 164 + "px"
+
+        //self.inputs["irlName"] = document.createElement("input")
+        //self.inputs["irlName"].placeholder = "Real-life name: unknown"
+        //self.inputs["irlName"].style.top = 196 + "px"
+
+        self.inputs["irlAddress"] = document.createElement("input")
+        self.inputs["irlAddress"].placeholder = "Real-life address: unknown"
+        self.inputs["irlAddress"].style.top = 228 + "px"
+
+        self.inputs["irlCoordinates"] = document.createElement("input")
+        self.inputs["irlCoordinates"].placeholder = "Real-life coordinates: unknown"
+        self.inputs["irlCoordinates"].style.top = 260 + "px"
+
+        Object.values(self.inputs).forEach(function(input) {
+            input.type = "text"
+            input.style.left = 16 + "px"
+            input.style.width = self.width - 32 + "px"
+            input.style.height = 24 + "px"
+            input.addEventListener("keydown", function(e) {
+                if (e.key == "Enter") {
+                    e.preventDefault();
+                    this.blur()
+                }
+            })
+            self.itemPanel.appendChild(input)
+        })
+
+    }
+
+    self.renderList = function() {
+        self.listBody.innerHTML = ""
+        self.landmarks.forEach(function(landmark) {
+            const itemElement = document.createElement("div")
+            itemElement.classList.add("item")
+            if (landmark.id == self.l) {
+                itemElement.classList.add("selected")
+            }
+            itemElement.id = "item_" + landmark.id
+            const igElement = document.createElement("div")
+            igElement.className = "ig"
+            igElement.innerHTML = self.formatAddress(landmark.igAddress)
+            itemElement.appendChild(igElement)
+            const irlElement = document.createElement("div")
+            irlElement.className = "irl"
+            irlElement.innerHTML = self.formatAddress(landmark.irlAddress)
+            itemElement.appendChild(irlElement)
+            self.listBody.appendChild(itemElement)
+        })
+    }
+
+    self.selectLandmark = function(id) {
+        self.l = id
+        let element = document.querySelector(".marker.selected")
+        if (element) {
+            element.classList.remove("selected")
+        }
+        if (self.l) {
+            element = document.querySelector("#marker_" + self.l)
+            if (element) {
+                element.classList.add("selected")
+            }
+        }
+        element = document.querySelector(".item.selected")
+        if (element) {
+            element.classList.remove("selected")
+        }
+        if (self.l) {
+            element = document.querySelector("#item_" + self.l)
+            if (element) {
+                element.classList.add("selected")
+            }
+        }
+    }
+
+    self.setHash = function(x, y, z, immediate=false) {
+        x = self.clamp(x, self.minX, self.maxX)
+        y = self.clamp(y, self.minY, self.maxY)
+        z = self.clamp(z, self.minZ, self.maxZ)
+        if (x != self.hashX || y != self.hashY || z != self.hashZ) {
+            self.hashX = x
+            self.hashY = y
+            self.hashZ = z
+            if (!self.isAnimating || immediate) {
+                self.animate(immediate)
+            }
+        }
+
+    }
+
+    self.setHashURL = function() {
+        const hash = [self.hashX, self.hashY, self.hashZ].map(function (v) {
+            return v.toFixed(3)
+        }).join(',')
+        if (window.location.hash.slice(1) != hash) {
+            // history.replaceState(null, "", "#" + hash)
+            window.location.hash = hash
+        }
+    }
+
+    self.sortLandmarks = function(option=null) {
+        if (option !== null) {
+            self.landmarksSort = option
+        }
+        self.landmarks.sort(function(a, b) {
+            let sortValues = [a, b].map(function(v) {
+                if (self.landmarksSort == "igAddress") {
+                    return v.igAddress.split(", ").reverse().concat([v.igName]).join(", ")
+                } else if (self.landmarksSort == "igLatitude") {
+                    return -v.igCoordinates[1]
+                } else if (self.landmarksSort == "igLongitude") {
+                    return v.igCoordinates[0]
+                } else if (self.landmarksSort == "irlAddress") {
+                    return v.irlAddress.split(", ").reverse().concat([v.irlName]).join(", ")
+                } else if (self.landmarksSort == "irlLatitude") {
+                    return -v.irlCoordinates[0]
+                } else if (self.landmarksSort == "irlLongitude") {
+                    return v.irlCoordinates[1]
+                } else if (self.landmarksSort == "type") {
+                    return [v.type].concat(v.igAddress.split(", ").reverse()).concat([v.igName]).join(", ")   
+                }
+            })
+            return sortValues[0] < sortValues[1] ? -1 : sortValues[0] > sortValues[1] ? 1 : 0
+        })
+        self.landmarkIndexById = self.landmarks.reduce(function(a, v, i) {
+            a[v.id] = i
+            return a
+        }, {})
+    }
+
+    self.updateMarkers = function() {
+        const mppx = self.getMppx()
+        const minX = self.x - mppx * self.canvas.width / 2 - 16
+        const maxX = self.x + mppx * self.canvas.width / 2 + 16
+        const minY = self.y - mppx * self.canvas.height / 2 - 16
+        const maxY = self.y + mppx * self.canvas.height / 2 + 16
+        self.landmarks.forEach(function(landmark) {
+            const [x, y] = landmark.igCoordinates
+            if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+                if (!self.markers[landmark.id]) {
+                    self.markers[landmark.id] = Marker({
+                        id: landmark.id,
+                        title: landmark.irlName || landmark.igName,
+                        type: landmark.type
+                    })
+                }
+                let append = false
+                let markerElement = document.getElementById("marker_" + landmark.id)
+                if (!markerElement) {
+                    markerElement = self.markers[landmark.id].getElement()
+                    append = true
+                }
+                if (landmark.id == self.l) {
+                    markerElement.classList.add("selected")
+                }
+                markerElement.style.display = "block"
+                markerElement.style.left = (x - minX) / mppx + "px"
+                markerElement.style.top = (maxY - y) / mppx + "px"
+                if (append) {
+                    self.markers.appendChild(markerElement)
+                }
+            } else {
+                let markerElement = document.getElementById("marker_" + landmark.id)
+                if (markerElement) {
+                    markerElement.style.display = "none"
+                }
+            }
+        })
+    }
+
+    return self.init()
+
+}
+
+function Marker(options) {
+    let that = this
+    let self = {
+        options: options
+    }
+    that.getElement = function() {
+        return self.element
+    }
+    self.init = function() {
+        self.map = self.options.map
+        self.element = document.createElement("div")
+        self.element.id = "marker_" + self.options.id
+        self.element.classList.add("marker", self.options.type)
+        self.element.title = self.options.title
+        return that
+    }
+    return self.init()
+}
+
+function Panel(options) {
+
+    let that = this
+    let self = {
+        inputs: {},
+        options: options,
+        width: 384
+    }
+
+    that.renderItem = function(id) {
+
+        self.element.innerHTML = ""
+
+        self.inputs["igName"] = document.createElement("input")
+        self.inputs["igName"].placeholder = "In-game name: unknown"
+        self.inputs["igName"].style.top = 100 + "px"
+
+        self.inputs["igAddress"] = document.createElement("input")
+        self.inputs["igAddress"].placeholder = "In-game address: unknown"
+        self.inputs["igAddress"].style.top = 132 + "px"
+
+        self.inputs["igCoordinates"] = document.createElement("input")
+        self.inputs["igCoordinates"].placeholder = "In-game coordinates: unknown"
+        self.inputs["igCoordinates"].style.top = 164 + "px"
+
+        self.inputs["irlName"] = document.createElement("input")
+        self.inputs["irlName"].placeholder = "Real-life name: unknown"
+        self.inputs["irlName"].style.top = 196 + "px"
+
+        self.inputs["irlAddress"] = document.createElement("input")
+        self.inputs["irlAddress"].placeholder = "Real-life address: unknown"
+        self.inputs["irlAddress"].style.top = 228 + "px"
+
+        self.inputs["irlCoordinates"] = document.createElement("input")
+        self.inputs["irlCoordinates"].placeholder = "Real-life coordinates: unknown"
+        self.inputs["irlCoordinates"].style.top = 260 + "px"
+
+        Object.values(self.inputs).forEach(function(input) {
+            input.type = "text"
+            input.style.left = 16 + "px"
+            input.style.width = self.width - 32 + "px"
+            input.style.height = 24 + "px"
+            input.addEventListener("keydown", function(e) {
+                if (e.key == "Enter") {
+                    e.preventDefault();
+                    this.blur()
+                }
+            })
+            self.element.appendChild(input)
+        })
+    }
+
+    that.renderList = function() {
+        self.element.innerHTML = ""
+        self.options.landmarks.forEach(function(landmark) {
+            const itemElement = document.createElement("div")
+            itemElement.classList.add("item")
+            itemElement.id = "item_" + landmark.id
+            const igElement = document.createElement("div")
+            igElement.className = "ig"
+            igElement.innerHTML = self.formatAddress(landmark.igAddress)
+            itemElement.appendChild(igElement)
+            const irlElement = document.createElement("div")
+            irlElement.className = "irl"
+            irlElement.innerHTML = self.formatAddress(landmark.irlAddress)
+            itemElement.appendChild(irlElement)
+            self.element.appendChild(itemElement)
+        })
+    }
+
+    that.update = function(data) {
+        console.log("UPDATE")
+        if (data === null) {
+            Object.values(self.inputs).forEach(function(input) {
+                input.value = ""
+            })
+        } else {
+            Object.entries(data).forEach(function([key, value]) {
+                //console.log("??", key, self.inputs)
+                if (self.inputs[key]) {
+                    console.log("OK")
+                    self.inputs[key].value = key.includes("Coordinates") ? `${value[0]},${value[1]}` : value
+                }
+            })
+        }
+    }
+
+    self.init = function() {
+        self.mapElement = document.getElementById("map")
+        self.element = document.createElement("div")
+        self.element.id = "panel"
+        self.mapElement.appendChild(self.element)
+
+
+        document.addEventListener("keydown", function(e) {
+            const activeElement = document.activeElement
+            if (activeElement.tagName == "INPUT") {
+                return
+            }
+            if (e.key == "l") {
+                self.toggle()
+            }
+        })
+        self.element.addEventListener("mousedown", function(e) {
+            if (e.target.parentElement.classList.contains("item")) {
+                const id = e.target.parentElement.id.replace("item_", "")
+                self.options.map.panToLandmark(id)
+            }
+        })
+
+        that.renderList()
+        return that
+    }
+
+    self.toggle = function() {
+        self.element.style.display = self.element.style.display == "none" ? "block" : "none"
+    }
+
+    return self.init()
+
+}
+
+const map = Map()
+
+        </script>
+    </body>
+</html>
