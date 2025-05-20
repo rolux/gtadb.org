@@ -80,8 +80,11 @@
             #map.dragging {
                 cursor: grabbing;
             }
+            #canvas {
+                filter: saturate(0);
+            }
             .marker {
-                background-color: rgb(255, 255, 0);
+                background-color: rgb(192, 192, 192);
                 border: 2px solid rgb(0, 0, 0);
                 border-radius: 8px 8px 0 8px;
                 cursor: pointer;
@@ -295,8 +298,11 @@ function Map() {
         console.log(self)
     }
 
-    that.getLandmarkTitle = function(data) {
-        return data.igAddress || data.irlAddress
+    that.getLandmarkTitle = function(landmark) {
+        return (
+            landmark.igAddress && landmark.igAddress[0] != "?"
+            ? landmark.igAddress : landmark.irlAddress
+        ).split(", ")[0]
     }
 
     self.animate = function(immediate=false) {
@@ -906,7 +912,7 @@ function Map() {
                 if (!self.markers[landmark.id]) {
                     self.markers[landmark.id] = Marker({
                         id: landmark.id,
-                        title: (landmark.igAddress || landmark.irlAddress).split(", ")[0],
+                        title: landmark.title,
                         type: landmark.type
                     })
                 }
