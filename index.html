@@ -188,6 +188,7 @@
                 position: absolute;
                 right: 8px;
                 top: 9px;
+                user-select: none;
             }
             #sortBar {
                 border-bottom: 1px solid rgb(192, 192, 192);
@@ -330,16 +331,17 @@
                 text-align: center;
                 top: 0;
                 width: 64px;
+                user-select: none;
             }
             #photoDialog .content {
                 height: 576px;
                 width: 1024px;
             }
             #photoDialog .content img {
+                border-radius: 0 0 8px 8px;
                 height: 576px;
                 user-select: none;
                 width: 1024px;
-                border-radius: 0 0 8px 8px;
             }
         </style>
     </head>
@@ -1154,7 +1156,9 @@ function Map() {
     }
 
     self.renderStatus = function() {
-        self.statusBar.innerHTML = self.currentLandmarks.length + " LANDMARKS"
+        self.statusBar.innerHTML = self.currentLandmarks.length + " LANDMARK" + (
+            self.currentLandmarks.length == 1 ? "" : "S"
+        )
     }
 
     self.selectLandmark = function(id) {
