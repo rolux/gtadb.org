@@ -14,10 +14,8 @@ map_zero = (9037, 6693)
 map_scale = 0.558
 map_mppx = 1 / map_scale
 tile_size = 1024
-min_y = -8000
-max_y = 12000
-min_x = -16000
-max_x = 4000
+min_x, max_x = -16000, 4000
+min_y, max_y = -8000, 12000
 map_left = int(round(map_zero[0] + min_x * map_scale))
 map_top = int(round(map_zero[1] - max_y * map_scale))
 print(f"{map_left=} {map_top=}") # 109, -3
