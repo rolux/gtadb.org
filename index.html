@@ -982,20 +982,20 @@ function Map() {
                 img.src = "photos/b315,ig.jpg"
                 img.style.width = "256px"
                 img.style.height = "144px"
-                self.itemIgPhoto.appendChild(img)
-                self.itemIgPhoto.style.cursor = "pointer"
-                self.itemIgPhoto.addEventListener("click", function() {
+                img.addEventListener("click", function() {
                     self.openPhotoDialog(landmark, "ig")
                 })
+                self.itemIgPhoto.appendChild(img)
+                self.itemIgPhoto.style.cursor = "pointer"
                 img = document.createElement("img")
                 img.src = "photos/b315,irl.jpg"
                 img.style.width = "256px"
                 img.style.height = "144px"
-                self.itemIrlPhoto.appendChild(img)
-                self.itemIrlPhoto.style.cursor = "pointer"
-                self.itemIrlPhoto.addEventListener("click", function() {
+                img.addEventListener("click", function() {
                     self.openPhotoDialog(landmark, "irl")
                 })
+                self.itemIrlPhoto.appendChild(img)
+                self.itemIrlPhoto.style.cursor = "pointer"
             } else {
                 self.itemIgPhoto.innerHTML = ""
                 self.itemIrlPhoto.innerHTML = ""
