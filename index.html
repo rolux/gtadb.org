@@ -648,6 +648,10 @@ function Map() {
             self.photoDialog.appendChild(self.photoDialogContent)
 
             document.addEventListener("keydown", function(e) {
+                const activeElement = document.activeElement
+                if (activeElement.tagName == "INPUT") {
+                    return
+                }
                 if (self.focus != "list") {
                     return
                 }
