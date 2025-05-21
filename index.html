@@ -1073,6 +1073,7 @@ function Map() {
                     + encodeURIComponent(landmark.irlAddress)
                     + '" target="_blank">' + landmark.irlCoordinates.join(",") + "</a>"
             if (landmark.id == "b315") {
+                self.itemIgPhoto.innerHTML = ""
                 let img = document.createElement("img")
                 img.src = "photos/b315,ig.jpg"
                 img.style.width = "256px"
@@ -1081,6 +1082,7 @@ function Map() {
                     self.openPhotoDialog(landmark, "ig")
                 })
                 self.itemIgPhoto.appendChild(img)
+                self.itemIrlPhoto.innerHTML = ""
                 img = document.createElement("img")
                 img.src = "photos/b315,irl.jpg"
                 img.style.width = "256px"
