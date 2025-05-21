@@ -246,6 +246,9 @@
                 height: 144px;
                 width: 256px;
             }
+            #itemPanel > div.photo > img {
+                cursor: pointer;
+            }
             #itemPanel > div > div {
                 float: left;
                 margin: 2px 2px;
@@ -986,7 +989,6 @@ function Map() {
                     self.openPhotoDialog(landmark, "ig")
                 })
                 self.itemIgPhoto.appendChild(img)
-                self.itemIgPhoto.style.cursor = "pointer"
                 img = document.createElement("img")
                 img.src = "photos/b315,irl.jpg"
                 img.style.width = "256px"
@@ -995,7 +997,6 @@ function Map() {
                     self.openPhotoDialog(landmark, "irl")
                 })
                 self.itemIrlPhoto.appendChild(img)
-                self.itemIrlPhoto.style.cursor = "pointer"
             } else {
                 self.itemIgPhoto.innerHTML = ""
                 self.itemIrlPhoto.innerHTML = ""
