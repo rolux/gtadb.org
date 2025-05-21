@@ -28,16 +28,18 @@
                 -moz-appearance: none;
                 -ms-appearance: none;
                 -webkit-appearance: none;
-                border: 1px solid rgba(0, 0, 0, 0);
-                border-radius: 12px;
+                background-color: transparent;
+                border: 1px solid transparent;
                 box-sizing: border-box;
                 font-family: sans-serif;
                 font-size: 12px;
-                padding: 2px 8px;
+                height: 18px;
+                margin: 0;
+                padding: 2px 4px;
                 position: absolute;
             }
             input[type="text"]:focus {
-                border: 1px solid rgb(0, 0, 0);
+                border: 1px solid rgb(192, 192, 192);
                 outline: none;
             }
             input[type="text"]::placeholder {
@@ -51,16 +53,16 @@
                 -webkit-appearance: none;
                 background: transparent;
                 background-image: none;
-                border: 0;
+                border: 1px solid transparent;
                 border-radius: 4px;
                 box-sizing: border-box;
                 color: inherit;
                 cursor: pointer;
                 font: inherit;
                 font-family: sans-serif;
-                font-size: 11px;
+                font-size: 12px;
                 margin: 0;
-                padding: 2px;
+                padding: 2px 4px;
             }
             select:focus {
                 outline: none;
@@ -164,7 +166,7 @@
             #listPanel {
                 left: 0;
             }
-            #listMenu {
+            #findBar {
                 border-bottom: 1px solid rgb(192, 192, 192);
                 height: 31px;
                 left: 0;
@@ -172,26 +174,57 @@
                 top: 0;
                 width: 256px
             }
-            #listMenu select {
-                left: 5px;
+            #findBar input {
+                left: 8px;
                 position: absolute;
                 top: 7px;
+                width: 192px;
             }
-            #listPanel .item {
+            #findBar #clearButton {
+                cursor: pointer;
+                display: none;
+                font-size: 11px;
+                height: 12px;
+                position: absolute;
+                right: 8px;
+                top: 9px;
+            }
+            #sortBar {
+                border-bottom: 1px solid rgb(192, 192, 192);
+                height: 31px;
+                left: 0;
+                position: absolute;
+                top: 32px;
+                width: 256px
+            }
+            #sortBar select {
+                left: 8px;
+                position: absolute;
+                top: 6px;
+            }
+            #listBody {
+                bottom: 32px;
+                left: 0;
+                overflow-y: scroll;
+                position: absolute;
+                top: 64px;
+                width: 256px;
+            }
+            #listBody > .item {
                 border-left: 8px solid transparent;
                 cursor: pointer;
                 height: 32px;
                 width: 248px;
             }
-            #listPanel .item.selected {
+            #listBody > .item.selected {
                 background-color: rgb(255, 255, 255);
             }
-            #listPanel .item div {
+            #listBody > .item div {
                 overflow-x: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
-            #listPanel .item .ig {
+            #listBody > .item .ig {
                 font-size: 11px;
                 font-weight: bold;
                 height: 13px;
@@ -200,7 +233,7 @@
                 top: 0;
                 width: 232px;
             }
-            #listPanel .item .irl {
+            #listBody > .item .irl {
                 bottom: 0;
                 font-size: 9px;
                 height: 11px;
@@ -208,15 +241,7 @@
                 padding: 1px 8px 2px 8px;
                 width: 232px;
             }
-            #listBody {
-                bottom: 32px;
-                left: 0;
-                overflow-y: scroll;
-                position: absolute;
-                top: 32px;
-                width: 256px;
-            }
-            #listStatus {
+            #statusBar {
                 border-top: 1px solid rgb(192, 192, 192);
                 bottom: 0;
                 height: 12px;
@@ -351,6 +376,7 @@ function Map() {
         x: null,
         y: null,
         z: null,
+        l: null,
         targetX: 0,
         targetY: 0,
         isAnimating: false,
@@ -362,6 +388,7 @@ function Map() {
         easeAmount: 0.2,
         landmarks: [],
         landmarksById: {},
+        currentLandmarks: [],
         landmarkTypes: [
             "agriculture",
             "commerce",
@@ -387,7 +414,6 @@ function Map() {
             status: "status"
         },
         markers: {},
-        l: null,
         focus: "map"
     }
 
@@ -436,8 +462,10 @@ function Map() {
                 return {
                     "id": item[0],
                     "igAddress": item[1],
+                    "igAddressLower": item[1].toLowerCase(),
                     "igCoordinates": item[2],
                     "irlAddress": item[3],
+                    "irlAddressLower": item[3].toLowerCase(),
                     "irlCoordinates": item[4],
                     "type": item[5] || "other",
                     "color": item[6],
@@ -455,6 +483,7 @@ function Map() {
                 a[v.id] = v
                 return a
             }, {})
+            self.currentLandmarks = self.landmarks.slice()
 
             self.markers = {}
             self.landmarks.sort(function(a, b) {
@@ -475,44 +504,70 @@ function Map() {
             self.listPanel.id = "listPanel"
             self.element.appendChild(self.listPanel)
 
-            self.listMenu = document.createElement("div")
-            self.listMenu.id = "listMenu"
-            self.listMenu.addEventListener("click", function(e) {
-                if (e.target == self.listMenu) {
+            self.findBar = document.createElement("div")
+            self.findBar.id = "findBar"
+            self.listPanel.appendChild(self.findBar)
+
+            self.findElement = document.createElement("input")
+            self.findElement.type = "text"
+            self.findElement.placeholder = "FIND"
+            self.findElement.spellcheck = false
+            self.findElement.addEventListener("change", function(e) {
+                self.findElement.blur()
+                self.findLandmarks(self.findElement.value)
+            })
+            self.findElement.addEventListener("input", function(e) {
+                self.clearButton.style.display = self.findElement.value ? "block" : "none"
+            })
+            self.findBar.appendChild(self.findElement)
+
+            self.clearButton = document.createElement("div")
+            self.clearButton.id = "clearButton"
+            self.clearButton.innerHTML = "CLEAR"
+            self.clearButton.addEventListener("click", function() {
+                self.findElement.value = ""
+                self.findLandmarks("")
+                self.clearButton.style.display = "none"
+            })
+            self.findBar.appendChild(self.clearButton)
+
+            self.sortBar = document.createElement("div")
+            self.sortBar.id = "sortBar"
+            self.sortBar.addEventListener("click", function(e) {
+                if (e.target == self.sortBar) {
                     self.listBody.scrollTo(0, 0)
                 }
             })
-            self.listPanel.appendChild(self.listMenu)
+            self.listPanel.appendChild(self.sortBar)
 
-            self.listSortElement = document.createElement("select")
+            self.sortElement = document.createElement("select")
             Object.entries(self.landmarksSortOptions).forEach(function([key, value]) {
                 const element = document.createElement("option")
                 element.value = key
                 element.textContent = ("Sort by " + value).toUpperCase()
                 element.selected = key == self.landmarksSort
-                self.listSortElement.appendChild(element)
+                self.sortElement.appendChild(element)
             })
-            self.listSortElement.addEventListener("change", function(e) {
-                console.log("CHANGE", e, self.listSortElement.value)
+            self.sortElement.addEventListener("change", function(e) {
                 this.blur()
                 self.sortLandmarks(this.value)
                 self.renderList()
             })
-            self.listMenu.appendChild(self.listSortElement)
+            self.sortBar.appendChild(self.sortElement)
 
             self.listBody = document.createElement("div")
             self.listBody.id = "listBody"
             self.listPanel.appendChild(self.listBody)
 
-            self.listStatus = document.createElement("div")
-            self.listStatus.id = "listStatus"
-            self.listStatus.innerHTML = self.landmarks.length + " Landmarks".toUpperCase()
-            self.listStatus.addEventListener("click", function(e) {
-                if (e.target == self.listStatus) {
+            self.statusBar = document.createElement("div")
+            self.statusBar.id = "statusBar"
+            self.statusBar.addEventListener("click", function(e) {
+                if (e.target == self.statusBar) {
                     self.listBody.scrollTo(0, self.landmarks.length * 32)
                 }
             })
-            self.listPanel.appendChild(self.listStatus)
+            self.renderStatus()
+            self.listPanel.appendChild(self.statusBar)
 
             self.renderList()
 
@@ -629,7 +684,6 @@ function Map() {
             })
             self.listPanel.addEventListener("mousedown", function(e) {
                 self.focus = "list"
-                console.log(e.target.parentElement.className)
                 if (e.target.parentElement.classList.contains("item")) {
                     const id = e.target.parentElement.id.replace("item_", "")
                     if (e.metaKey && e.target.parentElement.classList.contains("selected")) {
@@ -681,6 +735,27 @@ function Map() {
         return Math.min(Math.max(n, min), max)
     }
 
+    self.findLandmarks = function(query) {
+        if (query) {
+            self.query = query.toLowerCase()
+            self.currentLandmarks = self.landmarks.filter(function(landmark) {
+                return landmark.igAddressLower.includes(query)
+                        || landmark.irlAddressLower.includes(query)
+            })
+            if (self.l && !self.currentLandmarks.includes(self.l)) {
+                self.l = null
+            }
+            self.clearMarkers()
+        }
+        else {
+            self.currentLandmarks = self.landmarks.slice()
+        }
+        self.renderMarkers()    
+        self.renderList()
+        self.renderStatus()
+        self.renderItem()
+    }
+
     self.formatAddress = function(address) {
         address = address || "?"
         if (!"0123456789?".includes(address[0])) {
@@ -715,7 +790,6 @@ function Map() {
     }
 
     self.getMppx = function(z=self.z) {
-        //console.log("getMppx", z==self.z)
         return self.mapW / (self.tileSize * Math.pow(2, z))
     }
 
@@ -728,6 +802,9 @@ function Map() {
                     words[w] = "0".repeat(10 - word.length) + word
                 }
             })
+            if (/^\d+$/.test(words[0])) {
+                words = words.slice(1).concat(words[0])
+            }
             parts[p] = words.join(" ")
         })
         return parts.reverse().join(", ")
@@ -828,12 +905,9 @@ function Map() {
         self.focus = "map"
         if (e.target.classList.contains("marker")) {
             const id = e.target.id.replace("marker_", "")
-            console.log(e.metaKey)
             if (e.target.classList.contains("selected") && e.metaKey) {
-                console.log("deselect")
                 self.selectLandmark(null)
             } else if (!e.target.classList.contains("selected")) {
-                console.log("select")
                 self.selectLandmark(id)
             }
             return
@@ -969,7 +1043,7 @@ function Map() {
                 }
             }
         }
-        self.updateMarkers()
+        self.renderMarkers()
 
     }
 
@@ -1014,55 +1088,11 @@ function Map() {
         } else {
             self.itemPanel.style.display = "none"
         }
-
-        /*
-        self.itemPanel.innerHTML = ""
-        self.inputs = {}
-
-        self.inputs["igName"] = document.createElement("input")
-        self.inputs["igName"].placeholder = "In-game name: unknown"
-        self.inputs["igName"].style.top = 100 + "px"
-
-        //self.inputs["igAddress"] = document.createElement("input")
-        //self.inputs["igAddress"].placeholder = "In-game address: unknown"
-        //self.inputs["igAddress"].style.top = 132 + "px"
-
-        self.inputs["igCoordinates"] = document.createElement("input")
-        self.inputs["igCoordinates"].placeholder = "In-game coordinates: unknown"
-        self.inputs["igCoordinates"].style.top = 164 + "px"
-
-        //self.inputs["irlName"] = document.createElement("input")
-        //self.inputs["irlName"].placeholder = "Real-life name: unknown"
-        //self.inputs["irlName"].style.top = 196 + "px"
-
-        self.inputs["irlAddress"] = document.createElement("input")
-        self.inputs["irlAddress"].placeholder = "Real-life address: unknown"
-        self.inputs["irlAddress"].style.top = 228 + "px"
-
-        self.inputs["irlCoordinates"] = document.createElement("input")
-        self.inputs["irlCoordinates"].placeholder = "Real-life coordinates: unknown"
-        self.inputs["irlCoordinates"].style.top = 260 + "px"
-
-        Object.values(self.inputs).forEach(function(input) {
-            input.type = "text"
-            input.style.left = 16 + "px"
-            input.style.width = self.width - 32 + "px"
-            input.style.height = 24 + "px"
-            input.addEventListener("keydown", function(e) {
-                if (e.key == "Enter") {
-                    e.preventDefault();
-                    this.blur()
-                }
-            })
-            self.itemPanel.appendChild(input)
-        })
-        */
-
     }
 
     self.renderList = function() {
         self.listBody.innerHTML = ""
-        self.landmarks.forEach(function(landmark) {
+        self.currentLandmarks.forEach(function(landmark) {
             const itemElement = document.createElement("div")
             itemElement.classList.add("item")
             if (landmark.id == self.l) {
@@ -1087,6 +1117,39 @@ function Map() {
         })
     }
 
+    self.clearMarkers = function() {
+        self.landmarks.forEach(function(landmark) {
+            if (!self.currentLandmarks.includes(landmark)) {
+                let marker = self.markers[landmark.id]
+                marker.classList.remove("selected")
+                marker.style.display = "none"
+            }
+        })
+    }
+
+    self.renderMarkers = function() {
+        const mppx = self.getMppx()
+        const minX = self.x - mppx * self.canvas.width / 2
+        const maxX = self.x + mppx * self.canvas.width / 2
+        const minY = self.y - mppx * self.canvas.height / 2
+        const maxY = self.y + mppx * self.canvas.height / 2
+        self.currentLandmarks.forEach(function(landmark) {
+            let markerElement = self.markers[landmark.id]
+            const [x, y] = landmark.igCoordinates
+            if (x >= minX - 16 && x <= maxX + 16 && y >= minY -16 && y <= maxY + 16) {
+                markerElement.style.left = (x - minX) / mppx + "px"
+                markerElement.style.top = (maxY - y) / mppx + "px"
+                markerElement.style.display = "block"
+            } else {
+                markerElement.style.display = "none"
+            }
+        })
+    }
+
+    self.renderStatus = function() {
+        self.statusBar.innerHTML = self.currentLandmarks.length + " LANDMARKS"
+    }
+
     self.selectLandmark = function(id) {
         self.l = id
         let element = document.querySelector(".marker.selected")
@@ -1107,7 +1170,7 @@ function Map() {
             element = document.querySelector("#item_" + self.l)
             if (element) {
                 element.classList.add("selected")
-                const top = 32, bottom = window.innerHeight - 64
+                const top = 64, bottom = window.innerHeight - 64
                 const y = element.getBoundingClientRect().y
                 if (y < top) {
                     self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
@@ -1172,29 +1235,6 @@ function Map() {
             a[v.id] = i
             return a
         }, {})
-    }
-
-    self.updateMarkers = function() {
-        const mppx = self.getMppx()
-        const minX = self.x - mppx * self.canvas.width / 2
-        const maxX = self.x + mppx * self.canvas.width / 2
-        const minY = self.y - mppx * self.canvas.height / 2
-        const maxY = self.y + mppx * self.canvas.height / 2
-        self.landmarks.forEach(function(landmark) {
-            let markerElement = self.markers[landmark.id]
-            const [x, y] = landmark.igCoordinates
-            if (x >= minX - 16 && x <= maxX + 16 && y >= minY -16 && y <= maxY + 16) {
-                markerElement.style.left = (x - minX) / mppx + "px"
-                markerElement.style.top = (maxY - y) / mppx + "px"
-                markerElement.style.display = "block"
-                markerElement.classList.remove("no")
-                markerElement.classList.add("ok")
-            } else {
-                markerElement.style.display = "none"
-                markerElement.classList.remove("ok")
-                markerElement.classList.add("no")
-            }
-        })
     }
 
     return self.init()
