@@ -51,7 +51,7 @@
                 -webkit-appearance: none;
                 background: transparent;
                 background-image: none;
-                border: 1px solid transparent;
+                border: 0;
                 border-radius: 4px;
                 box-sizing: border-box;
                 color: inherit;
@@ -63,7 +63,6 @@
                 padding: 2px;
             }
             select:focus {
-                border: 1px solid rgb(0, 0, 0);
                 outline: none;
             }
             select::-ms-expand {
@@ -174,15 +173,15 @@
                 width: 256px
             }
             #listMenu select {
-                left: 4px;
+                left: 5px;
                 position: absolute;
-                top: 6px;
+                top: 7px;
             }
             #listPanel .item {
                 border-left: 8px solid transparent;
                 cursor: pointer;
                 height: 32px;
-                width: 256px;
+                width: 248px;
             }
             #listPanel .item.selected {
                 background-color: rgb(255, 255, 255);
@@ -478,6 +477,11 @@ function Map() {
 
             self.listMenu = document.createElement("div")
             self.listMenu.id = "listMenu"
+            self.listMenu.addEventListener("click", function(e) {
+                if (e.target == self.listMenu) {
+                    self.listBody.scrollTo(0, 0)
+                }
+            })
             self.listPanel.appendChild(self.listMenu)
 
             self.listSortElement = document.createElement("select")
@@ -503,6 +507,11 @@ function Map() {
             self.listStatus = document.createElement("div")
             self.listStatus.id = "listStatus"
             self.listStatus.innerHTML = self.landmarks.length + " Landmarks".toUpperCase()
+            self.listStatus.addEventListener("click", function(e) {
+                if (e.target == self.listStatus) {
+                    self.listBody.scrollTo(0, self.landmarks.length * 32)
+                }
+            })
             self.listPanel.appendChild(self.listStatus)
 
             self.renderList()
