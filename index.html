@@ -514,7 +514,10 @@ function Map() {
             self.findElement.spellcheck = false
             self.findElement.addEventListener("change", function(e) {
                 self.findElement.blur()
-                self.findLandmarks(self.findElement.value)
+                setTimeout(function() {
+                    // allow for clear button
+                    self.findLandmarks(self.findElement.value)
+                })
             })
             self.findElement.addEventListener("input", function(e) {
                 self.clearButton.style.display = self.findElement.value ? "block" : "none"
@@ -524,7 +527,7 @@ function Map() {
             self.clearButton = document.createElement("div")
             self.clearButton.id = "clearButton"
             self.clearButton.innerHTML = "CLEAR"
-            self.clearButton.addEventListener("click", function() {
+            self.clearButton.addEventListener("mousedown", function() {
                 self.findElement.value = ""
                 self.findLandmarks("")
                 self.clearButton.style.display = "none"
