@@ -1,6 +1,6 @@
 # gta6map
 
-This is a speculative map of Grand Theft Auto VI, including all landmarks that have been identified so far.
+This is an interactive map of Grand Theft Auto VI, including all landmarks that have been identified so far.
 
 You can see the map here: https://rolux.github.io/gta6map
 
