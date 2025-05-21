@@ -380,5 +380,11 @@
     ["x43", "?, Tequesta Key", [-210,-997], "501 Brickell Key Dr, Miami, FL 33131", [25.7664007,-80.1869436], "", "9c0b30"],
     ["x44", "?, Tequesta Key", [-237,-1191], "Mandarin Oriental, 500 Brickell Key Dr, Miami, FL 33131", [25.7649907,-80.1875952], "", "23b2de"],
     ["x45", "?, Tequesta Key", [-117,-1204], "Isola, 770 Claughton Island Dr, Miami, FL 33131", [25.7661851,-80.1868879], "", "9ba9bb"],
-    ["x46", "?, Tequesta Key", [-188,-1292], "St. Louis Condominium, 800 Claughton Island Dr, Miami, FL 33131", [25.7653012,-80.1884998], "", "4bcb6c"]
+    ["x46", "?, Tequesta Key", [-188,-1292], "St. Louis Condominium, 800 Claughton Island Dr, Miami, FL 33131", [25.7653012,-80.1884998], "", "4bcb6c"],
+    ["x50", "?, Watson Bay", [-4649,-4111], "310 Dock St, Cedar Key, FL 32625", [29.135294,-83.0324173], "", "d1979e"],
+    ["x51", "?, Watson Bay", [-4625,-4134], "Big Deck Bar & Grill, 331 Dock St, Cedar Key, FL 32625", [29.1352627,-83.0327861], "", "062941"],
+    ["x52", "?, Watson Bay", [-4594,-4169], "The Tipsy Cow Bar & Grill, 360 Dock St, Cedar Key, FL 32625", [29.1349866,-83.03267], "", "0a2409"],
+    ["x53", "?, Watson Bay", [-4528,-4269], "451 Dock St, Cedar Key, FL 32625", [29.1348143,-83.0333748], "", "a5bfde"],
+    ["x54", "?, Watson Bay", [-4518,-4037], "373 2nd St, Cedar Key, FL 32625", [29.1371984,-83.0338359], "", "12d358"],
+    ["x55", "?, Watson Bay", [-4451,-4157], "Cedar Key Fire Chief, 489 1st St, Cedar Key, FL 32625", [29.1360884,-83.0344062], "", "526c46"]
 ]
