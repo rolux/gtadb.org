@@ -891,6 +891,13 @@ function Map() {
                     : '<a href="https://google.com/maps/search/'
                     + encodeURIComponent(landmark.irlAddress)
                     + '" target="_blank">' + landmark.irlCoordinates.join(",") + "</a>"
+            if (landmark.id == "b315") {
+                self.itemIgPhoto.innerHTML = '<img src="photos/b315,ig.jpg" width="256" height="144"/>'
+                self.itemIrlPhoto.innerHTML = '<img src="photos/b315,irl.jpg" width="256" height="144"/>'
+            } else {
+                self.itemIgPhoto.innerHTML = ""
+                self.itemIrlPhoto.innerHTML = ""
+            }
             self.itemPanel.style.display = "block"
         } else {
             self.itemPanel.style.display = "none"
