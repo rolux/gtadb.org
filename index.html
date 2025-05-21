@@ -656,27 +656,27 @@ function Map() {
                     return
                 }
                 if (e.key == "ArrowDown") {
-                    const index = self.landmarkIndexById[self.l]
-                    if (index < self.landmarks.length - 1) {
-                        self.selectLandmark(self.landmarks[index + 1].id)
+                    const index = self.currentLandmarkIndexById[self.l]
+                    if (index < self.currentLandmarks.length - 1) {
+                        self.selectLandmark(self.currentLandmarks[index + 1].id)
                         self.panToLandmark()
                     }
                 } else if (e.key == "ArrowLeft") {
-                    const index = self.landmarkIndexById[self.l]
+                    const index = self.currentLandmarkIndexById[self.l]
                     if (index > 0) {
-                        self.selectLandmark(self.landmarks[0].id)
+                        self.selectLandmark(self.currentLandmarks[0].id)
                         self.panToLandmark()
                     }
                 } else if (e.key == "ArrowRight") {
-                    const index = self.landmarkIndexById[self.l]
-                    if (index < self.landmarks.length - 1) {
-                        self.selectLandmark(self.landmarks[self.landmarks.length - 1].id)
+                    const index = self.currentLandmarkIndexById[self.l]
+                    if (index < self.currentLandmarks.length - 1) {
+                        self.selectLandmark(self.currentLandmarks[self.currentLandmarks.length - 1].id)
                         self.panToLandmark()
                     }
                 } else if (e.key == "ArrowUp") {
-                    const index = self.landmarkIndexById[self.l]
+                    const index = self.currentLandmarkIndexById[self.l]
                     if (index > 0) {
-                        self.selectLandmark(self.landmarks[index - 1].id)
+                        self.selectLandmark(self.currentLandmarks[index - 1].id)
                         self.panToLandmark()
                     }
                 } else if (e.key == "Escape") {
@@ -745,7 +745,9 @@ function Map() {
                 return landmark.igAddressLower.includes(query)
                         || landmark.irlAddressLower.includes(query)
             })
-            if (self.l && !self.currentLandmarks.includes(self.l)) {
+            if (self.l && !self.currentLandmarks.map(function(landmark) {
+                return landmark.id
+            }).includes(self.l)) {
                 self.l = null
             }
             self.clearMarkers()
@@ -753,8 +755,10 @@ function Map() {
         else {
             self.currentLandmarks = self.landmarks.slice()
         }
-        self.renderMarkers()    
+        self.renderMarkers()
+        self.sortLandmarks(self.landmarksSort) // update indexById 
         self.renderList()
+        self.selectLandmark(self.l) // scroll into view
         self.renderStatus()
         self.renderItem()
     }
@@ -1212,7 +1216,7 @@ function Map() {
 
     self.sortLandmarks = function(option) {
         self.landmarksSort = option
-        self.landmarks.sort(function(a, b) {
+        self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.landmarksSort == "igAddress") {
                     return self.getSortString(v.igAddress) + ", " + self.getSortString(v.irlAddress)
@@ -1234,7 +1238,7 @@ function Map() {
             })
             return sortValues[0] < sortValues[1] ? -1 : sortValues[0] > sortValues[1] ? 1 : 0
         })
-        self.landmarkIndexById = self.landmarks.reduce(function(a, v, i) {
+        self.currentLandmarkIndexById = self.currentLandmarks.reduce(function(a, v, i) {
             a[v.id] = i
             return a
         }, {})
