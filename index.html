@@ -165,10 +165,23 @@
             #listPanel {
                 left: 0;
             }
+            #listMenu {
+                border-bottom: 1px solid rgb(192, 192, 192);
+                height: 31px;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 256px
+            }
+            #listMenu select {
+                left: 4px;
+                position: absolute;
+                top: 6px;
+            }
             #listPanel .item {
+                border-left: 8px solid transparent;
                 cursor: pointer;
                 height: 32px;
-                position: absolute;
                 width: 256px;
             }
             #listPanel .item.selected {
@@ -176,15 +189,8 @@
             }
             #listPanel .item div {
                 overflow-x: hidden;
-                position: absolute;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-            }
-            #listPanel .item .color {
-                height: 32px;
-                left: 0;
-                top: 0;
-                width: 8px;
             }
             #listPanel .item .ig {
                 font-size: 11px;
@@ -202,19 +208,6 @@
                 left: 8px;
                 padding: 1px 8px 2px 8px;
                 width: 232px;
-            }
-            #listMenu {
-                border-bottom: 1px solid rgb(192, 192, 192);
-                height: 31px;
-                left: 0;
-                position: absolute;
-                top: 0;
-                width: 256px
-            }
-            #listMenu select {
-                left: 4px;
-                position: absolute;
-                top: 6px;
             }
             #listBody {
                 bottom: 32px;
@@ -240,22 +233,32 @@
             }
             #itemPanel > div {
                 float: left;
-                margin: 2px 8px;
-                width: 240px;
+                height: fit-content;
+                width: 232px;
             }
-            #itemPanel > div.name {
-                font-size: 15px;
-                font-weight: bold;
-                margin-top: 8px;
-            }
-            #itemPanel > div.coordinates {
-                font-size: 11px;
+            #itemIg, #itemIrl {
+                border-right: 8px solid transparent;
+                height: fit-content;
+                padding: 8px;
             }
             #itemPanel > div.photo {
                 background-color: rgba(0, 0, 0, 0.25);
                 height: 144px;
-                margin: 2px 0;
                 width: 256px;
+            }
+            #itemPanel > div > div {
+                float: left;
+                margin: 2px 2px;
+                width: 200px;
+            }
+            #itemPanel > div > div.name {
+                font-size: 15px;
+                font-weight: bold;
+                margin-top: 0;
+            }
+            #itemPanel > div > div.coordinates {
+                font-size: 11px;
+                margin-bottom: 0;
             }
         </style>
     </head>
@@ -551,31 +554,39 @@ function Map() {
             self.itemPanel.className = "panel"
             self.itemPanel.id = "itemPanel"
 
+            self.itemIg = document.createElement("div")
+            self.itemIg.id = "itemIg"
+            self.itemPanel.appendChild(self.itemIg)
+
             self.itemIgName = document.createElement("div")
             self.itemIgName.className = "name"
-            self.itemPanel.appendChild(self.itemIgName)
+            self.itemIg.appendChild(self.itemIgName)
 
             self.itemIgAddress = document.createElement("div")
-            self.itemPanel.appendChild(self.itemIgAddress)
+            self.itemIg.appendChild(self.itemIgAddress)
 
             self.itemIgCoordinates = document.createElement("div")
             self.itemIgCoordinates.className = "coordinates"
-            self.itemPanel.appendChild(self.itemIgCoordinates)
+            self.itemIg.appendChild(self.itemIgCoordinates)
 
             self.itemIgPhoto = document.createElement("div")
             self.itemIgPhoto.className = "photo"
             self.itemPanel.appendChild(self.itemIgPhoto)
 
+            self.itemIrl = document.createElement("div")
+            self.itemIrl.id = "itemIrl"
+            self.itemPanel.appendChild(self.itemIrl)
+
             self.itemIrlName = document.createElement("div")
             self.itemIrlName.className = "name"
-            self.itemPanel.appendChild(self.itemIrlName)
+            self.itemIrl.appendChild(self.itemIrlName)
 
             self.itemIrlAddress = document.createElement("div")
-            self.itemPanel.appendChild(self.itemIrlAddress)
+            self.itemIrl.appendChild(self.itemIrlAddress)
 
             self.itemIrlCoordinates = document.createElement("div")
             self.itemIrlCoordinates.className = "coordinates"
-            self.itemPanel.appendChild(self.itemIrlCoordinates)
+            self.itemIrl.appendChild(self.itemIrlCoordinates)
 
             self.itemIrlPhoto = document.createElement("div")
             self.itemIrlPhoto.className = "photo"
@@ -867,11 +878,13 @@ function Map() {
     self.renderItem = function() {
         if (self.l) {
             landmark = self.landmarksById[self.l]
+            self.itemIg.style.borderRightColor = "#" + landmark.color
             self.itemIgName.innerHTML = landmark.igNameAndAddress[0]
             self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
             self.itemIgCoordinates.innerHTML = '<a href="#'
                     + landmark.igCoordinates.join(",") + ',5.000">'
                     + landmark.igCoordinates.join(",") + "</a>"
+            self.itemIrl.style.borderRightColor = "#" + landmark.color
             self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
             self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
             self.itemIrlCoordinates.innerHTML = landmark.irlCoordinates[0] == 0 ? "?"
@@ -930,18 +943,14 @@ function Map() {
 
     self.renderList = function() {
         self.listBody.innerHTML = ""
-        self.landmarks.forEach(function(landmark, i) {
+        self.landmarks.forEach(function(landmark) {
             const itemElement = document.createElement("div")
             itemElement.classList.add("item")
             if (landmark.id == self.l) {
                 itemElement.classList.add("selected")
             }
             itemElement.id = "item_" + landmark.id
-            itemElement.style.top = i * 32 + "px"
-            const colorElement = document.createElement("div")
-            colorElement.classList.add("color")
-            colorElement.style.backgroundColor = "#" + landmark.color
-            itemElement.appendChild(colorElement)
+            itemElement.style.borderLeftColor = "#" + landmark.color
             const igElement = document.createElement("div")
             igElement.className = "ig"
             igElement.innerHTML = self.landmarksSort.includes("Address") ? landmark.igAddress
