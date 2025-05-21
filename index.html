@@ -335,106 +335,6 @@ function Map() {
         focus: "map"
     }
 
-    /*
-    that.update = function(x, y, z) {
-        self.x = self.clamp(x, self.minX, self.maxX)
-        self.y = self.clamp(y, self.minY, self.maxY)
-        self.z = self.clamp(z, self.minZ, self.maxZ)
-        targetX = self.x
-        targetY = self.y
-        self.render()
-        return that
-    }
-    */
-
-    that.debug = function() {
-        console.log(self)
-    }
-
-    that.getLandmarkNameAndAddress = function(address) {
-        const parts = address.split(", ")
-        if ("0123456789".includes(address[0])) {
-            return [parts[0], address]
-        }
-        return [parts[0], parts.slice(1).join(", ")]
-    }
-
-    that.getLandmarkTitle = function(landmark) {
-        return landmark.igAddress.split(", ")[0] + "\n" + landmark.irlAddress.split(", ")[0]
-    }
-
-    self.animate = function(immediate=false) {
-        //console.log("animate", immediate)
-        if (!immediate) {
-            self.isAnimating = true
-        }
-        const dx = self.hashX - self.x
-        const dy = self.hashY - self.y
-        const dz = self.hashZ - self.z
-        if (!immediate && Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001 && Math.abs(dz) <= 0.001) {
-            self.x = self.hashX
-            self.y = self.hashY
-            self.z = self.hashZ
-            //console.log("STOP ANIMATION", "immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
-            self.isAnimating = false
-            self.setHashURL()
-            return
-        }
-        //console.log("immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
-        easeAmount = immediate ? 1 : self.easeAmount
-        self.x += easeAmount * dx
-        self.y += easeAmount * dy
-        self.z += easeAmount * dz
-        self.render()
-        if (!immediate) {
-            requestAnimationFrame(function() {self.animate()})
-        }
-    }
-
-    self.clamp = function(n, min, max) {
-        return Math.min(Math.max(n, min), max)
-    }
-
-    self.formatAddress = function(address) {
-        address = address || "?"
-        if (!"0123456789?".includes(address[0])) {
-            const parts = address.split(", ")
-            const comma = parts.length == 1 ? "" : ", "
-            return `<span style="font-weight: bold">${parts[0]}</span>${comma}${parts.slice(1).join(", ")}`
-        }
-        return address
-    }
-
-    self.formatCoordinates = function(coordinates) {
-        if (coordinates[0] == 0 && coordinates[1] == 0) {
-            return "?"
-        }
-        return coordinates.join(",")
-    }
-
-    self.getHash = function() {
-        return window.location.hash.slice(1).split(",").slice(0, 3).map(parseFloat)
-    }
-
-    self.getMppx = function(z=self.z) {
-        //console.log("getMppx", z==self.z)
-        return self.mapW / (self.tileSize * Math.pow(2, z))
-    }
-
-    self.getSortString = function(address) {
-        let parts = address.replace("?", "ZZZ").split(", ")
-        parts.forEach(function(part, p) {
-            let words = part.split(" ")
-            words.forEach(function(word, w) {
-                if (/^\d+$/.test(word)) {
-                    words[w] = "0".repeat(10 - word.length) + word
-                }
-            })
-            parts[p] = words.join(" ")
-        })
-        return parts.reverse().join(", ")
-    }
-
     self.init = function() {
 
         self.element = document.createElement("div")
@@ -491,8 +391,8 @@ function Map() {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
             })
             self.landmarks.forEach(function(landmark) {
-                landmark.igNameAndAddress = that.getLandmarkNameAndAddress(landmark.igAddress)
-                landmark.irlNameAndAddress = that.getLandmarkNameAndAddress(landmark.irlAddress)
+                landmark.igNameAndAddress = self.getLandmarkNameAndAddress(landmark.igAddress)
+                landmark.irlNameAndAddress = self.getLandmarkNameAndAddress(landmark.irlAddress)
                 landmark.title = that.getLandmarkTitle(landmark)
             })
             self.landmarksById = self.landmarks.reduce(function(a, v) {
@@ -654,6 +554,90 @@ function Map() {
 
         return that
 
+    }
+
+    self.animate = function(immediate=false) {
+        //console.log("animate", immediate)
+        if (!immediate) {
+            self.isAnimating = true
+        }
+        const dx = self.hashX - self.x
+        const dy = self.hashY - self.y
+        const dz = self.hashZ - self.z
+        if (!immediate && Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001 && Math.abs(dz) <= 0.001) {
+            self.x = self.hashX
+            self.y = self.hashY
+            self.z = self.hashZ
+            //console.log("STOP ANIMATION", "immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
+            self.isAnimating = false
+            self.setHashURL()
+            return
+        }
+        //console.log("immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
+        easeAmount = immediate ? 1 : self.easeAmount
+        self.x += easeAmount * dx
+        self.y += easeAmount * dy
+        self.z += easeAmount * dz
+        self.render()
+        if (!immediate) {
+            requestAnimationFrame(function() {self.animate()})
+        }
+    }
+
+    self.clamp = function(n, min, max) {
+        return Math.min(Math.max(n, min), max)
+    }
+
+    self.formatAddress = function(address) {
+        address = address || "?"
+        if (!"0123456789?".includes(address[0])) {
+            const parts = address.split(", ")
+            const comma = parts.length == 1 ? "" : ", "
+            return `<span style="font-weight: bold">${parts[0]}</span>${comma}${parts.slice(1).join(", ")}`
+        }
+        return address
+    }
+
+    self.formatCoordinates = function(coordinates) {
+        if (coordinates[0] == 0 && coordinates[1] == 0) {
+            return "?"
+        }
+        return coordinates.join(",")
+    }
+
+    self.getHash = function() {
+        return window.location.hash.slice(1).split(",").slice(0, 3).map(parseFloat)
+    }
+
+    self.getLandmarkNameAndAddress = function(address) {
+        const parts = address.split(", ")
+        if ("0123456789".includes(address[0])) {
+            return [parts[0], address]
+        }
+        return [parts[0], parts.slice(1).join(", ")]
+    }
+
+    self.getLandmarkTitle = function(landmark) {
+        return landmark.igAddress.split(", ")[0] + "\n" + landmark.irlAddress.split(", ")[0]
+    }
+
+    self.getMppx = function(z=self.z) {
+        //console.log("getMppx", z==self.z)
+        return self.mapW / (self.tileSize * Math.pow(2, z))
+    }
+
+    self.getSortString = function(address) {
+        let parts = address.replace("?", "ZZZ").split(", ")
+        parts.forEach(function(part, p) {
+            let words = part.split(" ")
+            words.forEach(function(word, w) {
+                if (/^\d+$/.test(word)) {
+                    words[w] = "0".repeat(10 - word.length) + word
+                }
+            })
+            parts[p] = words.join(" ")
+        })
+        return parts.reverse().join(", ")
     }
 
     self.loadJSON = async function(url) {
