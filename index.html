@@ -260,6 +260,60 @@
                 font-size: 11px;
                 margin-bottom: 0;
             }
+            #dialogLayer {
+                align-items: center;
+                background-color: rgba(0, 0, 0, 0.25);
+                bottom: 0;
+                display: none;
+                justify-content: center;
+                left: 0;
+                position: absolute;
+                right: 0;
+                top: 0;
+                z-index: 1001;
+            }
+            #photoDialog {
+                height: 608px;
+                width: 1024px;
+            }
+            #photoDialog .bar {
+                background-color: rgba(255, 255, 255, 0.75);
+                border-radius: 8px 8px 0 0;
+                height: 32px;
+                width: 1024px;
+            }
+            #photoDialog .bar .title {
+                float: left;
+                font-size: 13px;
+                font-weight: bold;
+                height: 16px;
+                margin: 8px 8px;
+                right: 0;
+                overflow-x: hidden;
+                top: 0;
+                width: 944px;
+            }
+            #photoDialog .bar .button {
+                cursor: pointer;
+                float: left;
+                font-size: 11px;
+                height: 14px;
+                margin: 9px 0;
+                right: 0;
+                text-align: center;
+                top: 0;
+                width: 64px;
+            }
+            #photoDialog .content {
+                height: 576px;
+                width: 1024px;
+            }
+            #photoDialog .content img {
+                height: 576px;
+                user-select: none;
+                width: 1024px;
+                border-radius: 0 0 8px 8px;
+            }
         </style>
     </head>
     <body>
@@ -393,7 +447,7 @@ function Map() {
             self.landmarks.forEach(function(landmark) {
                 landmark.igNameAndAddress = self.getLandmarkNameAndAddress(landmark.igAddress)
                 landmark.irlNameAndAddress = self.getLandmarkNameAndAddress(landmark.irlAddress)
-                landmark.title = that.getLandmarkTitle(landmark)
+                landmark.title = self.getLandmarkTitle(landmark)
             })
             self.landmarksById = self.landmarks.reduce(function(a, v) {
                 a[v.id] = v
@@ -453,6 +507,7 @@ function Map() {
             self.itemPanel = document.createElement("div")
             self.itemPanel.className = "panel"
             self.itemPanel.id = "itemPanel"
+            self.element.appendChild(self.itemPanel)
 
             self.itemIg = document.createElement("div")
             self.itemIg.id = "itemIg"
@@ -492,7 +547,33 @@ function Map() {
             self.itemIrlPhoto.className = "photo"
             self.itemPanel.appendChild(self.itemIrlPhoto)
 
-            self.element.appendChild(self.itemPanel)
+            self.dialogLayer = document.createElement("div")
+            self.dialogLayer.id = "dialogLayer"
+            self.element.appendChild(self.dialogLayer)
+
+            self.photoDialog = document.createElement("div")
+            self.photoDialog.id = "photoDialog"
+            self.dialogLayer.appendChild(self.photoDialog)
+
+            self.photoDialogBar = document.createElement("div")
+            self.photoDialogBar.className = "bar"
+            self.photoDialog.appendChild(self.photoDialogBar)
+
+            self.photoDialogTitle = document.createElement("div")
+            self.photoDialogTitle.className = "title"
+            self.photoDialogBar.appendChild(self.photoDialogTitle)
+
+            self.photoDialogButton = document.createElement("div")
+            self.photoDialogButton.className = "button"
+            self.photoDialogButton.innerHTML = "CLOSE"
+            self.photoDialogButton.addEventListener("click", function(e) {
+                self.closePhotoDialog()
+            })
+            self.photoDialogBar.appendChild(self.photoDialogButton)
+
+            self.photoDialogContent = document.createElement("div")
+            self.photoDialogContent.className = "content"
+            self.photoDialog.appendChild(self.photoDialogContent)
 
             document.addEventListener("keydown", function(e) {
                 if (self.focus != "list") {
@@ -549,7 +630,7 @@ function Map() {
             })
 
         }).catch(function(err) {
-            console.log("ERROR", err)
+            console.log("ERROR", err) // FIXME
         })
 
         return that
@@ -681,6 +762,9 @@ function Map() {
         const activeElement = document.activeElement
         if (activeElement.tagName == "INPUT") {
             return
+        }
+        if (self.focus == "dialog" && e.key == "Escape") {
+            self.closePhotoDialog()
         }
         if (self.focus != "map") {
             return
@@ -815,6 +899,24 @@ function Map() {
         }, 100)
     }
 
+    self.openPhotoDialog = function(landmark, source) {
+        const address = source == "ig" ? landmark.igAddress : landmark.irlAddress
+        let img = document.createElement("img")
+        img.src = `photos/${landmark.id},${source}.jpg`
+        img.style.width = "1024px"
+        img.style.height = "576px"
+        self.photoDialogTitle.innerHTML = self.getLandmarkNameAndAddress(address).join(", ")
+        self.photoDialogContent.innerHTML = ""
+        self.photoDialogContent.appendChild(img)
+        self.dialogLayer.style.display = "flex"
+        self.focus = "dialog"
+    }
+
+    self.closePhotoDialog = function() {
+        self.dialogLayer.style.display = "none"
+        self.focus = "item"
+    }
+
     self.panToLandmark = function() {
         const landmark = self.landmarksById[self.l]
         self.setHash(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
@@ -876,8 +978,24 @@ function Map() {
                     + encodeURIComponent(landmark.irlAddress)
                     + '" target="_blank">' + landmark.irlCoordinates.join(",") + "</a>"
             if (landmark.id == "b315") {
-                self.itemIgPhoto.innerHTML = '<img src="photos/b315,ig.jpg" width="256" height="144"/>'
-                self.itemIrlPhoto.innerHTML = '<img src="photos/b315,irl.jpg" width="256" height="144"/>'
+                let img = document.createElement("img")
+                img.src = "photos/b315,ig.jpg"
+                img.style.width = "256px"
+                img.style.height = "144px"
+                self.itemIgPhoto.appendChild(img)
+                self.itemIgPhoto.style.cursor = "pointer"
+                self.itemIgPhoto.addEventListener("click", function() {
+                    self.openPhotoDialog(landmark, "ig")
+                })
+                img = document.createElement("img")
+                img.src = "photos/b315,irl.jpg"
+                img.style.width = "256px"
+                img.style.height = "144px"
+                self.itemIrlPhoto.appendChild(img)
+                self.itemIrlPhoto.style.cursor = "pointer"
+                self.itemIrlPhoto.addEventListener("click", function() {
+                    self.openPhotoDialog(landmark, "irl")
+                })
             } else {
                 self.itemIgPhoto.innerHTML = ""
                 self.itemIrlPhoto.innerHTML = ""
@@ -1067,144 +1185,6 @@ function Map() {
                 markerElement.classList.add("no")
             }
         })
-    }
-
-    return self.init()
-
-}
-
-function Marker(options) {
-    let that = this
-    let self = {
-        options: options
-    }
-    self.init = function() {
-        self.map = self.options.map
-        that.element = document.createElement("div")
-        that.element.id = "marker_" + self.options.id
-        that.element.classList.add("marker", self.options.type)
-        that.element.title = self.options.title
-        return that
-    }
-    return self.init()
-}
-
-function Panel(options) {
-
-    let that = this
-    let self = {
-        inputs: {},
-        options: options,
-        width: 384
-    }
-
-    that.renderItem = function(id) {
-
-        self.element.innerHTML = ""
-
-        self.inputs["igName"] = document.createElement("input")
-        self.inputs["igName"].placeholder = "In-game name: unknown"
-        self.inputs["igName"].style.top = 100 + "px"
-
-        self.inputs["igAddress"] = document.createElement("input")
-        self.inputs["igAddress"].placeholder = "In-game address: unknown"
-        self.inputs["igAddress"].style.top = 132 + "px"
-
-        self.inputs["igCoordinates"] = document.createElement("input")
-        self.inputs["igCoordinates"].placeholder = "In-game coordinates: unknown"
-        self.inputs["igCoordinates"].style.top = 164 + "px"
-
-        self.inputs["irlName"] = document.createElement("input")
-        self.inputs["irlName"].placeholder = "Real-life name: unknown"
-        self.inputs["irlName"].style.top = 196 + "px"
-
-        self.inputs["irlAddress"] = document.createElement("input")
-        self.inputs["irlAddress"].placeholder = "Real-life address: unknown"
-        self.inputs["irlAddress"].style.top = 228 + "px"
-
-        self.inputs["irlCoordinates"] = document.createElement("input")
-        self.inputs["irlCoordinates"].placeholder = "Real-life coordinates: unknown"
-        self.inputs["irlCoordinates"].style.top = 260 + "px"
-
-        Object.values(self.inputs).forEach(function(input) {
-            input.type = "text"
-            input.style.left = 16 + "px"
-            input.style.width = self.width - 32 + "px"
-            input.style.height = 24 + "px"
-            input.addEventListener("keydown", function(e) {
-                if (e.key == "Enter") {
-                    e.preventDefault();
-                    this.blur()
-                }
-            })
-            self.element.appendChild(input)
-        })
-    }
-
-    that.renderList = function() {
-        self.element.innerHTML = ""
-        self.options.landmarks.forEach(function(landmark) {
-            const itemElement = document.createElement("div")
-            itemElement.classList.add("item")
-            itemElement.id = "item_" + landmark.id
-            const igElement = document.createElement("div")
-            igElement.className = "ig"
-            igElement.innerHTML = self.formatAddress(landmark.igAddress)
-            itemElement.appendChild(igElement)
-            const irlElement = document.createElement("div")
-            irlElement.className = "irl"
-            irlElement.innerHTML = self.formatAddress(landmark.irlAddress)
-            itemElement.appendChild(irlElement)
-            self.element.appendChild(itemElement)
-        })
-    }
-
-    that.update = function(data) {
-        console.log("UPDATE")
-        if (data === null) {
-            Object.values(self.inputs).forEach(function(input) {
-                input.value = ""
-            })
-        } else {
-            Object.entries(data).forEach(function([key, value]) {
-                //console.log("??", key, self.inputs)
-                if (self.inputs[key]) {
-                    console.log("OK")
-                    self.inputs[key].value = key.includes("Coordinates") ? `${value[0]},${value[1]}` : value
-                }
-            })
-        }
-    }
-
-    self.init = function() {
-        self.mapElement = document.getElementById("map")
-        self.element = document.createElement("div")
-        self.element.id = "panel"
-        self.mapElement.appendChild(self.element)
-
-
-        document.addEventListener("keydown", function(e) {
-            const activeElement = document.activeElement
-            if (activeElement.tagName == "INPUT") {
-                return
-            }
-            if (e.key == "l") {
-                self.toggle()
-            }
-        })
-        self.element.addEventListener("mousedown", function(e) {
-            if (e.target.parentElement.classList.contains("item")) {
-                const id = e.target.parentElement.id.replace("item_", "")
-                self.options.map.panToLandmark(id)
-            }
-        })
-
-        that.renderList()
-        return that
-    }
-
-    self.toggle = function() {
-        self.element.style.display = self.element.style.display == "none" ? "block" : "none"
     }
 
     return self.init()
