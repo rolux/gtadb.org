@@ -388,5 +388,9 @@
     ["x52", "?, Watson Bay", [-4594,-4169], "The Tipsy Cow Bar & Grill, 360 Dock St, Cedar Key, FL 32625", [29.1349866,-83.03267], "", "1a3419"],
     ["x53", "?, Watson Bay", [-4528,-4269], "451 Dock St, Cedar Key, FL 32625", [29.1348143,-83.0333748], "", "b5cfee"],
     ["x54", "?, Watson Bay", [-4518,-4037], "373 2nd St, Cedar Key, FL 32625", [29.1371984,-83.0338359], "", "22e368"],
-    ["x55", "?, Watson Bay", [-4451,-4157], "Cedar Key Fire Chief, 489 1st St, Cedar Key, FL 32625", [29.1360884,-83.0344062], "", "627c56"]
+    ["x55", "?, Watson Bay", [-4451,-4157], "Cedar Key Fire Chief, 489 1st St, Cedar Key, FL 32625", [29.1360884,-83.0344062], "", "627c56"],
+    ["x60", "Allied Crystal Sugar Mill, Ambrosia", [-3909,3399], "US Sugar Mill, Georgia Ave, Clewiston, FL 33440", [26.7375924,-80.9383973], "", "8f339d"],
+    ["x61", "USA Silo, Ambrosia", [-3806,3657], "1500 Sonora Ave, Clewiston, FL 33440, USA", [26.7391894,-80.9376947], "", "3fb817"],
+    ["x62", "Allied Crystal Tank, Ambrosia", [-3947,3564], "1500 Sonora Ave, Clewiston, FL 33440, USA", [26.7391894,-80.9376947], "", "3fb817"],
+    ["x63", "Water Tower, Ambrosia", [-4317,3179], "?", [0,0], "", "5a9b14"]
 ]
