@@ -420,6 +420,7 @@ function Map() {
         landmarksFilterOptions: {
             "all": "all",
             "identified": "identified",
+            "unconfirmed": "unconfirmed",
             "unidentified": "unidentified",
             "included": "on the map",
             "notIncluded": "not on the map"
@@ -802,6 +803,7 @@ function Map() {
             ) && (
                 self.landmarksFilter == "all" ||
                 self.landmarksFilter == "identified" && landmark.irlAddress[0] != "?" ||
+                self.landmarksFilter == "unconfirmed" && landmark.irlAddress.endsWith(" (?)") ||
                 self.landmarksFilter == "unidentified" && landmark.irlAddress[0] == "?" ||
                 self.landmarksFilter == "included" && landmark.id[0] == "b" ||
                 self.landmarksFilter == "notIncluded" && landmark.id[0] == "x"
