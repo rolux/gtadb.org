@@ -999,12 +999,11 @@ function Map() {
     }
 
     self.openPhotoDialog = function(landmark, source) {
-        const address = source == "ig" ? landmark.igAddress : landmark.irlAddress
         let img = document.createElement("img")
         img.src = `photos/${landmark.id},${source}.jpg`
         img.style.width = "1024px"
         img.style.height = "576px"
-        self.photoDialogTitle.innerHTML = self.getLandmarkNameAndAddress(address).join(", ")
+        self.photoDialogTitle.innerHTML = source == "ig" ? landmark.igAddress : landmark.irlAddress
         self.photoDialogContent.innerHTML = ""
         self.photoDialogContent.appendChild(img)
         self.dialogLayer.style.display = "flex"
