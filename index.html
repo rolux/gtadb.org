@@ -546,7 +546,7 @@ function Map() {
             self.clearButton.innerHTML = "CLEAR"
             self.clearButton.addEventListener("mousedown", function() {
                 self.findElement.value = ""
-                self.findLandmarks("")
+                self.findAndFilterLandmarks("", self.landmarksFilter)
                 self.clearButton.style.display = "none"
             })
             self.findBar.appendChild(self.clearButton)
