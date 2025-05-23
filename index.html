@@ -608,6 +608,9 @@ function Map() {
                 this.blur()
                 self.sortLandmarks(this.value)
                 self.renderList()
+                if (self.l) {
+                    self.selectLandmark(self.l)
+                }
             })
             self.sortBar.appendChild(self.sortElement)
 
