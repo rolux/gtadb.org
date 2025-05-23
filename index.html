@@ -190,7 +190,7 @@
                 top: 9px;
                 user-select: none;
             }
-            #sortBar {
+            #filterBar {
                 border-bottom: 1px solid rgb(192, 192, 192);
                 height: 31px;
                 left: 0;
@@ -198,7 +198,15 @@
                 top: 32px;
                 width: 256px
             }
-            #sortBar select {
+            #sortBar {
+                border-bottom: 1px solid rgb(192, 192, 192);
+                height: 31px;
+                left: 0;
+                position: absolute;
+                top: 64px;
+                width: 256px
+            }
+            #filterBar select, #sortBar select {
                 left: 8px;
                 position: absolute;
                 top: 6px;
@@ -208,7 +216,7 @@
                 left: 0;
                 overflow-y: scroll;
                 position: absolute;
-                top: 64px;
+                top: 96px;
                 width: 256px;
             }
             #listBody > .item {
@@ -393,7 +401,7 @@ function Map() {
         currentLandmarks: [],
         landmarkTypes: [
             "agriculture",
-            "commerce",
+            "commercial",
             "entertainment",
             "government",
             "hotel",
@@ -401,9 +409,18 @@ function Map() {
             "monument",
             "public",
             "natural",
-            "residence",
+            "residential",
             "transportation"
         ],
+        query: "",
+        landmarksFilter: "all",
+        landmarksFilterOptions: {
+            "all": "all",
+            "identified": "identified",
+            "unidentified": "unidentified",
+            "included": "included on map",
+            "notIncluded": "not included on map"
+        },
         landmarksSort: "igAddress",
         landmarksSortOptions: {
             igAddress: "in-game address",
@@ -412,8 +429,7 @@ function Map() {
             irlAddress: "real-life address",
             irlLatitude: "real-life latitude",
             irlLongitude: "real-life longitude",
-            type: "type",
-            status: "status"
+            type: "type"
         },
         markers: {},
         focus: "map"
@@ -470,8 +486,7 @@ function Map() {
                     "irlAddressLower": item[3].toLowerCase(),
                     "irlCoordinates": item[4],
                     "type": item[5] || "other",
-                    "color": item[6],
-                    "status": item[0][0] == "b" ? "included" : "not included"
+                    "color": item[6]
                 }
             }).filter(function(item) {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
@@ -518,7 +533,7 @@ function Map() {
                 self.findElement.blur()
                 setTimeout(function() {
                     // allow for clear button
-                    self.findLandmarks(self.findElement.value)
+                    self.findAndFilterLandmarks(self.findElement.value, self.landmarksFilter)
                 })
             })
             self.findElement.addEventListener("input", function(e) {
@@ -535,6 +550,25 @@ function Map() {
                 self.clearButton.style.display = "none"
             })
             self.findBar.appendChild(self.clearButton)
+
+            self.filterBar = document.createElement("div")
+            self.filterBar.id = "filterBar"
+            self.listPanel.appendChild(self.filterBar)
+
+            self.filterElement = document.createElement("select")
+            Object.entries(self.landmarksFilterOptions).forEach(function([key, value]) {
+                const element = document.createElement("option")
+                element.value = key
+                element.textContent = ("Filter: " + value).toUpperCase()
+                element.selected = key == self.landmarksFilter
+                self.filterElement.appendChild(element)
+            })
+            self.filterElement.addEventListener("change", function(e) {
+                this.blur()
+                self.findAndFilterLandmarks(self.query, this.value)
+                self.renderList()
+            })
+            self.filterBar.appendChild(self.filterElement)
 
             self.sortBar = document.createElement("div")
             self.sortBar.id = "sortBar"
@@ -734,7 +768,7 @@ function Map() {
         self.x += easeAmount * dx
         self.y += easeAmount * dy
         self.z += easeAmount * dz
-        self.render()
+        self.renderMap()
         if (!immediate) {
             requestAnimationFrame(function() {self.animate()})
         }
@@ -744,23 +778,27 @@ function Map() {
         return Math.min(Math.max(n, min), max)
     }
 
-    self.findLandmarks = function(query) {
-        if (query) {
-            self.query = query.toLowerCase()
-            self.currentLandmarks = self.landmarks.filter(function(landmark) {
-                return landmark.igAddressLower.includes(query)
-                        || landmark.irlAddressLower.includes(query)
-            })
-            if (self.l && !self.currentLandmarks.map(function(landmark) {
-                return landmark.id
-            }).includes(self.l)) {
-                self.l = null
-            }
-            self.clearMarkers()
+    self.findAndFilterLandmarks = function(query, filter) {
+        self.query = query.toLowerCase()
+        self.landmarksFilter = filter
+        self.currentLandmarks = self.landmarks.filter(function(landmark) {
+            return (
+                landmark.igAddressLower.includes(self.query) ||
+                landmark.irlAddressLower.includes(self.query)
+            ) && (
+                self.landmarksFilter == "all" ||
+                self.landmarksFilter == "identified" && landmark.irlAddress[0] != "?" ||
+                self.landmarksFilter == "unidentified" && landmark.irlAddress[0] == "?" ||
+                self.landmarksFilter == "included" && landmark.id[0] == "b" ||
+                self.landmarksFilter == "notIncluded" && landmark.id[0] == "x"
+            )
+        })
+        if (self.l && !self.currentLandmarks.map(function(landmark) {
+            return landmark.id
+        }).includes(self.l)) {
+            self.l = null
         }
-        else {
-            self.currentLandmarks = self.landmarks.slice()
-        }
+        self.clearMarkers()
         self.renderMarkers()
         self.sortLandmarks(self.landmarksSort) // update indexById 
         self.renderList()
@@ -972,7 +1010,7 @@ function Map() {
         canvas.style.width = window.innerWidth + "px"
         canvas.style.height = window.innerHeight + "px"
         if (render) {
-            self.render()
+            self.renderMap()
         }
     }
 
@@ -1018,45 +1056,6 @@ function Map() {
     self.panToLandmark = function() {
         const landmark = self.landmarksById[self.l]
         self.setHash(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
-    }
-
-    self.render = function() {
-
-        const zInt = Math.ceil(self.z)
-        const mapSize = self.tileSize * Math.pow(2, self.z)
-        const mppx = mapSize / self.mapW
-        const pxC = (self.x + self.zeroX) * mppx
-        const pyC = (self.zeroY - self.y) * mppx
-        const offX = self.canvas.width / 2 - pxC;
-        const offY = self.canvas.height / 2 - pyC;
-        const tilePx = self.tileSize * Math.pow(2, self.z - zInt);
-
-        const [[x0, y0], [x1, y1]] = self.tileRanges[zInt]
-        const minTx = self.clamp(Math.floor(-offX / tilePx), x0, x1)
-        const maxTx = self.clamp(Math.ceil((self.canvas.width - offX) / tilePx), x0, x1)
-        const minTy = self.clamp(Math.floor(-offY / tilePx), y0, y1)
-        const maxTy = self.clamp(Math.ceil((self.canvas.height - offY) / tilePx), y0, y1)
-
-        for (let y = minTy; y <= maxTy; y++) {
-            for (let x = minTx; x <= maxTx; x++) {
-                const img = self.tiles[zInt][y][x];
-                if (!img.src) {
-                    img.onload = self.render
-                    img.src = `tiles/${zInt}/${zInt},${y},${x}.png`;
-                }
-                if (img.naturalWidth) {
-                    self.context.drawImage(
-                        img,
-                        offX + x * tilePx,
-                        offY + y * tilePx,
-                        tilePx,
-                        tilePx
-                    )
-                }
-            }
-        }
-        self.renderMarkers()
-
     }
 
     self.renderItem = function() {
@@ -1131,6 +1130,45 @@ function Map() {
         })
     }
 
+    self.renderMap = function() {
+
+        const zInt = Math.ceil(self.z)
+        const mapSize = self.tileSize * Math.pow(2, self.z)
+        const mppx = mapSize / self.mapW
+        const pxC = (self.x + self.zeroX) * mppx
+        const pyC = (self.zeroY - self.y) * mppx
+        const offX = self.canvas.width / 2 - pxC;
+        const offY = self.canvas.height / 2 - pyC;
+        const tilePx = self.tileSize * Math.pow(2, self.z - zInt);
+
+        const [[x0, y0], [x1, y1]] = self.tileRanges[zInt]
+        const minTx = self.clamp(Math.floor(-offX / tilePx), x0, x1)
+        const maxTx = self.clamp(Math.ceil((self.canvas.width - offX) / tilePx), x0, x1)
+        const minTy = self.clamp(Math.floor(-offY / tilePx), y0, y1)
+        const maxTy = self.clamp(Math.ceil((self.canvas.height - offY) / tilePx), y0, y1)
+
+        for (let y = minTy; y <= maxTy; y++) {
+            for (let x = minTx; x <= maxTx; x++) {
+                const img = self.tiles[zInt][y][x];
+                if (!img.src) {
+                    img.onload = self.render
+                    img.src = `tiles/${zInt}/${zInt},${y},${x}.png`;
+                }
+                if (img.naturalWidth) {
+                    self.context.drawImage(
+                        img,
+                        offX + x * tilePx,
+                        offY + y * tilePx,
+                        tilePx,
+                        tilePx
+                    )
+                }
+            }
+        }
+        self.renderMarkers()
+
+    }
+
     self.clearMarkers = function() {
         self.landmarks.forEach(function(landmark) {
             if (!self.currentLandmarks.includes(landmark)) {
@@ -1186,7 +1224,7 @@ function Map() {
             element = document.querySelector("#item_" + self.l)
             if (element) {
                 element.classList.add("selected")
-                const top = 64, bottom = window.innerHeight - 64
+                const top = 96, bottom = window.innerHeight - 64
                 const y = element.getBoundingClientRect().y
                 if (y < top) {
                     self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
