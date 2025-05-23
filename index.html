@@ -422,6 +422,8 @@ function Map() {
             "identified": "identified",
             "unconfirmed": "unconfirmed",
             "unidentified": "unidentified",
+            "knownName": "known name",
+            "unknownName": "unknown name",
             "included": "on the map",
             "notIncluded": "not on the map"
         },
@@ -805,6 +807,8 @@ function Map() {
                 self.landmarksFilter == "identified" && landmark.irlAddress[0] != "?" ||
                 self.landmarksFilter == "unconfirmed" && landmark.irlAddress.endsWith(" (?)") ||
                 self.landmarksFilter == "unidentified" && landmark.irlAddress[0] == "?" ||
+                self.landmarksFilter == "knownName" && landmark.igAddress[0] != "?" ||
+                self.landmarksFilter == "unknownName" && landmark.igAddress[0] == "?" ||
                 self.landmarksFilter == "included" && landmark.id[0] == "b" ||
                 self.landmarksFilter == "notIncluded" && landmark.id[0] == "x"
             )
