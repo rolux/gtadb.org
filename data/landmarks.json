@@ -388,6 +388,7 @@
     ["x44", "?, Tequesta Key", [-237,-1191], "Mandarin Oriental, 500 Brickell Key Dr, Miami, FL 33131", [25.7649907,-80.1875952], "", "33c2ee"],
     ["x45", "?, Tequesta Key", [-117,-1204], "Isola, 770 Claughton Island Dr, Miami, FL 33131", [25.7661851,-80.1868879], "", "abb9cb"],
     ["x46", "?, Tequesta Key", [-188,-1292], "St. Louis Condominium, 800 Claughton Island Dr, Miami, FL 33131", [25.7653012,-80.1884998], "", "5bdb7c"],
+    ["x47", "?, Tequesta Key", [-71,-1140], "Brickell Key Two, 540 Brickell Key Dr, Miami, FL 33131", [25.767837,-80.184252], "", "72e19d"],
     ["x48", "?, Vice Beach", [2001,538], "Lummus Park, 1130 Ocean Dr, Miami Beach, FL 33139", [25.7809553,-80.1299479], "", "642612"],
     ["x49", "?, Hamlet", [-2622,-3466], "Losner Park, 104 N Krome Ave, Homestead, FL 33030", [25.470643,-80.4776684], "", "309318"],
     ["x50", "?, Watson Bay", [-4649,-4111], "310 Dock St, Cedar Key, FL 32625", [29.135294,-83.0324173], "", "e1a7ae"],
@@ -425,5 +426,12 @@
     ["x86", "?, Vice City International Airport", [0,0], "MIA Terminal E, 2100 NW 42nd Ave, Miami, FL 33142", [25.7951459,-80.2795092], "", "8fef79"],
     ["x87", "?, Vice City International Airport", [0,0], "MIA Fire Station, 2100 NW 42nd Ave, Miami, FL 33142", [25.797304,-80.2921999], "", "cd952a"],
     ["x88", "?, Vice City International Airport", [0,0], "MIA Radar Tower, 2100 NW 42nd Ave, Miami, FL 33142", [25.7978208,-80.2934284], "", "60c8ba"],
-    ["x89", "?, Vice Beach", [1811,1480], "Collins Park, 2100 Collins Ave, Miami Beach, FL 33140", [25.7971165,-80.1291596], "", "82a84a"]
+    ["x89", "?, Vice Beach", [1811,1480], "Collins Park, 2100 Collins Ave, Miami Beach, FL 33140", [25.7971165,-80.1291596], "", "82a84a"],
+    ["x90", "?, Vice City", [-905,-788], "Brickell Ave Drawbridge, 427-417 US-41, Miami, FL 33131", [25.7699315,-80.1899365], "", "ef9cc6"],
+    ["x91", "?, Grassrivers", [-6684,-1524], "Cape Romano Dome House, R8W9+4G, Marco Island, FL 34145", [25.8452614,-81.6811297], "", "e6a05a"],
+    ["x92", "Leaf Links Golf Club, Vice Beach", [533,2440], "Indian Creek Country Club, 55 Indian Creek Island Rd, Indian Creek, FL 33154", [25.8756644,-80.1412856], "", "95dd4e"],
+    ["x93", "Port Vice City Tunnel, Vice City", [276,502], "Port of Miami Tunnel, FL-887, Miami, FL 33132", [25.7810925,-80.1749289], "", "4d1b95"],
+    ["x94", "?, Vice-Dale County", [819,-1338], "Central District Wastewater Treatment Plant, Miami, FL 33149", [25.7450809,-80.1542008], "", "7d3415"],
+    ["x95", "?, Vice Beach", [1851,1084], "1644 Collins Ave, Miami Beach, FL 33139", [25.7905116,-80.1328148], "", "65ca1d"],
+    ["x96", "?, Vice Beach", [1835,1148], "1652 Collins Ave, Miami Beach, FL 33139", [25.7910322,-80.1326848], "", "bc7a46"]
 ]
