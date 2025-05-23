@@ -180,7 +180,18 @@
                 top: 7px;
                 width: 192px;
             }
-            #findBar #clearButton {
+            #filterBar {
+                border-bottom: 1px solid rgb(192, 192, 192);
+                height: 31px;
+                left: 0;
+                position: absolute;
+                top: 32px;
+                width: 256px
+            }
+            #filterBar select {
+                width: 192px
+            }
+            .clearButton {
                 cursor: pointer;
                 display: none;
                 font-size: 11px;
@@ -189,14 +200,6 @@
                 right: 8px;
                 top: 9px;
                 user-select: none;
-            }
-            #filterBar {
-                border-bottom: 1px solid rgb(192, 192, 192);
-                height: 31px;
-                left: 0;
-                position: absolute;
-                top: 32px;
-                width: 256px
             }
             #sortBar {
                 border-bottom: 1px solid rgb(192, 192, 192);
@@ -418,8 +421,8 @@ function Map() {
             "all": "all",
             "identified": "identified",
             "unidentified": "unidentified",
-            "included": "included on map",
-            "notIncluded": "not included on map"
+            "included": "on the map",
+            "notIncluded": "not on the map"
         },
         landmarksSort: "igAddress",
         landmarksSortOptions: {
@@ -537,19 +540,19 @@ function Map() {
                 })
             })
             self.findElement.addEventListener("input", function(e) {
-                self.clearButton.style.display = self.findElement.value ? "block" : "none"
+                self.clearFindButton.style.display = self.findElement.value ? "block" : "none"
             })
             self.findBar.appendChild(self.findElement)
 
-            self.clearButton = document.createElement("div")
-            self.clearButton.id = "clearButton"
-            self.clearButton.innerHTML = "CLEAR"
-            self.clearButton.addEventListener("mousedown", function() {
+            self.clearFindButton = document.createElement("div")
+            self.clearFindButton.className = "clearButton"
+            self.clearFindButton.innerHTML = "CLEAR"
+            self.clearFindButton.addEventListener("mousedown", function() {
                 self.findElement.value = ""
                 self.findAndFilterLandmarks("", self.landmarksFilter)
-                self.clearButton.style.display = "none"
+                self.clearFindButton.style.display = "none"
             })
-            self.findBar.appendChild(self.clearButton)
+            self.findBar.appendChild(self.clearFindButton)
 
             self.filterBar = document.createElement("div")
             self.filterBar.id = "filterBar"
@@ -565,10 +568,21 @@ function Map() {
             })
             self.filterElement.addEventListener("change", function(e) {
                 this.blur()
+                self.clearFilterButton.style.display = self.filterElement.value != "all" ? "block" : "none"
                 self.findAndFilterLandmarks(self.query, this.value)
                 self.renderList()
             })
             self.filterBar.appendChild(self.filterElement)
+
+            self.clearFilterButton = document.createElement("div")
+            self.clearFilterButton.className = "clearButton"
+            self.clearFilterButton.innerHTML = "CLEAR"
+            self.clearFilterButton.addEventListener("mousedown", function() {
+                self.filterElement.value = "all"
+                self.findAndFilterLandmarks(self.query, "all")
+                self.clearFilterButton.style.display = "none"
+            })
+            self.filterBar.appendChild(self.clearFilterButton)
 
             self.sortBar = document.createElement("div")
             self.sortBar.id = "sortBar"
