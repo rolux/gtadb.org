@@ -439,5 +439,11 @@
     ["x99", "?, Vice City", [1,378], "Skyviews Miami Observation Wheel, 401 Biscayne Blvd, Miami, FL 33132", [25.7770198,-80.1870939], "", "59728b"],
     ["x100", "?, Vice City", [-227,-423], "Port Miami Bridge, Port Blvd, Miami, FL 33132", [25.779865,-80.1856484], "", "6f62e9"],
     ["x101", "?, Vice City", [1,175], "Hard Rock Cafe, 401 Biscayne Blvd, Miami, FL 33132", [25.7775106,-80.1870359], "", "3a5041"],
-    ["x102", "Vice City Arts Center Metro Station, Vice City", [-598,729], "Adrienne Arsht Metromover Station, Miami, FL 33132", [25.789452,-80.1896223], "", "5edc9d"]
+    ["x102", "Vice City Arts Center Metro Station, Vice City", [-598,729], "Adrienne Arsht Metromover Station, Miami, FL 33132", [25.789452,-80.1896223], "", "5edc9d"],
+    ["x103", "?, Peacock Bay, Vice City", [-1646,-2593], "Park Grove Condominium, 2831 S Bayshore Dr, Coconut Grove, FL 33133", [25.7294045,-80.2387618], "residential", "844f4e"],
+    ["x104", "?, Peacock Bay, Vice City", [-1656,-2536], "Park Grove Condominium, 2831 S Bayshore Dr, Coconut Grove, FL 33133", [25.7294045,-80.2387618], "residential", "844f4e"],
+    ["x105", "?, Vice-Dale County", [-329,-3046], "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149 (?)", [25.6545537,-80.1744735], "", "afe85d"],
+    ["x106", "?, Leonard County", [-15,6323], "Peanut Island, Florida", [26.7732826,-80.0472053], "", "238c27"],
+    ["x107", "?, Leonard County", [906,5937], "Osborne Reef, 4W4P+X2, Fort Lauderdale, FL", [26.1074722,-80.0649444], "", "21aba5"],
+    ["x108", "Underwater Research Station, Leonida Keys", [-1999,-6666], "Aquarius Research Station, Key Largo, FL", [24.950119,-80.4535977], "", "aa6db5"]
 ]
