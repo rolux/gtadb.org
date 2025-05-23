@@ -95,7 +95,7 @@
     ["b94", "?, Vice Beach", [750,2062], "Donald L. Golden Family Medical Building, 4308 Alton Rd, Miami Beach, FL 33140", [25.8148808,-80.1405032], "", "76b32b"],
     ["b95", "?, Vice Beach", [966,2065], "Maribel G. Blum Pavilion, 4300 Alton Rd, Miami Beach, FL 33140", [25.8122449,-80.1396632], "", "e8a7a9"],
     ["b96", "?, Vice Beach", [1064,2070], "Polly & Baron DeHirsch Meyer Tower, 4300 Alton Rd, Miami, FL 33140", [25.8132842,-80.1398926], "", "4f8b31"],
-    ["b97", "?, Vice Beach", [0,0], "Parking Lot C", [0,0], "", "ed5d8e"],
+    ["b97", "?, Vice Beach", [1153,1975], "Mount Sinai Medical Center Main Parking Garage, 4300 Alton Rd, Miami Beach, FL 33140", [25.8142247,-80.1391222], "", "9c6439"],
     ["b98", "?, Vice Beach", [1273,1948], "Ascher Building, 4306 Alton Rd Fl 2, Miami Beach, FL 33140", [25.8153982,-80.1382667], "", "2acf5c"],
     ["b99", "?, Vice Beach", [999,1751], "Pelican Harbor Marina, 1275 NE 79th St, Miami, FL 33138", [25.849473,-80.1667227], "", "5d9452"],
     ["b100", "?, Vice Beach", [1442,1790], "Senator Law Center, 767 Arthur Godfrey Rd, Miami Beach, FL 33140", [25.8140309,-80.1323122], "", "5422ac"],
@@ -269,8 +269,8 @@
     ["b268", "Grey Building", [0,0], "", [0,0], "", "5a9b14"],
     ["b269", "Cell Tower", [0,0], "", [0,0], "", "5a9b14"],
     ["b270", "?, Leonida Keys", [-3004,-7257], "Sombrero Key Light, Overseas Hwy", [24.6264644,-81.1107892], "transport", "db35e9"],
-    ["b271", "", [0,0], "Long Key Viaduct", [0,0], "transport", "4a1195"],
-    ["b272", "", [0,0], "Seven Mile Bridge, Florida", [24.7023719,-81.1550476], "transport", "64be95"],
+    ["b271", "?, Leonida Keys", [-3676,-6984], "Old Seven Mile Bridge, Florida Keys Overseas Heritage Trail, Marathon, FL 33050", [24.7045724,-81.1540978], "transport", "2d7941"],
+    ["b272", "?, Leonida Keys", [-3694,-6956], "Seven Mile Bridge, Florida", [24.7023719,-81.1550476], "transport", "64be95"],
     ["b273", "Air Force Radar Station", [0,0], "", [0,0], "", "5a9b14"],
     ["b274", "Tethered Aerostat", [0,0], "", [0,0], "", "5a9b14"],
     ["b275", "?, Leonida Keys", [-5352,-6648], "US Coast Guard Station Islamorada, 183 Palermo Dr, Islamorada, FL 33036", [24.9536443,-80.5867418], "", "b1398e"],
@@ -419,5 +419,11 @@
     ["x80", "?, Vice City", [-1128,1171], "George's Tires and Repair, 501 NW 54th St, Miami, FL 33127", [0,0], "", "4356e8"],
     ["x81", "?, Port Vice City", [590,-326], "Cruise Terminal D, 1435 N Cruise Blvd, Miami, FL 33132", [25.7761722,-80.1700324], "", "eb7490"],
     ["x82", "?, Port Vice City", [123,-318], "Cruise Terminal G, 1103 N Cruise Blvd, Miami, FL 33132", [25.7800133,-80.1786194], "", "6a19c0"],
-    ["x83", "?, Vice-Dale County", [-11,1063], "West Venetian Causeway Bridge, North, Atlantic Ave, Miami, FL 33132", [25.7898791,-80.1813011], "", "9c8ac3"]
+    ["x83", "?, Vice-Dale County", [-11,1063], "West Venetian Causeway Bridge, North, Atlantic Ave, Miami, FL 33132", [25.7898791,-80.1813011], "", "9c8ac3"],
+    ["x84", "?, Leonida Keys", [-4823,-6774], "New Bahia Honda Bridge, Overseas Hwy, Big Pine Key, FL 33043", [24.6578069,-81.2892687], "", "91e8aa"],
+    ["x85", "?, Vice City International Airport", [-2245,-988], "MIA Terminal J, 2100 NW 20th St, Miami, FL 33126", [25.7925702,-80.2735609], "", "74b596"],
+    ["x86", "?, Vice City International Airport", [0,0], "MIA Terminal E, 2100 NW 42nd Ave, Miami, FL 33142", [25.7951459,-80.2795092], "", "8fef79"],
+    ["x87", "?, Vice City International Airport", [0,0], "MIA Fire Station, 2100 NW 42nd Ave, Miami, FL 33142", [25.797304,-80.2921999], "", "cd952a"],
+    ["x88", "?, Vice City International Airport", [0,0], "MIA Radar Tower, 2100 NW 42nd Ave, Miami, FL 33142", [25.7978208,-80.2934284], "", "60c8ba"],
+    ["x89", "?, Vice Beach", [1811,1480], "Collins Park, 2100 Collins Ave, Miami Beach, FL 33140", [25.7971165,-80.1291596], "", "82a84a"]
 ]
