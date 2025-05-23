@@ -213,7 +213,7 @@
     ["b212", "?, Vice City", [-1108,20], "St. John Bosco Catholic Church, 1349 W Flagler St, Miami, FL 33135", [25.7735778,-80.2173278], "public", "4eaf59"],
     ["b213", "?, Vice City", [-1388,-14], "Elite River View Apartments, 1750 NW 27th Ave, Miami, FL 33125", [25.7912042,-80.2400931], "residential", "1767a6"],
     ["b214", "?, Vice City", [-2207,109], "Hampton Inn Miami Airport, 3449 NW 42nd Ave, Miami, FL 33142", [25.8057017,-80.2631894], "hotel", "64b02c"],
-    ["b215", "?, Vice City", [0,0], "Hotel Miami Mama", [0,0], "hotel", "c09a5b"],
+    ["b215", "?, Vice City", [-2370,140], "La Quinta Inn Miami Airport, 3501 NW 42nd Ave, Miami, FL 33142", [25.8060372,-80.2622841], "hotel", "7bb533"],
     ["b216", "Autograph Hangar, Vice City", [-2535,-47], "Signature Aviation MIA, 5700 NW 36th St, Miami, FL 33122", [25.8064483,-80.2895791], "transport", "97c3c0"],
     ["b217", "?, Vice City", [-2220,5], "Red Roof Plus+ Miami Airport, 3401 NW Le Jeune Rd, Miami, FL 33142", [25.8051286,-80.2631683], "hotel", "d2a36d"],
     ["b218", "VCIA Metro Station, Vice City", [-1558,-246], "Miami International Airport Station, 3861 NW 21st St, Miami, FL 33142", [0,0], "transport", "49c6e5"],
@@ -457,5 +457,8 @@
     ["x112", "Vice City Sign", [-3708,-516], "Miami Sign, fictitious", [0,0], "", "69aa41"],
     ["x113", "?, Vice City", [-949,-708], "Hyatt Regency Miami, 400 S, 400 SE 2nd Ave, Miami, FL 33131", [25.7709263,-80.1910809], "", "802514"],
     ["x114", "?, Vice City", [-655,-873], "Icon Brickell, 475 Brickell Ave, Miami, FL 33131", [25.7683507,-80.1889775], "", "328a8e"],
-    ["x115", "?, Vice City", [-709,-998], "First Miami Presbyterian Church, 609 Brickell Ave, Miami, FL 33131", [25.767688,-80.1922389], "", "6e76a8"]
+    ["x115", "?, Vice City", [-709,-998], "First Miami Presbyterian Church, 609 Brickell Ave, Miami, FL 33131", [25.767688,-80.1922389], "", "6e76a8"],
+    ["x116", "?, Vice City", [-2238,203], "Embassy Suites Miami Airport, 3974 NW S River Dr, Miami, FL 33142", [25.8066574,-80.2615857], "", "89376c"],
+    ["x117", "?, Vice City", [-982,-848], "Neo Vertika Building, Neo Vertika, Miami, FL 33130", [25.7680994,-80.1985524], "", "b8e234"],
+    ["x118", "?, Vice City", [-611,-692], "One Miami Condominium, 325 S Biscayne Blvd, Miami, FL 33131", [25.7713767,-80.1889279], "", "15261e"]
 ]
