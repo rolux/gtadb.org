@@ -400,5 +400,8 @@
     ["x65", "?, Ambrosia", [-3975,3993], "602 E Sugarland Hwy, Clewiston, FL 33440", [26.7540678,-80.928104], "", "7db2db"],
     ["x66", "?, Ambrosia", [-3941,3962], "600 E Sugarland Hwy, Clewiston, FL 33440", [26.7539089,-80.928329], "", "db9c67"],
     ["x67", "Xero Gas Station, Ambrosia", [-3912,3946], "517 E Sugarland Hwy, Clewiston, FL 33440", [26.7545238,-80.9286785], "", "b5c82c"],
-    ["x68", "?, Ambrosia", [-3875,3901], "543 E Sugarland Hwy, Clewiston, FL 33440", [26.7546012,-80.9276267], "", "d43d79"]
+    ["x68", "?, Ambrosia", [-3875,3901], "543 E Sugarland Hwy, Clewiston, FL 33440", [26.7546012,-80.9276267], "", "d43d79"],
+    ["x69", "?, Vice City", [-950,1503], "9900 NW 27th Ave, Miami, FL 33147", [25.865022,-80.242678], "", "9cd4ba"],
+    ["x70", "?, Vice City", [-967,1515], "9920 NW 27th Ave, Miami, FL 33147", [25.8651473,-80.2426958], "", "1632db"],
+    ["x71", "?, Vice City", [-927,1485], "7820 N Miami Ave, Miami, FL 33150", [25.846624,-80.19989], "", "1ee157"]
 ]
