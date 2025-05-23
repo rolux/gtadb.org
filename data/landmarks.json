@@ -184,7 +184,7 @@
     ["b183", "?, Vice City", [-419,976], "Bay Parc Apartments, 1756 N Bayshore Dr, Miami, FL 33132", [25.7929827,-80.1868713], "residential", "52936c"],
     ["b184", "?, Vice City", [-440,920], "Opera Tower, 1750 N Bayshore Dr, Miami, FL 33132", [25.7923092,-80.1870981], "residential", "8aa4b0"],
     ["b185", "The Sumerian, Vice City", [-353,847], "Marriott Miami Biscayne Bay, 255 Biscayne Blvd Way, Miami, FL 33131", [25.771089,-80.1894477], "hotel", "24db77"],
-    ["b186", "?, Vice City", [-390,729], "Adrienne Arsht Center, 1300 Biscayne Blvd, Miami, FL 33132", [25.7876284,-80.1899025], "entertainment", "3151dc"],
+    ["b186", "Vice City Arts Center, Vice City", [-533,735], "Adrienne Arsht Center, 1300 Biscayne Blvd, Miami, FL 33132", [25.7876284,-80.1899025], "entertainment", "3151dc"],
     ["b187", "Sahara Arena, Vice City", [-365,485], "Kaseya Center, 601 Biscayne Blvd, Miami, FL 33132", [25.7814014,-80.186969], "entertainment", "2825c0"],
     ["b188", "?, Vice City", [-556,541], "Marquis Miami, 1100 Biscayne Blvd, Miami, FL 33132", [25.7849792,-80.1903144], "hotel", "7064e6"],
     ["b189", "?, Vice City", [-563,400], "Marina Blue, 888 Biscayne Blvd, Miami, FL 33132", [25.7825799,-80.190407], "residential", "6a9c73"],
@@ -433,5 +433,11 @@
     ["x93", "Port Vice City Tunnel, Vice City", [276,502], "Port of Miami Tunnel, FL-887, Miami, FL 33132", [25.7810925,-80.1749289], "", "4d1b95"],
     ["x94", "?, Vice-Dale County", [819,-1338], "Central District Wastewater Treatment Plant, Miami, FL 33149", [25.7450809,-80.1542008], "", "7d3415"],
     ["x95", "?, Vice Beach", [1851,1084], "1644 Collins Ave, Miami Beach, FL 33139", [25.7905116,-80.1328148], "", "65ca1d"],
-    ["x96", "?, Vice Beach", [1835,1148], "1652 Collins Ave, Miami Beach, FL 33139", [25.7910322,-80.1326848], "", "bc7a46"]
+    ["x96", "?, Vice Beach", [1835,1148], "1652 Collins Ave, Miami Beach, FL 33139", [25.7910322,-80.1326848], "", "bc7a46"],
+    ["x97", "?, Vice City", [-390,729], "Knight Concert Hall, 1300 Biscayne Blvd, Miami, FL 33132", [25.7875587,-80.1911252], "", "c37a63"],
+    ["x98", "Palaestra Tower, Vice City", [-465,686], "Sears Tower, 1300 US-1, Miami, FL 33132", [25.7873551,-80.1914294], "", "63d249"],
+    ["x99", "?, Vice City", [1,378], "Skyviews Miami Observation Wheel, 401 Biscayne Blvd, Miami, FL 33132", [25.7770198,-80.1870939], "", "59728b"],
+    ["x100", "?, Vice City", [-227,-423], "Port Miami Bridge, Port Blvd, Miami, FL 33132", [25.779865,-80.1856484], "", "6f62e9"],
+    ["x101", "?, Vice City", [1,175], "Hard Rock Cafe, 401 Biscayne Blvd, Miami, FL 33132", [25.7775106,-80.1870359], "", "3a5041"],
+    ["x102", "Vice City Arts Center Metro Station, Vice City", [-598,729], "Adrienne Arsht Metromover Station, Miami, FL 33132", [25.789452,-80.1896223], "", "5edc9d"]
 ]
