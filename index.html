@@ -1151,17 +1151,17 @@ function Map() {
         const zInt = Math.ceil(self.z)
         const mapSize = self.tileSize * Math.pow(2, self.z)
         const mppx = mapSize / self.mapW
-        const pxC = (self.x + self.zeroX) * mppx
-        const pyC = (self.zeroY - self.y) * mppx
-        const offX = self.canvas.width / 2 - pxC;
-        const offY = self.canvas.height / 2 - pyC;
-        const tilePx = self.tileSize * Math.pow(2, self.z - zInt);
+        const cX = (self.x + self.zeroX) * mppx
+        const cY = (self.zeroY - self.y) * mppx
+        const offsetX = self.canvas.width / 2 - cX;
+        const offsetY = self.canvas.height / 2 - cY;
+        const tileSize = self.tileSize * Math.pow(2, self.z - zInt);
 
         const [[x0, y0], [x1, y1]] = self.tileRanges[zInt]
-        const minTx = self.clamp(Math.floor(-offX / tilePx), x0, x1)
-        const maxTx = self.clamp(Math.ceil((self.canvas.width - offX) / tilePx), x0, x1)
-        const minTy = self.clamp(Math.floor(-offY / tilePx), y0, y1)
-        const maxTy = self.clamp(Math.ceil((self.canvas.height - offY) / tilePx), y0, y1)
+        const minTx = self.clamp(Math.floor(-offsetX / tileSize), x0, x1)
+        const maxTx = self.clamp(Math.ceil((self.canvas.width - offsetX) / tileSize), x0, x1)
+        const minTy = self.clamp(Math.floor(-offsetY / tileSize), y0, y1)
+        const maxTy = self.clamp(Math.ceil((self.canvas.height - offsetY) / tileSize), y0, y1)
 
         for (let y = minTy; y <= maxTy; y++) {
             for (let x = minTx; x <= maxTx; x++) {
@@ -1173,10 +1173,10 @@ function Map() {
                 if (img.naturalWidth) {
                     self.context.drawImage(
                         img,
-                        offX + x * tilePx,
-                        offY + y * tilePx,
-                        tilePx,
-                        tilePx
+                        offsetX + x * tileSize,
+                        offsetY + y * tileSize,
+                        tileSize,
+                        tileSize
                     )
                 }
             }
