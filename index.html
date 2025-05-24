@@ -1,7 +1,7 @@
 <!DOCTYPE html>
     <html lang="en">
     <head>
-        <title>GTA VI Landmarks</title>
+        <title>GTA VI Landmarks Map</title>
         <meta charset="utf-8"/>
         <link rel="icon" href="gta6map.png"/>
         <style>
@@ -191,15 +191,17 @@
             #filterBar select {
                 width: 192px
             }
-            .clearButton {
+            .clearButton, .closeButton {
                 cursor: pointer;
-                display: none;
                 font-size: 11px;
                 height: 12px;
                 position: absolute;
                 right: 8px;
                 top: 9px;
                 user-select: none;
+            }
+            .clearButton {
+                display: none;
             }
             #sortBar {
                 border-bottom: 1px solid rgb(192, 192, 192);
@@ -267,7 +269,29 @@
                 font-size: 13px;
                 right: 0
             }
-            #itemPanel > div {
+            #itemBar {
+                border-bottom: 1px solid rgb(192, 192, 192);
+                height: 31px;
+                right: 0;
+                position: absolute;
+                top: 0;
+                width: 256px
+            }
+            #itemId {
+                font-size: 13px;
+                left: 10px;
+                position: absolute;
+                top: 8px;
+            }
+            #itemBody {
+                bottom: 0;
+                left: 0;
+                overflow-y: scroll;
+                position: absolute;
+                top: 32px;
+                width: 256px;
+            }
+            #itemBody > div {
                 float: left;
                 height: fit-content;
                 width: 232px;
@@ -277,25 +301,25 @@
                 height: fit-content;
                 padding: 8px;
             }
-            #itemPanel > div.photo {
+            #itemBody > div.photo {
                 background-color: rgba(0, 0, 0, 0.25);
                 height: 144px;
                 width: 256px;
             }
-            #itemPanel > div.photo > img {
+            #itemBody > div.photo > img {
                 cursor: pointer;
             }
-            #itemPanel > div > div {
+            #itemBody > div > div {
                 float: left;
                 margin: 2px 2px;
                 width: 200px;
             }
-            #itemPanel > div > div.name {
+            #itemBody > div > div.name {
                 font-size: 15px;
                 font-weight: bold;
                 margin-top: 0;
             }
-            #itemPanel > div > div.coordinates {
+            #itemBody > div > div.coordinates {
                 font-size: 11px;
                 margin-bottom: 0;
             }
@@ -635,9 +659,29 @@ function Map() {
             self.itemPanel.id = "itemPanel"
             self.element.appendChild(self.itemPanel)
 
+            self.itemBar = document.createElement("div")
+            self.itemBar.id = "itemBar"
+            self.itemPanel.appendChild(self.itemBar)
+
+            self.itemId = document.createElement("div")
+            self.itemId.id = "itemId"
+            self.itemBar.appendChild(self.itemId)
+
+            self.closeItemButton = document.createElement("div")
+            self.closeItemButton.className = "closeButton"
+            self.closeItemButton.innerHTML = "CLOSE"
+            self.closeItemButton.addEventListener("mousedown", function() {
+                self.selectLandmark(null)
+            })
+            self.itemBar.appendChild(self.closeItemButton)
+
+            self.itemBody = document.createElement("div")
+            self.itemBody.id = "itemBody"
+            self.itemPanel.appendChild(self.itemBody)
+
             self.itemIg = document.createElement("div")
             self.itemIg.id = "itemIg"
-            self.itemPanel.appendChild(self.itemIg)
+            self.itemBody.appendChild(self.itemIg)
 
             self.itemIgName = document.createElement("div")
             self.itemIgName.className = "name"
@@ -652,11 +696,11 @@ function Map() {
 
             self.itemIgPhoto = document.createElement("div")
             self.itemIgPhoto.className = "photo"
-            self.itemPanel.appendChild(self.itemIgPhoto)
+            self.itemBody.appendChild(self.itemIgPhoto)
 
             self.itemIrl = document.createElement("div")
             self.itemIrl.id = "itemIrl"
-            self.itemPanel.appendChild(self.itemIrl)
+            self.itemBody.appendChild(self.itemIrl)
 
             self.itemIrlName = document.createElement("div")
             self.itemIrlName.className = "name"
@@ -671,7 +715,7 @@ function Map() {
 
             self.itemIrlPhoto = document.createElement("div")
             self.itemIrlPhoto.className = "photo"
-            self.itemPanel.appendChild(self.itemIrlPhoto)
+            self.itemBody.appendChild(self.itemIrlPhoto)
 
             self.dialogLayer = document.createElement("div")
             self.dialogLayer.id = "dialogLayer"
@@ -1084,6 +1128,7 @@ function Map() {
     self.renderItem = function() {
         if (self.l) {
             landmark = self.landmarksById[self.l]
+            self.itemId.innerHTML = landmark.id.toUpperCase()
             self.itemIg.style.borderRightColor = "#" + landmark.color
             self.itemIgName.innerHTML = landmark.igNameAndAddress[0]
             self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
