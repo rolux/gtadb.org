@@ -453,6 +453,7 @@ function Map() {
             "unidentified": "unidentified",
             "knownName": "known name",
             "unknownName": "unknown name",
+            "missingLatLng": "missing latlng",
             "included": "on the map",
             "notIncluded": "not on the map"
         },
@@ -867,6 +868,7 @@ function Map() {
                 self.landmarksFilter == "unidentified" && landmark.irlAddress[0] == "?" ||
                 self.landmarksFilter == "knownName" && landmark.igAddress[0] != "?" ||
                 self.landmarksFilter == "unknownName" && landmark.igAddress[0] == "?" ||
+                self.landmarksFilter == "missingLatLng" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates[0] == 0 ||
                 self.landmarksFilter == "included" && landmark.id[0] == "b" ||
                 self.landmarksFilter == "notIncluded" && landmark.id[0] == "x"
             )
