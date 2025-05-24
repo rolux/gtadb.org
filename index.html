@@ -312,7 +312,7 @@
             #itemBody > div > div {
                 float: left;
                 margin: 2px 2px;
-                width: 200px;
+                width: 224px;
             }
             #itemBody > div > div.name {
                 font-size: 15px;
@@ -322,6 +322,14 @@
             #itemBody > div > div.coordinates {
                 font-size: 11px;
                 margin-bottom: 0;
+            }
+            itemBody > div > div.coordinates > a,
+            #itemBody > div > div.coordinates > span {
+                cursor: pointer;
+            }
+            #itemBody > div > div.coordinates > a:hover,
+            #itemBody > div > div.coordinates > span:hover {
+                text-decoration: underline
             }
             #itemEdited {
                 float: left;
@@ -510,7 +518,6 @@ function Map() {
         self.markersLayer.addEventListener("wheel", self.onWheel, {passive: false})
 
         self.onResize(false)
-        self.onHashchange()
 
         self.loadJSON("data/landmarks.json").then(function(data) {
             self.landmarks = data.map(function(item) {
@@ -814,6 +821,8 @@ function Map() {
                 }
             })
 
+            self.onHashchange()
+
         }).catch(function(err) {
             console.log("ERROR", err) // FIXME
         })
@@ -905,11 +914,7 @@ function Map() {
     }
 
     self.formatDate = function(timestamp) {
-        return new Date(timestamp * 1000).toISOString().slice(0, -5).replace("T", " ")
-    }
-
-    self.getHash = function() {
-        return window.location.hash.slice(1).split(",").slice(0, 3).map(parseFloat)
+        return new Date(timestamp * 1000).toISOString().slice(0, -5).replace("T", " ") + " UTC"
     }
 
     self.getLandmarkNameAndAddress = function(address) {
@@ -958,13 +963,19 @@ function Map() {
     }
 
     self.onHashchange = function(e) {
-        let values = self.getHash()
-        if (values.length == 1) {
-            values = [self.defaultX, self.defaultY, values[0]]
-        } else if (values.length == 2) {
-            values = [values[0], values[1], self.defaultZ]
+        let hash = window.location.hash.slice(1)
+        let values
+        if (self.landmarksById[hash]) {
+            values = self.landmarksById[hash].igCoordinates.concat([5])
+        } else {
+            values = hash.split(",").slice(0, 3).map(parseFloat)
+            if (values.length == 1) {
+                values = [self.defaultX, self.defaultY, values[0]]
+            } else if (values.length == 2) {
+                values = [values[0], values[1], self.defaultZ]
+            }
         }
-        const hash = values.map(function(v, i) {
+        hash = values.map(function(v, i) {
             const defaultV = [self.defaultX, self.defaultY, self.defaultZ][i]
             const minV = [self.minX, self.minY, self.minZ][i]
             const maxV = [self.maxX, self.maxY, self.maxZ][i]
@@ -1145,21 +1156,32 @@ function Map() {
     self.renderItem = function() {
         if (self.l) {
             landmark = self.landmarksById[self.l]
-            self.itemId.innerHTML = landmark.id.toUpperCase()
+            let link = document.createElement("a")
+            link.href = "#" + landmark.id
+            link.innerHTML = landmark.id.toUpperCase()
+            self.itemId.appendChild(link)
             self.itemIg.style.borderRightColor = "#" + landmark.color
             self.itemIgName.innerHTML = landmark.igNameAndAddress[0]
             self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
-            self.itemIgCoordinates.innerHTML = '<a href="#'
-                    + landmark.igCoordinates.join(",") + ',5.000">'
-                    + landmark.igCoordinates.join(",") + "</a>"
+            link = document.createElement("span")
+            link.innerHTML = landmark.igCoordinates.join(",")
+            link.addEventListener("mousedown", function() {
+                self.setHash(
+                    landmark.igCoordinates[0],
+                    landmark.igCoordinates[1],
+                    self.z
+                )
+            })
+            self.itemIgCoordinates.appendChild(link)
             self.itemIrl.style.borderRightColor = "#" + landmark.color
             self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
             self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
-            self.itemIrlCoordinates.innerHTML = landmark.irlCoordinates[0] == 0 ? "?"
-                    : '<a href="https://google.com/maps/search/'
-                    + encodeURIComponent(landmark.irlAddress)
-                    + '" target="_blank">' + landmark.irlCoordinates.join(",") + "</a>"
-            self.itemEdited.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited) + " UTC"
+            link = document.createElement("a")
+            link.innerHTML = landmark.irlCoordinates.join(",")
+            link.href = "https://google.com/maps/search/" + encodeURIComponent(landmark.irlAddress)
+            link.target = "_blank"
+            self.itemIrlCoordinates.appendChild(link)
+            self.itemEdited.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited)
             if (landmark.id == "b315") {
                 self.itemIgPhoto.innerHTML = ""
                 let img = document.createElement("img")
