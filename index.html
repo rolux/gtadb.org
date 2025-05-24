@@ -323,6 +323,11 @@
                 font-size: 11px;
                 margin-bottom: 0;
             }
+            #itemEdited {
+                float: left;
+                font-size: 11px;
+                padding: 8px;
+            }
             #dialogLayer {
                 align-items: center;
                 background-color: rgba(0, 0, 0, 0.25);
@@ -459,7 +464,8 @@ function Map() {
             irlAddress: "real-life address",
             irlLatitude: "real-life latitude",
             irlLongitude: "real-life longitude",
-            type: "type"
+            type: "type",
+            edited: "last edited"
         },
         markers: {},
         focus: "map"
@@ -516,7 +522,8 @@ function Map() {
                     "irlAddressLower": item[3].toLowerCase(),
                     "irlCoordinates": item[4],
                     "type": item[5] || "other",
-                    "color": item[6]
+                    "color": item[6],
+                    "edited": item[7]
                 }
             }).filter(function(item) {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
@@ -717,6 +724,10 @@ function Map() {
             self.itemIrlPhoto.className = "photo"
             self.itemBody.appendChild(self.itemIrlPhoto)
 
+            self.itemEdited = document.createElement("div")
+            self.itemEdited.id = "itemEdited"
+            self.itemBody.appendChild(self.itemEdited)
+
             self.dialogLayer = document.createElement("div")
             self.dialogLayer.id = "dialogLayer"
             self.element.appendChild(self.dialogLayer)
@@ -889,6 +900,10 @@ function Map() {
             return "?"
         }
         return coordinates.join(",")
+    }
+
+    self.formatDate = function(timestamp) {
+        return new Date(timestamp * 1000).toISOString().slice(0, -5).replace("T", " ")
     }
 
     self.getHash = function() {
@@ -1142,6 +1157,7 @@ function Map() {
                     : '<a href="https://google.com/maps/search/'
                     + encodeURIComponent(landmark.irlAddress)
                     + '" target="_blank">' + landmark.irlCoordinates.join(",") + "</a>"
+            self.itemEdited.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited) + " UTC"
             if (landmark.id == "b315") {
                 self.itemIgPhoto.innerHTML = ""
                 let img = document.createElement("img")
@@ -1192,7 +1208,7 @@ function Map() {
                     : self.landmarksSort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates)
                     : self.landmarksSort.includes("irlL") ? self.formatCoordinates(landmark.irlCoordinates)
                     : self.landmarksSort == "type" ? landmark.type.toUpperCase()
-                    : landmark.status.toUpperCase()
+                    : self.formatDate(landmark.edited)
             itemElement.appendChild(irlElement)
             self.listBody.appendChild(itemElement)
         })
@@ -1347,8 +1363,8 @@ function Map() {
                     return v.irlCoordinates[1] || 1000
                 } else if (self.landmarksSort == "type") {
                     return [v.type].concat(v.igAddress.split(", ").reverse()).join(", ")   
-                } else if (self.landmarksSort == "status") {
-                    return [v.status].concat(v.igAddress.split(", ").reverse()).join(", ")   
+                } else if (self.landmarksSort == "edited") {
+                    return -v.edited
                 }
             })
             return sortValues[0] < sortValues[1] ? -1 : sortValues[0] > sortValues[1] ? 1 : 0
