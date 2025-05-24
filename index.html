@@ -1156,6 +1156,7 @@ function Map() {
     self.renderItem = function() {
         if (self.l) {
             landmark = self.landmarksById[self.l]
+            self.itemId.innerHTML = ""
             let link = document.createElement("a")
             link.href = "#" + landmark.id
             link.innerHTML = landmark.id.toUpperCase()
@@ -1163,6 +1164,7 @@ function Map() {
             self.itemIg.style.borderRightColor = "#" + landmark.color
             self.itemIgName.innerHTML = landmark.igNameAndAddress[0]
             self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
+            self.itemIgCoordinates.innerHTML = ""
             link = document.createElement("span")
             link.innerHTML = landmark.igCoordinates.join(",")
             link.addEventListener("mousedown", function() {
@@ -1176,6 +1178,7 @@ function Map() {
             self.itemIrl.style.borderRightColor = "#" + landmark.color
             self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
             self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
+            self.itemIrlCoordinates.innerHTML = ""
             link = document.createElement("a")
             link.innerHTML = landmark.irlCoordinates.join(",")
             link.href = "https://google.com/maps/search/" + encodeURIComponent(landmark.irlAddress)
