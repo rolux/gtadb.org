@@ -963,6 +963,39 @@ function Map() {
     }
 
     self.onHashchange = function(e) {
+        /*
+        THIS WOULD BE THE LOGIC FOR l IN URL
+        let values = window.location.hash.slice(1).split(",")
+        if (values.length > 4) {
+            values[3] = values.slice(3).join(",")
+        }
+        const last = values[values.length - 1]
+        let l, lx, ly, lz
+        if (self.landmarksById[last]) {
+            l = last
+            lx = self.landmarksById[last].igCoordinates[0]
+            ly = self.landmarksById[last].igCoordinates[1]
+            lz = 5
+        }
+        if (l || values.length == 4) {
+            values = values.slice(0, -1)
+        }
+        values = values.map(parseFloat)
+        if (values.length == 0) {
+            values = l ? [lx, ly, lz] : [self.defaultX, self.defaultY, self.defaultZ]
+        } else if (values.length == 1) {
+            values = l ? [lx, ly, values[0]] : [self.defaultX, self.defaultY, values[0]]
+        } else if (values.length == 2) {
+            values = [values[0], values[1], self.defaultZ]
+        }
+        const hash = values.map(function(v, i) {
+            const defaultV = [self.defaultX, self.defaultY, self.defaultZ][i]
+            const minV = [self.minX, self.minY, self.minZ][i]
+            const maxV = [self.maxX, self.maxY, self.maxZ][i]
+            v = isNaN(v) ? defaultV : self.clamp(v, minV, maxV)
+            return v.toFixed(3)
+        }).join(",") + (l ? "," + l : "")
+        */
         let hash = window.location.hash.slice(1)
         let values
         if (self.landmarksById[hash]) {
