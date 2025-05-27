@@ -507,5 +507,7 @@
     ["x162", "House D, Leonida Keys", [-2313,-5476], "?", [0,0], "", "3f7703", 1748327748],
     ["x163", "?, Peacock Bay, Vice City", [-1518,-2393], "Grove at Grand Bay Condominium, 2669 S Bayshore Dr, Miami, FL 33133", [25.730319,-80.2367699], "residential", "ad3438", 1748327991],
     ["x164", "?, Peacock Bay, Vice City", [-1591,-2376], "The Ritz-Carlton Coconut Grove, 3300 SW 27th Ave, Miami, FL 33133", [0,0], "hotel", "6ea293", 1748327991],
-    ["x165", "?, Vice-Dale County", [760,-1725], "Miami Marine Stadium, 3501 Rickenbacker Cswy, Miami, FL 33149", [25.7423381,-80.1734704], "", "998a57", 1748328226]
+    ["x165", "?, Vice-Dale County", [760,-1725], "Miami Marine Stadium, 3501 Rickenbacker Cswy, Miami, FL 33149", [25.7423381,-80.1734704], "", "998a57", 1748328226],
+    ["x166", "?, Leonida", [0,0], "The Pit Bar-B-Q, 16400 SW 8th St, Miami, FL 33194", [25.7605659,-80.4616077], "", "270f70", 1748329748],
+    ["x167", "Hoodwinks Bar, Vice City", [0,0], "378 NW 5th St, Miami, FL 33128", [25.7786629,-80.2036626], "", "50b418", 1748329748]
 ]
