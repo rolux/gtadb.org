@@ -169,7 +169,7 @@
     ["b168", "Construction Site, Vice City", [-75,2290], "112 NE 41st St, Miami, FL 33137", [25.813971,-80.193087], "", "948b4c", 1748079313],
     ["b169", "?, Vice City", [-260,2140], "City View Parking Garage, 3800 NE 1st Ave, Miami, FL 33137", [25.8118913,-80.1940545], "transport", "8b273b", 1748079313],
     ["b170", "?, Vice City", [-375,2136], "3800 NE Miami Ct, Miami, FL 33137", [25.8120038,-80.1948863], "", "8f3815", 1748079313],
-    ["b171", "?, Vice City", [-822,1427], "?", [0,0], "", "3f7703", 1748085930],
+    ["b171", "?, Vice City", [-822,1427], "191 NE 75th St, Miami, FL 33138", [25.8443576,-80.195838], "", "514b63", 1748323223],
     ["b172", "Jack of Hearts, Vice City", [-680,1220], "120 NE 19th Terrace, Miami, FL 33132", [25.795327,-80.1926936], "commercial", "5a7b1b", 1748079313],
     ["b173", "?, Vice City", [-632,1134], "New Arena Apartments, 301 NW 22nd St, Miami, FL 33127", [25.7979361,-80.200711], "residential", "005c61", 1748079313],
     ["b174", "?, Vice City", [-489,1399], "?", [0,0], "", "3f7703", 1748079313],
@@ -483,6 +483,9 @@
     ["x138", "?, Vice City", [-354,1779], "295 NW 26th St, Miami, FL 33127", [25.8016272,-80.2009531], "", "16847b", 1748087200],
     ["x139", "?, Vice City", [-439,1731], "426 NW 25th St, Miami, FL 33127", [25.800417,-80.2025643], "", "2f2a6f", 1748087200],
     ["x140", "?, Vice City", [-405,1814], "2601 NW 2nd Ave, Miami, FL 33127", [25.8015402,-80.1990044], "", "288997", 1748087200],
-    ["x141", "?, Vice City", [-553,1627], "Planta#8 Central Concrete Supermix, 2111 NW 1st Pl, Miami, FL 33127", [25.7974669,-80.1981181], "industrial", "6e9ca6", 1748087443],
-    ["x142", "?, Vice City", [-260,744], "Pérez Art Museum Miami, 1103 Biscayne Blvd, Miami, FL 33132", [25.7859307,-80.1861912], "entertainment", "242da9", 1748095958]
+    ["x141", "?, Vice City", [-553,1627], "Planta#8 Central Concrete Supermix, 2111 NW 1st Pl, Miami, FL 33127", [25.7974669,-80.1981181], "industrial", "6e9ca6", 1748323223],
+    ["x142", "?, Vice City", [-260,744], "Pérez Art Museum Miami, 1103 Biscayne Blvd, Miami, FL 33132", [25.7859307,-80.1861912], "entertainment", "242da9", 1748323223],
+    ["x143", "?, Vice City", [-1018,1405], "175 NE 79th St, Miami, FL 33138", [25.8479042,-80.1960259], "", "95193e", 1748323223],
+    ["x144", "?, Vice City", [-386,1810], "184 NW 26th St, Miami, FL 33127", [25.8479042,-80.1960259], "", "535049", 1748324070],
+    ["x145", "?, Vice City", [-429,1646], "2800 Biscayne Blvd, Miami, FL 33137", [25.8037191,-80.1921301], "", "", 0]
 ]
