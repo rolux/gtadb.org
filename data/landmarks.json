@@ -504,5 +504,8 @@
     ["x159", "House A, Leonida Keys", [-2350,-5531], "?", [0,0], "", "3f7703", 1748327748],
     ["x160", "House B, Leonida Keys", [-2323,-5533], "?", [0,0], "", "3f7703", 1748327748],
     ["x161", "House C, Leonida Keys", [-2324,-5504], "?", [0,0], "", "3f7703", 1748327748],
-    ["x162", "House D, Leonida Keys", [-2313,-5476], "?", [0,0], "", "3f7703", 1748327748]
+    ["x162", "House D, Leonida Keys", [-2313,-5476], "?", [0,0], "", "3f7703", 1748327748],
+    ["x163", "?, Peacock Bay, Vice City", [-1518,-2393], "Grove at Grand Bay Condominium, 2669 S Bayshore Dr, Miami, FL 33133", [25.730319,-80.2367699], "residential", "ad3438", 1748327991],
+    ["x164", "?, Peacock Bay, Vice City", [-1591,-2376], "The Ritz-Carlton Coconut Grove, 3300 SW 27th Ave, Miami, FL 33133", [0,0], "hotel", "6ea293", 1748327991],
+    ["x165", "?, Vice-Dale County", [760,-1725], "Miami Marine Stadium, 3501 Rickenbacker Cswy, Miami, FL 33149", [25.7423381,-80.1734704], "", "998a57", 1748328226]
 ]
