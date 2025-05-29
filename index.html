@@ -63,6 +63,7 @@
                 font-size: 12px;
                 margin: 0;
                 padding: 2px 4px;
+                text-overflow: ellipsis;
             }
             select:focus {
                 outline: none;
@@ -212,9 +213,12 @@
                 width: 256px
             }
             #filterBar select, #sortBar select {
+                //height: 16px;
                 left: 8px;
                 position: absolute;
                 top: 6px;
+                white-space: nowrap;
+                width: 192px;
             }
             #listBody {
                 bottom: 32px;
@@ -456,14 +460,22 @@ function Map() {
         landmarksFilter: "all",
         landmarksFilterOptions: {
             "all": "all",
-            "identified": "identified",
-            "unconfirmed": "unconfirmed",
-            "unidentified": "unidentified",
-            "knownName": "known name",
-            "unknownName": "unknown name",
-            "missingLatLng": "missing latlng",
-            "included": "on the map",
-            "notIncluded": "not on the map"
+            "igNameConfirmed": "IG name confirmed",
+            "igNameUnconfirmed": "IG name unconfirmed",
+            "igNameUnknown": "IG name unknown",
+            "igLatLngConfirmed": "IG latlng confirmed",
+            "igLatLngUnconfirmed": "IG latlng unconfirmed",
+            "igLatLngUnknown": "IG latlng unknown",
+            "igWithPhoto": "with IG photo",
+            "igWithoutPhoto": "without IG photo",
+            "irlLandmarkConfirmed": "IRL landmark confirmed",
+            "irlLandmarkUnconfirmed": "IRL landmark unconfirmed",
+            "irlLandmarkUnknown": "IRL landmark unknown",
+            "irlLatLngMissing": "IRL latlng missing",
+            "irlWithPhoto": "with IRL photo",
+            "irlWithoutPhoto": "without IRL photo",
+            "mapIncluded": "included on the map",
+            "mapNotIncluded": "not included on the map"
         },
         landmarksSort: "igAddress",
         landmarksSortOptions: {
@@ -524,16 +536,14 @@ function Map() {
                 return {
                     "id": item[0],
                     "igAddress": item[1],
-                    "igCoordinates": item[2],
+                    "igCoordinates": item[2].length ? item[2] : null,
                     "irlAddress": item[3],
-                    "irlCoordinates": item[4],
+                    "irlCoordinates": item[4].length ? item[4] : null,
                     "type": item[5] || "other",
                     "color": item[6],
                     "edited": item[7],
                     "findString": item[1].toLowerCase() + "\n" + item[3].toLowerCase()
                 }
-            }).filter(function(item) {
-                return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
             })
             self.landmarks.forEach(function(landmark) {
                 landmark.igNameAndAddress = self.getLandmarkNameAndAddress(landmark.igAddress)
@@ -547,7 +557,9 @@ function Map() {
             self.currentLandmarks = self.landmarks.slice()
 
             self.markers = {}
-            self.landmarks.sort(function(a, b) {
+            self.landmarks.filter(function(landmark) {
+                return landmark.igCoordinates !== null
+            }).sort(function(a, b) {
                 return b.igCoordinates[1] - a.igCoordinates[1]
             }).forEach(function(landmark) {
                 self.markers[landmark.id] = document.createElement("div")
@@ -869,14 +881,23 @@ function Map() {
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
             return landmark.findString.includes(self.query) && (
                 self.landmarksFilter == "all" ||
-                self.landmarksFilter == "identified" && landmark.irlAddress[0] != "?" ||
-                self.landmarksFilter == "unconfirmed" && landmark.irlAddress.endsWith(" (?)") ||
-                self.landmarksFilter == "unidentified" && landmark.irlAddress[0] == "?" ||
-                self.landmarksFilter == "knownName" && landmark.igAddress[0] != "?" ||
-                self.landmarksFilter == "unknownName" && landmark.igAddress[0] == "?" ||
-                self.landmarksFilter == "missingLatLng" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates[0] == 0 ||
-                self.landmarksFilter == "included" && landmark.id[0] == "b" ||
-                self.landmarksFilter == "notIncluded" && landmark.id[0] == "x"
+                self.landmarksFilter == "igNameConfirmed" && !landmark.igAddress.includes("?") ||
+                self.landmarksFilter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && !landmark.igAddress[0] == "?"  && !landmark.irlAddress.slice(-1) == "?" ||
+                self.landmarksFilter == "igNameUnknown" && landmark.igAddress[0] == "?" ||
+                self.landmarksFilter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
+                self.landmarksFilter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
+                self.landmarksFilter == "igLatLngUnknown" && landmark.igCoordinates === null ||
+                self.landmarksFilter == "igWithPhoto" && landmark.id == "b315" ||
+                self.landmarksFilter == "igWithoutPhoto" && landmark.id != "b315" ||
+                self.landmarksFilter == "irlLandmarkConfirmed" && !landmark.irlAddress.includes("?") ||
+                self.landmarksFilter == "irlLandmarkUnconfirmed" && landmark.irlAddress.length > 1 && landmark.irlAddress.slice(-1) == "?" ||
+                self.landmarksFilter == "irlLandmarkUnknown" && landmark.irlAddress == "?" ||
+                self.landmarksFilter == "irlLatLngMissing" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates === null ||
+                self.landmarksFilter == "irlWithPhoto" && landmark.id == "b315" ||
+                self.landmarksFilter == "irlWithoutPhoto" && landmark.id != "b315" ||
+                self.landmarksFilter == "mapIncluded" && landmark.id[0] == "b" ||
+                self.landmarksFilter == "mapNotIncluded" && landmark.id[0] == "x"
+
             )
         })
         if (self.l && !self.currentLandmarks.map(function(landmark) {
@@ -1192,7 +1213,9 @@ function Map() {
 
     self.panToLandmark = function() {
         const landmark = self.landmarksById[self.l]
-        self.setHash(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
+        if (landmark.igCoordinates !== null) {
+            self.setHash(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
+        }
     }
 
     self.renderItem = function() {
@@ -1208,7 +1231,7 @@ function Map() {
             self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
             self.itemIgCoordinates.innerHTML = ""
             link = document.createElement("span")
-            link.innerHTML = landmark.igCoordinates.join(",")
+            link.innerHTML = landmark.igCoordinates === null ? "?" : landmark.igCoordinates.join(",")
             link.addEventListener("mousedown", function() {
                 self.setHash(
                     landmark.igCoordinates[0],
@@ -1222,7 +1245,7 @@ function Map() {
             self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
             self.itemIrlCoordinates.innerHTML = ""
             link = document.createElement("a")
-            link.innerHTML = landmark.irlCoordinates.join(",")
+            link.innerHTML = landmark.irlCoordinates === null ? "?" : landmark.irlCoordinates.join(",")
             link.href = "https://google.com/maps/search/" + encodeURIComponent(landmark.irlAddress)
             link.target = "_blank"
             self.itemIrlCoordinates.appendChild(link)
@@ -1323,7 +1346,9 @@ function Map() {
     }
 
     self.clearMarkers = function() {
-        self.landmarks.forEach(function(landmark) {
+        self.landmarks.filter(function(landmark) {
+            return landmark.igCoordinates !== null
+        }).forEach(function(landmark) {
             if (!self.currentLandmarks.includes(landmark)) {
                 let marker = self.markers[landmark.id]
                 marker.classList.remove("selected")
@@ -1338,7 +1363,9 @@ function Map() {
         const maxX = self.x + mppx * self.canvas.width / 2
         const minY = self.y - mppx * self.canvas.height / 2
         const maxY = self.y + mppx * self.canvas.height / 2
-        self.currentLandmarks.forEach(function(landmark) {
+        self.currentLandmarks.filter(function(landmark) {
+            return landmark.igCoordinates !== null
+        }).forEach(function(landmark) {
             let markerElement = self.markers[landmark.id]
             const [x, y] = landmark.igCoordinates
             if (x >= minX - 16 && x <= maxX + 16 && y >= minY -16 && y <= maxY + 16) {
