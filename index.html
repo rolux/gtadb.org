@@ -524,14 +524,13 @@ function Map() {
                 return {
                     "id": item[0],
                     "igAddress": item[1],
-                    "igAddressLower": item[1].toLowerCase(),
                     "igCoordinates": item[2],
                     "irlAddress": item[3],
-                    "irlAddressLower": item[3].toLowerCase(),
                     "irlCoordinates": item[4],
                     "type": item[5] || "other",
                     "color": item[6],
-                    "edited": item[7]
+                    "edited": item[7],
+                    "findString": item[1].toLowerCase() + "\n" + item[3].toLowerCase()
                 }
             }).filter(function(item) {
                 return item["igCoordinates"][0] != 0 || item["igCoordinates"][1] != 0
@@ -765,6 +764,7 @@ function Map() {
             self.photoDialog.appendChild(self.photoDialogContent)
 
             document.addEventListener("keydown", function(e) {
+                // FIXME: move this
                 const activeElement = document.activeElement
                 if (activeElement.tagName == "INPUT") {
                     return
@@ -867,10 +867,7 @@ function Map() {
         self.query = query.toLowerCase()
         self.landmarksFilter = filter
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
-            return (
-                landmark.igAddressLower.includes(self.query) ||
-                landmark.irlAddressLower.includes(self.query)
-            ) && (
+            return landmark.findString.includes(self.query) && (
                 self.landmarksFilter == "all" ||
                 self.landmarksFilter == "identified" && landmark.irlAddress[0] != "?" ||
                 self.landmarksFilter == "unconfirmed" && landmark.irlAddress.endsWith(" (?)") ||
@@ -969,13 +966,26 @@ function Map() {
         if (values.length > 4) {
             values[3] = values.slice(3).join(",")
         }
-        const last = values[values.length - 1]
+        let last = values[values.length - 1]
         let l, lx, ly, lz
-        if (self.landmarksById[last]) {
-            l = last
-            lx = self.landmarksById[last].igCoordinates[0]
-            ly = self.landmarksById[last].igCoordinates[1]
-            lz = 5
+        if (isNaN(last)) {
+            if (self.landmarksById[last]) {
+                l = last
+                lx = self.landmarksById[last].igCoordinates[0]
+                ly = self.landmarksById[last].igCoordinates[1]
+                lz = 5
+            } else {
+                last = last.toLowerCase()
+                const landmarks = self.landmarks.filter(function(landmark) {
+                    return landmark.findString.includes(last)
+                })
+                if (landmarks.length == 1) {
+                    l = landmarks[0].id
+                    lx = landmarks[0].igCoordinates[0]
+                    ly = landmarks[0].igCoordinates[1]
+                    lz = 5
+                }
+            }
         }
         if (l || values.length == 4) {
             values = values.slice(0, -1)
@@ -1112,7 +1122,6 @@ function Map() {
             if (self.mouseTimeout) {
                 clearTimeout(self.mouseTimeout)
                 self.mouseTimeout = null
-                //console.log("click", "animating?", self.isAnimating)
                 const x = originalX + mppx * (clientX - canvas.width / 2)
                 const y = originalY - mppx * (clientY - canvas.height / 2)
                 self.setHash(x, y, originalZ)
