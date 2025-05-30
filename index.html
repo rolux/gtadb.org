@@ -486,6 +486,7 @@ function Map() {
             irlLatitude: "real-life latitude",
             irlLongitude: "real-life longitude",
             type: "type",
+            id: "id",
             edited: "last edited"
         },
         markers: {},
@@ -535,9 +536,12 @@ function Map() {
             self.landmarks = data.map(function(item) {
                 return {
                     "id": item[0],
+                    "idSortString": self.getIdSortString(item[0]),
                     "igAddress": item[1],
+                    "igAddressSortString": self.getAddressSortString(item[1]),
                     "igCoordinates": item[2].length ? item[2] : null,
                     "irlAddress": item[3],
+                    "irlAddressSortString": self.getAddressSortString(item[3]),
                     "irlCoordinates": item[4].length ? item[4] : null,
                     "type": item[5] || "other",
                     "color": item[6],
@@ -935,23 +939,7 @@ function Map() {
         return new Date(timestamp * 1000).toISOString().slice(0, -5).replace("T", " ") + " UTC"
     }
 
-    self.getLandmarkNameAndAddress = function(address) {
-        const parts = address.split(", ")
-        if ("0123456789".includes(address[0])) {
-            return [parts[0], address]
-        }
-        return [parts[0], parts.slice(1).join(", ")]
-    }
-
-    self.getLandmarkTitle = function(landmark) {
-        return landmark.igAddress.split(", ")[0] + "\n" + landmark.irlAddress.split(", ")[0]
-    }
-
-    self.getMppx = function(z=self.z) {
-        return self.mapW / (self.tileSize * Math.pow(2, z))
-    }
-
-    self.getSortString = function(address) {
+    self.getAddressSortString = function(address) {
         let parts = address.replace("?", "ZZZ").split(", ")
         parts.forEach(function(part, p) {
             let words = part.split(" ")
@@ -966,6 +954,26 @@ function Map() {
             parts[p] = words.join(" ")
         })
         return parts.reverse().join(", ")
+    }
+
+    self.getIdSortString = function(id) {
+        return id[0] + "0".repeat(10 - id.length) + id.slice(1)
+    }
+
+    self.getLandmarkNameAndAddress = function(address) {
+        const parts = address.split(", ")
+        if ("0123456789".includes(address[0])) {
+            return [parts[0], address]
+        }
+        return [parts[0], parts.slice(1).join(", ")]
+    }
+
+    self.getLandmarkTitle = function(landmark) {
+        return landmark.igAddress.split(", ")[0] + "\n" + landmark.irlAddress.split(", ")[0]
+    }
+
+    self.getMppx = function(z=self.z) {
+        return self.mapW / (self.tileSize * Math.pow(2, z))
     }
 
     self.loadJSON = async function(url) {
@@ -1446,19 +1454,21 @@ function Map() {
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.landmarksSort == "igAddress") {
-                    return self.getSortString(v.igAddress) + ", " + self.getSortString(v.irlAddress)
+                    return v.igAddressSortString + ", " + v.irlAddressSortString
                 } else if (self.landmarksSort == "igLatitude") {
                     return -v.igCoordinates[1] || 1000
                 } else if (self.landmarksSort == "igLongitude") {
                     return v.igCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlAddress") {
-                    return self.getSortString(v.irlAddress) + ", " + self.getSortString(v.igAddress)
+                    return v.irlAddressSortString + ", " + v.igAddressSortString
                 } else if (self.landmarksSort == "irlLatitude") {
                     return -v.irlCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlLongitude") {
                     return v.irlCoordinates[1] || 1000
                 } else if (self.landmarksSort == "type") {
-                    return [v.type].concat(v.igAddress.split(", ").reverse()).join(", ")   
+                    return [v.type].concat(v.igAddress.split(", ").reverse()).join(", ")
+                } else if (self.landmarksSort == "id") {
+                    return v.idSortString
                 } else if (self.landmarksSort == "edited") {
                     return -v.edited
                 }
