@@ -546,5 +546,7 @@
     ["x203", "?, Vice Beach", [1927,842], "Lily Leon Hotel, 841 Collins Ave, Miami Beach, FL 33139", [25.7787776,-80.131889], "", "434c6f", 1748695792],
     ["x204", "?, Vice Beach", [1929,855], "The Attic, 841 Collins Ave, Miami Beach, FL 33139", [25.7789059,-80.1317581], "", "b9a963", 1748695892],
     ["x205", "Evergreen Mall Sign, Waning Sands", [-407,2994], "Bayfair Center San Leandro, 15555 E 14th St, San Leandro, CA 94578", [37.7005866,-122.1255678], "", "ba5a4b", 1748696292],
-    ["x206", "?, Vice-Dale County", [1559,-1047], "Bayview Village, 5391 Fisher Island Dr, Miami, FL 33109?", [25.763618,-80.148631], "", "57065f", 1748696523]
+    ["x206", "?, Vice-Dale County", [1559,-1047], "Bayview Village, 5391 Fisher Island Dr, Miami, FL 33109?", [25.763618,-80.148631], "", "57065f", 1748696523],
+    ["x207", "?, Crosstown, Vice City", [-790,787], "C. Clyde Atkins U.S Courthouse, 301 N Miami Ave, Miami, FL 33128", [25.7775359,-80.193311], "", "429590", 1748697176],
+    ["x208", "?, Port Gellhorn", [-6615,2963], "Seclusion Bay, 6394 E Hwy 98, Panama City, FL 32404", [30.110745,-85.6068479], "", "6b701c", 1748700605]
 ]
