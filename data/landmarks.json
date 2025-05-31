@@ -538,5 +538,6 @@
     ["x195", "?, Stockyard, Vice City", [-662,1169], "Americash Pawn Shop, 2518 NE 2nd Ave, Miami, FL 33137", [25.8011579,-80.191279], "", "206f68", 1748605699],
     ["x196", "Tequest Key Bridge, Tequesta Key, Vice City", [-485,-1283], "Brickell Key Bridge, Brickell Key Dr, Miami, FL 33131", [25.765535,-80.1879829], "", "b93110", 1748683008],
     ["x197", "?, Key Lento", [-2259,-5794], "?", [], "", "3f7703", 1748683235],
-    ["x198", "?, Key Lento", [-2661,-6325], "?", [], "", "3f7703", 1748683235]
+    ["x198", "?, Key Lento", [-2661,-6325], "?", [], "", "3f7703", 1748683235],
+    ["x199", "?, Vice City International Airport", [-3705,-1154], "Caribbean Airlines Cargo Miami, 1701 63rd Ave, Miami, FL 33126", [25.7900835,-80.300177], "", "800986", 1748688673]
 ]
