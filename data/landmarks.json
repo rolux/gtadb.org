@@ -609,5 +609,6 @@
     ["x266", "?, Vice City", [], 0, "Citibank Parking Garage, 2000 N Bayshore Dr, Miami, FL 33137", [25.7954047,-80.1882749], 0, "", "03871c", 1748778026],
     ["x267", "?, Vice Beach", [1898,649], 0, "Essex House, 1001 Collins Ave, Miami Beach, FL 33139", [25.7807334,-80.1313959], 0, "", "63b499", 1748778132],
     ["x268", "?, Vice Beach", [1903,687], 0, "Pelican Garage Parking, 1041 Collins Ave, Miami Beach, FL 33139", [25.7812101,-80.131266], 0, "", "583915", 1748778887],
-    ["x269", "?, Watson Bay", [-4518,-4087], 0, "Tony's Restaurant, 597 2nd St, Cedar Key, FL 32625", [29.1363208,-83.0332476], 0, "", "7b5893", 1748778933]
+    ["x269", "?, Watson Bay", [-4518,-4087], 0, "Tony's Restaurant, 597 2nd St, Cedar Key, FL 32625", [29.1363208,-83.0332476], 0, "", "7b5893", 1748779742],
+    ["x270", "La Perle Metro Station, La Perle, Vice City", [-1007,1149], 0, "School Board Station, Miami, FL 33132", [25.7893518,-80.1956669], 0, "", "5c12ae", 1748782119]
 ]
