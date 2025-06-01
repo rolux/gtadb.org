@@ -109,9 +109,9 @@
                 z-index: 100;
             }
             .marker.selected {
-                border: 2px solid rgb(255, 255, 255);
-                height: 12px;
-                width: 12px;
+                border: 2.5px solid rgb(255, 255, 255);
+                height: 11px;
+                width: 11px;
                 z-index: 101;
             }
             .marker.dragging {
@@ -312,6 +312,7 @@
             }
             #itemBody > div.photo > img {
                 cursor: pointer;
+                width: 256px;
             }
             #itemBody > div > div {
                 float: left;
@@ -352,15 +353,10 @@
                 top: 0;
                 z-index: 1001;
             }
-            #photoDialog {
-                height: 608px;
-                width: 1024px;
-            }
             #photoDialog .bar {
                 background-color: rgba(255, 255, 255, 0.75);
                 border-radius: 8px 8px 0 0;
                 height: 32px;
-                width: 1024px;
             }
             #photoDialog .bar .title {
                 float: left;
@@ -368,7 +364,7 @@
                 font-weight: bold;
                 height: 16px;
                 margin: 8px 8px;
-                right: 0;
+                left: 0;
                 overflow-x: hidden;
                 top: 0;
                 width: 944px;
@@ -385,15 +381,9 @@
                 width: 64px;
                 user-select: none;
             }
-            #photoDialog .content {
-                height: 576px;
-                width: 1024px;
-            }
             #photoDialog .content img {
                 border-radius: 0 0 8px 8px;
-                height: 576px;
                 user-select: none;
-                width: 1024px;
             }
         </style>
     </head>
@@ -540,13 +530,19 @@ function Map() {
                     "igAddress": item[1],
                     "igAddressSortString": self.getAddressSortString(item[1]),
                     "igCoordinates": item[2].length ? item[2] : null,
-                    "irlAddress": item[3],
-                    "irlAddressSortString": self.getAddressSortString(item[3]),
-                    "irlCoordinates": item[4].length ? item[4] : null,
-                    "type": item[5] || "other",
-                    "color": item[6],
-                    "edited": item[7],
-                    "findString": item[1].toLowerCase() + "\n" + item[3].toLowerCase()
+                    "igPhoto": item[3],
+                    "irlAddress": item[4],
+                    "irlAddressSortString": self.getAddressSortString(item[4]),
+                    "irlCoordinates": item[5].length ? item[5] : null,
+                    "irlPhoto": item[6],
+                    "type": item[7] || "other",
+                    "color": item[8],
+                    "borderColor": [0, 1, 2].map(function(i) {
+                        const dec = Number("0x" + item[8].slice(i * 2, (i + 1) * 2))
+                        return (dec + 64).toString(16)
+                    }).join(""),
+                    "edited": item[9],
+                    "findString": item[1].toLowerCase() + "\n" + item[4].toLowerCase()
                 }
             })
             self.landmarks.forEach(function(landmark) {
@@ -571,6 +567,7 @@ function Map() {
                 // self.markers[landmark.id].classList.add("marker", landmark.type)
                 self.markers[landmark.id].className = "marker"
                 self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
+                // self.markers[landmark.id].style.borderColor = "#" + landmark.borderColor 
                 self.markers[landmark.id].title = landmark.title
                 self.markersLayer.appendChild(self.markers[landmark.id])
             })
@@ -891,17 +888,16 @@ function Map() {
                 self.landmarksFilter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
                 self.landmarksFilter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
                 self.landmarksFilter == "igLatLngUnknown" && landmark.igCoordinates === null ||
-                self.landmarksFilter == "igWithPhoto" && landmark.id == "b315" ||
-                self.landmarksFilter == "igWithoutPhoto" && landmark.id != "b315" ||
+                self.landmarksFilter == "igWithPhoto" && landmark.igPhoto ||
+                self.landmarksFilter == "igWithoutPhoto" && !landmark.igPhoto ||
                 self.landmarksFilter == "irlLandmarkConfirmed" && !landmark.irlAddress.includes("?") ||
                 self.landmarksFilter == "irlLandmarkUnconfirmed" && landmark.irlAddress.length > 1 && landmark.irlAddress.slice(-1) == "?" ||
                 self.landmarksFilter == "irlLandmarkUnknown" && landmark.irlAddress == "?" ||
                 self.landmarksFilter == "irlLatLngMissing" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates === null ||
-                self.landmarksFilter == "irlWithPhoto" && landmark.id == "b315" ||
-                self.landmarksFilter == "irlWithoutPhoto" && landmark.id != "b315" ||
+                self.landmarksFilter == "irlWithPhoto" && landmark.irlPhoto ||
+                self.landmarksFilter == "irlWithoutPhoto" && !landmark.irlPhoto ||
                 self.landmarksFilter == "mapIncluded" && landmark.id[0] == "b" ||
                 self.landmarksFilter == "mapNotIncluded" && landmark.id[0] == "x"
-
             )
         })
         if (self.l && !self.currentLandmarks.map(function(landmark) {
@@ -913,9 +909,8 @@ function Map() {
         self.renderMarkers()
         self.sortLandmarks(self.landmarksSort) // update indexById 
         self.renderList()
-        self.selectLandmark(self.l) // scroll into view
+        self.selectLandmark(self.l) // scroll into view. calls renderItem
         self.renderStatus()
-        self.renderItem()
     }
 
     self.formatAddress = function(address) {
@@ -953,7 +948,7 @@ function Map() {
             }
             parts[p] = words.join(" ")
         })
-        return parts.reverse().join(", ")
+        return parts.reverse().join(" , ") // space since we want "Ambrosia" before "Ambrosia County"
     }
 
     self.getIdSortString = function(id) {
@@ -986,6 +981,23 @@ function Map() {
         } catch (err) {
             throw err
         }
+    }
+
+    self.loadPhoto = function(src, width, ratioCallback, loadCallback) {
+        let img = document.createElement("img")
+        const interval = setInterval(function() {
+            if (img.naturalWidth) {
+                ratioCallback(img.naturalWidth / img.naturalHeight)
+                clearInterval(interval)
+            }
+        }, 25)
+        img.onload = function() {
+            const ratio = img.naturalWidth / img.naturalHeight
+            img.style.width = width
+            img.style.height = width / ratio
+            loadCallback(img)
+        }
+        img.src = src
     }
 
     self.onHashchange = function(e) {
@@ -1070,8 +1082,12 @@ function Map() {
         if (activeElement.tagName == "INPUT") {
             return
         }
-        if (self.focus == "dialog" && e.key == "Escape") {
-            self.closePhotoDialog()
+        if (self.focus == "dialog") {
+            if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
+                self.switchPhotoDialog()
+            } else if (e.key == "Escape") {
+                self.closePhotoDialog()
+            }
         }
         if (self.focus != "map") {
             return
@@ -1178,6 +1194,9 @@ function Map() {
         if (render) {
             self.renderMap()
         }
+        if (self.focus == "dialog") {
+            self.resizePhotoDialog()
+        }
     }
 
     self.onWheel = function(e) {
@@ -1202,16 +1221,44 @@ function Map() {
         }, 100)
     }
 
-    self.openPhotoDialog = function(landmark, source) {
-        let img = document.createElement("img")
-        img.src = `photos/${landmark.id},${source}.jpg`
-        img.style.width = "1024px"
-        img.style.height = "576px"
-        self.photoDialogTitle.innerHTML = source == "ig" ? landmark.igAddress : landmark.irlAddress
+    self.openPhotoDialog = function(landmark, selected) {
+        self.selectedPhoto = [landmark, selected]
+        self.dialogPhoto = document.createElement("img")
+        self.dialogPhoto.src = `photos/${landmark.id},${selected}.jpg`
+        self.dialogPhoto.id = "dialogPhoto"
+        self.photoDialogTitle.innerHTML = selected == "ig" ? landmark.igAddress : landmark.irlAddress
         self.photoDialogContent.innerHTML = ""
-        self.photoDialogContent.appendChild(img)
+        self.photoDialogContent.appendChild(self.dialogPhoto)
+        self.resizePhotoDialog()
         self.dialogLayer.style.display = "flex"
         self.focus = "dialog"
+    }
+
+    self.switchPhotoDialog = function() {
+        self.openPhotoDialog(self.selectedPhoto[0], self.selectedPhoto[1] == "ig" ? "irl" : "ig")
+    }
+
+    self.resizePhotoDialog = function() {
+        const margin = 64
+        const windowRatio = (window.innerWidth - margin) / (window.innerHeight - margin)
+        const dialogRatio = self.dialogPhoto.naturalWidth / (self.dialogPhoto.naturalHeight + 32)
+        let dialogWidth, dialogHeight
+        if (dialogRatio >= windowRatio) {
+            dialogWidth = window.innerWidth - margin
+            dialogHeight = dialogWidth / dialogRatio
+        } else {
+            dialogHeight = window.innerHeight - margin
+            dialogWidth = dialogHeight * dialogRatio
+        }
+        self.photoDialog.style.width = dialogWidth + "px"
+        self.photoDialog.style.height = dialogHeight + "px"
+        self.photoDialogBar.style.width = dialogWidth + "px"
+        self.photoDialogTitle.style.width = dialogWidth - 80 + "px"
+        self.photoDialogContent.style.width = dialogWidth + "px"
+        self.photoDialogContent.style.height = dialogHeight - 32 + "px"
+        console.log("RESIZING")
+        self.dialogPhoto.style.width = dialogWidth + "px"
+        self.dialogPhoto.style.height = dialogHeight - 32 + "px"
     }
 
     self.closePhotoDialog = function() {
@@ -1248,6 +1295,19 @@ function Map() {
                 )
             })
             self.itemIgCoordinates.appendChild(link)
+            self.itemIgPhoto.innerHTML = ""
+            console.log("CLEARING...")
+            if (landmark.igPhoto) {
+                self.loadPhoto(`photos/${landmark.id},ig.jpg`, 256, function(ratio) {
+                    landmark.igPhotoRatio = ratio
+                    self.itemIgPhoto.style.height = 256 / ratio + "px"
+                }, function(img) {
+                    img.addEventListener("click", function() {
+                        self.openPhotoDialog(landmark, "ig")
+                    })
+                    self.itemIgPhoto.appendChild(img)
+                })
+            }
             self.itemIrl.style.borderRightColor = "#" + landmark.color
             self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
             self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
@@ -1257,30 +1317,19 @@ function Map() {
             link.href = "https://google.com/maps/search/" + encodeURIComponent(landmark.irlAddress)
             link.target = "_blank"
             self.itemIrlCoordinates.appendChild(link)
-            self.itemEdited.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited)
-            if (landmark.id == "b315") {
-                self.itemIgPhoto.innerHTML = ""
-                let img = document.createElement("img")
-                img.src = "photos/b315,ig.jpg"
-                img.style.width = "256px"
-                img.style.height = "144px"
-                img.addEventListener("click", function() {
-                    self.openPhotoDialog(landmark, "ig")
+            self.itemIrlPhoto.innerHTML = ""
+            if (landmark.irlPhoto) {
+                self.loadPhoto(`photos/${landmark.id},irl.jpg`, 256, function(ratio) {
+                    landmark.irlPhotoRatio = ratio
+                    self.itemIrlPhoto.style.height = 256 / ratio + "px"
+                }, function(img) {
+                    img.addEventListener("click", function() {
+                        self.openPhotoDialog(landmark, "irl")
+                    })
+                    self.itemIrlPhoto.appendChild(img)
                 })
-                self.itemIgPhoto.appendChild(img)
-                self.itemIrlPhoto.innerHTML = ""
-                img = document.createElement("img")
-                img.src = "photos/b315,irl.jpg"
-                img.style.width = "256px"
-                img.style.height = "144px"
-                img.addEventListener("click", function() {
-                    self.openPhotoDialog(landmark, "irl")
-                })
-                self.itemIrlPhoto.appendChild(img)
-            } else {
-                self.itemIgPhoto.innerHTML = ""
-                self.itemIrlPhoto.innerHTML = ""
             }
+            self.itemEdited.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited)
             self.itemPanel.style.display = "block"
         } else {
             self.itemPanel.style.display = "none"
