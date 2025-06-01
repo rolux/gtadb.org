@@ -71,9 +71,6 @@
             select::-ms-expand {
                 display: none
             }
-            span.unknown {
-                color: rgb(255, 0, 0);
-            }
             #map, #canvas, #markers {
                 bottom: 0;
                 left: 0;
@@ -329,11 +326,11 @@
                 margin-bottom: 0;
             }
             itemBody > div > div.coordinates > a,
-            #itemBody > div > div.coordinates > span {
+            #itemBody > div > div.coordinates > span.link {
                 cursor: pointer;
             }
             #itemBody > div > div.coordinates > a:hover,
-            #itemBody > div > div.coordinates > span:hover {
+            #itemBody > div > div.coordinates > span.link:hover {
                 text-decoration: underline
             }
             #itemEdited {
@@ -1286,14 +1283,17 @@ function Map() {
             self.itemIgAddress.innerHTML = landmark.igNameAndAddress[1]
             self.itemIgCoordinates.innerHTML = ""
             link = document.createElement("span")
-            link.innerHTML = landmark.igCoordinates === null ? "?" : landmark.igCoordinates.join(",")
-            link.addEventListener("mousedown", function() {
-                self.setHash(
-                    landmark.igCoordinates[0],
-                    landmark.igCoordinates[1],
-                    self.z
-                )
-            })
+            link.innerHTML = landmark.igCoordinates ? landmark.igCoordinates.join(",") : "?"
+            if (landmark.igCoordinates) {
+                link.classList.add("link")
+                link.addEventListener("mousedown", function() {
+                    self.setHash(
+                        landmark.igCoordinates[0],
+                        landmark.igCoordinates[1],
+                        self.z
+                    )
+                })
+            }
             self.itemIgCoordinates.appendChild(link)
             self.itemIgPhoto.innerHTML = ""
             if (landmark.igPhoto) {
@@ -1311,10 +1311,12 @@ function Map() {
             self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
             self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
             self.itemIrlCoordinates.innerHTML = ""
-            link = document.createElement("a")
-            link.innerHTML = landmark.irlCoordinates === null ? "?" : landmark.irlCoordinates.join(",")
-            link.href = "https://google.com/maps/search/" + encodeURIComponent(landmark.irlAddress)
-            link.target = "_blank"
+            link = document.createElement(landmark.irlCoordinates ? "a" : "span")
+            link.innerHTML = landmark.irlCoordinates ? landmark.irlCoordinates.join(",") : "?"
+            if (landmark.irlCoordinates) {
+                link.href = "https://google.com/maps/search/" + encodeURIComponent(landmark.irlAddress)
+                link.target = "_blank"
+            }
             self.itemIrlCoordinates.appendChild(link)
             self.itemIrlPhoto.innerHTML = ""
             if (landmark.irlPhoto) {
