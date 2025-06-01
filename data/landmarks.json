@@ -301,7 +301,7 @@
     ["b301", "Radio Tower, Port Gellhorn", [-6472,3515], 0, "?", [], 0, "", "3f7703", 1748603410],
     ["b302", "Port Gellhorn Smokestack, Port Gellhorn", [-6356,3399], 0, "?", [], 0, "", "3f7703", 1748721399],
     ["b303", "?, Port Gellhorn", [-6345,3970], 0, "Springfield Community Church, 615 Transmitter Rd, Panama City, FL 32401", [30.159853,-85.608097], 0, "public", "220251", 1748079313],
-    ["b304", "Starlet Motel, Kelly County", [-5342,3468], 0, "?", [], 0, "hotel", "3f7703", 1748079313],
+    ["b304", "Starlet Motel, Kelly County", [-5342,3468], 0, "Economy Inn, 23750 US-301, Lawtey, FL 32058", [30.0565563,-82.0691018], 0, "hotel", "6bb635", 1748775330],
     ["b305", "Radio Mast, Kelly County", [-5128,3417], 0, "?", [], 0, "", "3f7703", 1748603410],
     ["b306", "Taco Bomb, Kelly County", [-5226,3514], 0, "1620 S 6th St, Macclenny, FL 32063", [30.2566344,-82.1260622], 0, "commercial", "939b56", 1748079313],
     ["b308", "Alpha Gas Station, Kelly County", [-5300,3587], 0, "9826 FL-121, Macclenny, FL 32063", [30.2553477,-82.1259807], 0, "commercial", "ab0c93", 1748079313],
@@ -603,5 +603,11 @@
     ["x260", "?, Vice Beach", [1733,978], 0, "1450 Washington Ave, Miami Beach, FL 33139?", [25.7871542,-80.131961], 0, "", "3984a3", 1748723277],
     ["x261", "?, Vice Beach", [1733,991], 0, "1468 Washington Ave, Miami Beach, FL 33139?", [25.7874401,-80.1319605], 0, "", "677a58", 1748723277],
     ["x262", "?, Key Lento", [-3303,-6531], 0, "?", [], 0, "", "3f7703", 1748726313],
-    ["x263", "?, Key Lento", [-3056,-6602], 0, "?", [], 0, "", "3f7703", 1748726360]
+    ["x263", "?, Key Lento", [-3056,-6602], 0, "?", [], 0, "", "3f7703", 1748726360],
+    ["x264", "?, Rockridge, Vice City", [-1309,1008], 0, "Valero Gas Station, 1800 W Flagler St, Miami, FL 33135?", [25.7725614,-80.2276698], 0, "", "70aba8", 1748775127],
+    ["x265", "?, Grassrivers", [], 0, "Shark Valley Observation Tower, 36000 Shark Valley Loop Road, Miami, FL 33194", [25.6560913,-80.769058], 0, "", "647eb0", 1748775557],
+    ["x266", "?, Vice City", [], 0, "Citibank Parking Garage, 2000 N Bayshore Dr, Miami, FL 33137", [25.7954047,-80.1882749], 0, "", "03871c", 1748778026],
+    ["x267", "?, Vice Beach", [1898,649], 0, "Essex House, 1001 Collins Ave, Miami Beach, FL 33139", [25.7807334,-80.1313959], 0, "", "63b499", 1748778132],
+    ["x268", "?, Vice Beach", [1903,687], 0, "Pelican Garage Parking, 1041 Collins Ave, Miami Beach, FL 33139", [25.7812101,-80.131266], 0, "", "583915", 1748778887],
+    ["x269", "?, Watson Bay", [-4518,-4087], 0, "Tony's Restaurant, 597 2nd St, Cedar Key, FL 32625", [29.1363208,-83.0332476], 0, "", "7b5893", 1748778933]
 ]
