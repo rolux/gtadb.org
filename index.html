@@ -1296,7 +1296,6 @@ function Map() {
             })
             self.itemIgCoordinates.appendChild(link)
             self.itemIgPhoto.innerHTML = ""
-            console.log("CLEARING...")
             if (landmark.igPhoto) {
                 self.loadPhoto(`photos/${landmark.id},ig.jpg`, 256, function(ratio) {
                     landmark.igPhotoRatio = ratio
