@@ -1306,6 +1306,8 @@ function Map() {
                     })
                     self.itemIgPhoto.appendChild(img)
                 })
+            } else {
+                self.itemIgPhoto.style.height = "144px"
             }
             self.itemIrl.style.borderRightColor = "#" + landmark.color
             self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
@@ -1329,6 +1331,8 @@ function Map() {
                     })
                     self.itemIrlPhoto.appendChild(img)
                 })
+            } else {
+                self.itemIrlPhoto.style.height = "144px"
             }
             self.itemEdited.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited)
             self.itemPanel.style.display = "block"
