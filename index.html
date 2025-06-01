@@ -542,7 +542,7 @@ function Map() {
                         return (dec + 64).toString(16)
                     }).join(""),
                     "edited": item[9],
-                    "findString": item[1].toLowerCase() + "\n" + item[4].toLowerCase()
+                    "findString": item[0] + "\n" + item[1].toLowerCase() + "\n" + item[4].toLowerCase()
                 }
             })
             self.landmarks.forEach(function(landmark) {
