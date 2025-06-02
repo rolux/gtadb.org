@@ -210,7 +210,6 @@
                 width: 256px
             }
             #filterBar select, #sortBar select {
-                //height: 16px;
                 left: 8px;
                 position: absolute;
                 top: 6px;
@@ -333,10 +332,17 @@
             #itemBody > div > div.coordinates > span.link:hover {
                 text-decoration: underline
             }
+            #itemStatus {
+                float: left;
+                font-size: 11px;
+                margin: 8px 8px 2px 8px;
+                text-transform: uppercase;
+            }
             #itemEdited {
                 float: left;
                 font-size: 11px;
-                padding: 8px;
+                padding: 2px 8px 8px 8px;
+                text-transform: uppercase;
             }
             #dialogLayer {
                 align-items: center;
@@ -528,9 +534,10 @@ function Map() {
                     "igAddressSortString": self.getAddressSortString(item[1]),
                     "igCoordinates": item[2].length ? item[2] : null,
                     "igPhoto": item[3],
-                    "irlAddress": item[4],
-                    "irlAddressSortString": self.getAddressSortString(item[4]),
+                    "irlAddress": item[4].replace(/\?$/, ""),
+                    "irlAddressSortString": self.getAddressSortString(item[4].replace(/\?$/, "")),
                     "irlCoordinates": item[5].length ? item[5] : null,
+                    "irlStatus": item[4] == "?" ? "unknown" : item[4].slice(-1) == "?" ? "unconfirmed" : "confirmed",
                     "irlPhoto": item[6],
                     "type": item[7] || "other",
                     "color": item[8],
@@ -741,6 +748,10 @@ function Map() {
             self.itemIrlPhoto.className = "photo"
             self.itemBody.appendChild(self.itemIrlPhoto)
 
+            self.itemStatus = document.createElement("div")
+            self.itemStatus.id = "itemStatus"
+            self.itemBody.appendChild(self.itemStatus)
+
             self.itemEdited = document.createElement("div")
             self.itemEdited.id = "itemEdited"
             self.itemBody.appendChild(self.itemEdited)
@@ -887,9 +898,9 @@ function Map() {
                 self.landmarksFilter == "igLatLngUnknown" && landmark.igCoordinates === null ||
                 self.landmarksFilter == "igWithPhoto" && landmark.igPhoto ||
                 self.landmarksFilter == "igWithoutPhoto" && !landmark.igPhoto ||
-                self.landmarksFilter == "irlLandmarkConfirmed" && !landmark.irlAddress.includes("?") ||
-                self.landmarksFilter == "irlLandmarkUnconfirmed" && landmark.irlAddress.length > 1 && landmark.irlAddress.slice(-1) == "?" ||
-                self.landmarksFilter == "irlLandmarkUnknown" && landmark.irlAddress == "?" ||
+                self.landmarksFilter == "irlLandmarkConfirmed" && landmark.irlStatus == "confirmed" ||
+                self.landmarksFilter == "irlLandmarkUnconfirmed" && landmark.irlStatus == "unconfirmed" ||
+                self.landmarksFilter == "irlLandmarkUnknown" && landmark.irlStatus == "unknown" ||
                 self.landmarksFilter == "irlLatLngMissing" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates === null ||
                 self.landmarksFilter == "irlWithPhoto" && landmark.irlPhoto ||
                 self.landmarksFilter == "irlWithoutPhoto" && !landmark.irlPhoto ||
@@ -1320,6 +1331,7 @@ function Map() {
                 link.target = "_blank"
             }
             self.itemIrlCoordinates.appendChild(link)
+            self.itemStatus.innerHTML = landmark.irlStatus
             self.itemIrlPhoto.innerHTML = ""
             if (landmark.irlPhoto) {
                 self.loadPhoto(`photos/${landmark.id},irl.jpg`, 256, function(ratio) {
