@@ -456,7 +456,7 @@
     ["x113", "?, Vice City", [-949,-708], 0, "Hyatt Regency Miami, 400 S, 400 SE 2nd Ave, Miami, FL 33131", [25.7709263,-80.1910809], 0, "", "601203", 1748079313],
     ["x114", "?, Tequesta, Vice City", [-655,-873], 0, "Icon Brickell, 475 Brickell Ave, Miami, FL 33131", [25.7683507,-80.1889775], 0, "", "1d696c", 1748586044],
     ["x115", "?, Tequesta, Vice City", [-709,-998], 0, "First Miami Presbyterian Church, 609 Brickell Ave, Miami, FL 33131", [25.767688,-80.1922389], 0, "", "515782", 1748586044],
-    ["x116", "?, Vice City", [-2238,203], 0, "Embassy Suites Miami Airport, 3974 NW S River Dr, Miami, FL 33142", [25.8066574,-80.2615857], 0, "", "68214f", 1748079313],
+    ["x116", "?, Vice City", [-2238,203], 0, "Embassy Suites Miami Airport, 3974 NW S River Dr, Miami, FL 33142?", [25.8066574,-80.2615857], 0, "", "68214f", 1748886435],
     ["x117", "?, Tequesta, Vice City", [-982,-848], 0, "Neo Vertika Building, Neo Vertika, Miami, FL 33130", [25.7680994,-80.1985524], 0, "", "90b41f", 1748586044],
     ["x118", "?, Vice City", [-591,-663], 0, "One Miami Condominium, 325 S Biscayne Blvd, Miami, FL 33131", [25.7713767,-80.1889279], 0, "", "04130c", 1748783568],
     ["x119", "?, Vice Beach", [1721,309], 0, "The Wolfsonian, 1001 Washington Ave, Miami Beach, FL 33139", [25.780896,-80.1324342], 0, "", "21a8bd", 1748079313],
@@ -473,7 +473,7 @@
     ["x130", "?, Stockyard, Vice City", [-501,1268], 0, "The Crimson, 601 NE 27th St, Miami, FL 33137", [25.803023,-80.1865444], 0, "", "594918", 1748702150],
     ["x131", "?, Stockyard, Vice City", [-483,1217], 0, "419 NE 4th Ave, Miami, FL 33132", [25.7951098,-80.1876283], 0, "", "3252b6", 1748713816],
     ["x132", "?, Vice City International Airport", [-1870,-329], 0, "?", [], 0, "", "3f7703", 1748085930],
-    ["x133", "?, Vice City International Airport", [-1801,-488], 0, "?", [], 0, "", "3f7703", 1748085996],
+    ["x133", "?, Vice City International Airport", [-1801,-488], 0, "American Airlines Aircraft Maintenance Hangar, Building 3095, NW 22nd St, Miami, FL 33126", [25.7975915,-80.2727129], 0, "", "871961", 1748886155],
     ["x134", "?, Stockyard, Vice City", [-450,1709], 0, "2401 NW 5th Ave, Miami, FL 33127", [25.8004057,-80.2027238], 0, "", "bb8a9c", 1748605699],
     ["x135", "?, Stockyard, Vice City", [-399,1684], 0, "2337 NW 5th Ave, Miami, FL 33127", [25.7997201,-80.2027536], 0, "", "9a0f6b", 1748605699],
     ["x136", "?, Stockyard, Vice City", [-394,1717], 0, "Wynwood Walls, 2516 NW 2nd Ave, Miami, FL 33127", [25.8010178,-80.1993841], 0, "", "5f7124", 1748605699],
@@ -629,5 +629,10 @@
     ["x286", "Tequesta Key Park, Tequesta Key, Vice City", [-250,-1310], 0, "Brickell Key Park, Brickell Key Dr, Miami, FL 33131", [25.7643881,-80.1847123], 0, "", "210358", 1748854076],
     ["x287", "?, Leonida", [], 0, "1304 Panferio Dr, Pensacola Beach, FL 32561?", [30.3406441,-87.1030721], 0, "", "8439bb", 1748855758],
     ["x288", "?, Port Vice City", [10,-370], 0, "Terminal V, 718 N Cruise Blvd, Miami, FL 33132", [25.7800848,-80.1825209], 0, "", "788da6", 1748883276],
-    ["x289", "?, Port Vice City", [2,-319], 0, "Terminal V Storage, 718 N Cruise Blvd, Miami, FL 33132", [25.780711,-80.179939], 0, "", "316a06", 1748883276]
+    ["x289", "?, Port Vice City", [2,-319], 0, "Terminal V Storage, 718 N Cruise Blvd, Miami, FL 33132", [25.780711,-80.179939], 0, "", "316a06", 1748883276],
+    ["x290", "?, Vice City", [-596,-744], 0, "Miami River, Miami, FL", [25.7775059,-80.2318125], 0, "", "5c244b", 1748885842],
+    ["x291", "Transformer Station, Port Gellhorn", [-6472,3486], 0, "", [], 0, "", "3f7703", 1748886435],
+    ["x292", "?, Vice Beach", [1576,2112], 0, "2000 Normandy Dr, Miami Beach, FL 33141", [25.851765,-80.1420431], 0, "", "28968a", 1748886558],
+    ["x293", "?, Vice Beach", [1599,2113], 0, "1959 71st St, Miami Beach, FL 33141", [25.8514216,-80.1412688], 0, "", "a24600", 1748886633],
+    ["x294", "?, Leonida", [], 0, "Dinosaur World, 5145 Harvey Tew Rd, Plant City, FL 33565", [28.0280528,-82.1922056], 0, "", "400b96", 1748886954]
 ]
