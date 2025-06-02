@@ -890,9 +890,9 @@ function Map() {
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
             return landmark.findString.includes(self.query) && (
                 self.landmarksFilter == "all" ||
-                self.landmarksFilter == "igNameConfirmed" && !landmark.igAddress.includes("?") ||
+                self.landmarksFilter == "igNameConfirmed" && !landmark.igAddress.includes("?") && !landmark.igAddress[0] == '"' ||
                 self.landmarksFilter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && !landmark.igAddress[0] == "?"  && !landmark.irlAddress.slice(-1) == "?" ||
-                self.landmarksFilter == "igNameUnknown" && landmark.igAddress[0] == "?" ||
+                self.landmarksFilter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
                 self.landmarksFilter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
                 self.landmarksFilter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
                 self.landmarksFilter == "igLatLngUnknown" && landmark.igCoordinates === null ||
@@ -1321,8 +1321,8 @@ function Map() {
                 self.itemIgPhoto.style.height = "144px"
             }
             self.itemIrl.style.borderRightColor = "#" + landmark.color
-            self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0]
-            self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1]
+            self.itemIrlName.innerHTML = landmark.irlNameAndAddress[0] || "?"
+            self.itemIrlAddress.innerHTML = landmark.irlNameAndAddress[1] || "?"
             self.itemIrlCoordinates.innerHTML = ""
             link = document.createElement(landmark.irlCoordinates ? "a" : "span")
             link.innerHTML = landmark.irlCoordinates ? landmark.irlCoordinates.join(",") : "?"
@@ -1331,7 +1331,7 @@ function Map() {
                 link.target = "_blank"
             }
             self.itemIrlCoordinates.appendChild(link)
-            self.itemStatus.innerHTML = landmark.irlStatus
+            self.itemStatus.innerHTML = `STATUS: ${landmark.irlStatus}`
             self.itemIrlPhoto.innerHTML = ""
             if (landmark.irlPhoto) {
                 self.loadPhoto(`photos/${landmark.id},irl.jpg`, 256, function(ratio) {
