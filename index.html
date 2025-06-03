@@ -535,7 +535,7 @@ function Map() {
                     "igCoordinates": item[2].length ? item[2] : null,
                     "igPhoto": item[3],
                     "irlAddress": item[4].replace(/\?$/, ""),
-                    "irlAddressSortString": self.getAddressSortString(item[4].replace(/\?$/, "")),
+                    "irlAddressSortString": self.getAddressSortString(item[4].replace(/.+(\?)$/, "")),
                     "irlCoordinates": item[5].length ? item[5] : null,
                     "irlStatus": item[4] == "?" ? "unknown" : item[4].slice(-1) == "?" ? "unconfirmed" : "confirmed",
                     "irlPhoto": item[6],
@@ -943,7 +943,7 @@ function Map() {
     }
 
     self.getAddressSortString = function(address) {
-        let parts = address.replace("?", "ZZZ").split(", ")
+        let parts = address.replace(/\?/g, "ZZZ").split(", ")
         parts.forEach(function(part, p) {
             let words = part.split(" ")
             words.forEach(function(word, w) {
@@ -956,7 +956,7 @@ function Map() {
             }
             parts[p] = words.join(" ")
         })
-        return parts.reverse().join(" , ") // space since we want "Ambrosia" before "Ambrosia County"
+        return parts.reverse().join("\n") // newline since we want "Ambrosia" before "Ambrosia County"
     }
 
     self.getIdSortString = function(id) {
@@ -1520,13 +1520,13 @@ function Map() {
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.landmarksSort == "igAddress") {
-                    return v.igAddressSortString + ", " + v.irlAddressSortString
+                    return v.igAddressSortString + "\n" + v.irlAddressSortString
                 } else if (self.landmarksSort == "igLatitude") {
                     return -v.igCoordinates[1] || 1000
                 } else if (self.landmarksSort == "igLongitude") {
                     return v.igCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlAddress") {
-                    return v.irlAddressSortString + ", " + v.igAddressSortString
+                    return v.irlAddressSortString + "\n" + v.igAddressSortString
                 } else if (self.landmarksSort == "irlLatitude") {
                     return -v.irlCoordinates[0] || 1000
                 } else if (self.landmarksSort == "irlLongitude") {
