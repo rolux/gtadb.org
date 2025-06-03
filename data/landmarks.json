@@ -440,7 +440,7 @@
     ["x97", "Vice City Arts Center Metro Station, Vice City", [-598,729], 0, "Adrienne Arsht Metromover Station, Miami, FL 33132", [25.789452,-80.1896223], 0, "", "43af79", 1748079313],
     ["x98", "?, Peacock Bay, Vice City", [-1646,-2593], 0, "Park Grove Condominium, 2831 S Bayshore Dr, Coconut Grove, FL 33133", [25.7294045,-80.2387618], 0, "residential", "633635", 1748079313],
     ["x99", "?, Peacock Bay, Vice City", [-1656,-2536], 0, "Park Grove Condominium, 2831 S Bayshore Dr, Coconut Grove, FL 33133", [25.7294045,-80.2387618], 0, "residential", "633635", 1748079313],
-    ["x100", "?, Vice-Dale County", [-90,-3082], 0, "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149?", [25.6545537,-80.1744735], 0, "", "88b942", 1748964159],
+    ["x100", "?, Vice-Dale County", [-90,-3082], 0, "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149", [25.6545537,-80.1744735], 0, "", "88b942", 1748969981],
     ["x101", "?, Leonard County", [-15,6323], 0, "Peanut Island, Florida", [26.7732826,-80.0472053], 0, "", "106a14", 1748079313],
     ["x102", "?, Leonard County", [906,5937], 0, "Osborne Reef, 4W4P+X2, Fort Lauderdale, FL", [26.1074722,-80.0649444], 0, "", "0f8580", 1748079313],
     ["x103", "Underwater Research Station, Leonida Keys", [-1999,-6666], 0, "Aquarius Research Station, Key Largo, FL", [24.950119,-80.4535977], 0, "", "84508d", 1748079313],
@@ -631,8 +631,14 @@
     ["x288", "?, Port Vice City", [10,-370], 0, "Terminal V, 718 N Cruise Blvd, Miami, FL 33132", [25.7800848,-80.1825209], 0, "", "788da6", 1748883276],
     ["x289", "?, Port Vice City", [2,-319], 0, "Terminal V Storage, 718 N Cruise Blvd, Miami, FL 33132", [25.780711,-80.179939], 0, "", "316a06", 1748883276],
     ["x290", "?, Vice City", [-596,-744], 0, "Miami River, Miami, FL", [25.7775059,-80.2318125], 0, "", "5c244b", 1748885842],
-    ["x291", "Transformer Station, Port Gellhorn", [-6472,3486], 0, "", [], 0, "", "3f7703", 1748886435],
+    ["x291", "Transformer Station, Port Gellhorn", [-6472,3486], 0, "?", [], 0, "", "3f7703", 1748969981],
     ["x292", "?, Vice Beach", [1576,2112], 0, "2000 Normandy Dr, Miami Beach, FL 33141", [25.851765,-80.1420431], 0, "", "28968a", 1748886558],
     ["x293", "?, Vice Beach", [1599,2113], 0, "1959 71st St, Miami Beach, FL 33141", [25.8514216,-80.1412688], 0, "", "a24600", 1748886633],
-    ["x294", "?, Leonida", [], 0, "Dinosaur World, 5145 Harvey Tew Rd, Plant City, FL 33565", [28.0280528,-82.1922056], 0, "", "400b96", 1748886954]
+    ["x294", "?, Leonida", [], 0, "Dinosaur World, 5145 Harvey Tew Rd, Plant City, FL 33565", [28.0280528,-82.1922056], 0, "", "400b96", 1748886954],
+    ["x295", "?, Vice Beach", [1577,1432], 0, "Soundscape Park, 400 17th St, Miami Beach, FL 33139", [25.791666,-80.1325995], 0, "", "966aa3", 1748970144],
+    ["x296", "?, Vice-Dale County", [674,1234], 0, "425 E Dilido Dr, Miami Beach, FL 33139", [25.7908058,-80.1581868], 0, "", "6b4633", 1748970172],
+    ["x297", "?, Vice-Dale County", [679,1220], 0, "421 E Dilido Dr, Miami Beach, FL 33139", [25.7906408,-80.158205], 0, "", "5c8655", 1748970172],
+    ["x298", "?, Vice Beach", [1807,1702], 0, "Pedestrian Bridge, Miami Beach, FL 33140", [25.800305,-80.1276887], 0, "", "7b0e3c", 1748970501],
+    ["x299", "?, Leonida", [], 0, "Gator Golf Adventure Park, 6586 International Dr, Orlando, FL 32819", [28.4577,-81.4729749], 0, "", "36ae87", 1748970652],
+    ["x300", "?, Leonida", [], 0, "Lost Caverns Adventure Golf, 6306 International Dr, Orlando, FL 32819", [28.4601399,-81.4714589], 0, "", "24bc4b", 1748970790]
 ]
