@@ -820,12 +820,15 @@ function Map() {
         self.renderMap()
         if (!immediate) {
             if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dz) > 0.1) {
-                requestAnimationFrame(function() {self.animate()})
+                requestAnimationFrame(function() {
+                    self.animate()
+                })
             } else {
                 self.x = self.targetX
                 self.y = self.targetY
                 self.z = self.targetZ
                 self.isAnimating = false
+                self.renderMap() // FIXME
                 self.setHash()
             }
         }
@@ -1392,15 +1395,19 @@ function Map() {
             for (let x = minTx; x <= maxTx; x++) {
                 const img = self.tiles[zInt][y][x]
                 if (!img.src) {
-                    img.onload = function() {
-                        self.context.drawImage(
-                            img,
-                            offsetX + x * tileSize,
-                            offsetY + y * tileSize,
-                            tileSize,
-                            tileSize
-                        )
-                    }
+                    (function(originalX, originalY, originalZ) {
+                        img.addEventListener("load", function() {
+                            if (originalX == self.x && originalY == self.y && originalZ == self.z) {
+                                self.context.drawImage(
+                                    img,
+                                    offsetX + x * tileSize,
+                                    offsetY + y * tileSize,
+                                    tileSize,
+                                    tileSize
+                                )
+                            }
+                        })
+                    })(self.x, self.y, self.z)
                     img.src = `tiles/${zInt}/${zInt},${y},${x}.png`;
                 } else {
                     self.context.drawImage(
