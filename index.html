@@ -426,6 +426,8 @@ function Map() {
         l: null,
         targetX: 0,
         targetY: 0,
+        targetZ: 0,
+        targetL: null,
         isAnimating: false,
         isDragging: false,
         key: null,
@@ -667,7 +669,7 @@ function Map() {
             self.sortLandmarks(this.value)
             self.renderList()
             if (self.l) {
-                self.selectLandmark(self.l)
+                self.setLandmark(self.l)
             }
         })
         self.sortBar.appendChild(self.sortElement)
@@ -705,7 +707,7 @@ function Map() {
         self.closeItemButton.className = "closeButton"
         self.closeItemButton.innerHTML = "CLOSE"
         self.closeItemButton.addEventListener("mousedown", function() {
-            self.selectLandmark(null)
+            self.setLandmark(null)
         })
         self.itemBar.appendChild(self.closeItemButton)
 
@@ -792,10 +794,9 @@ function Map() {
             if (e.target.parentElement.classList.contains("item")) {
                 const id = e.target.parentElement.id.replace("item_", "")
                 if (e.metaKey && e.target.parentElement.classList.contains("selected")) {
-                    self.selectLandmark(null)
+                    self.setLandmark(null)
                 } else {
-                    self.selectLandmark(id)
-                    self.panToLandmark()
+                    self.setLandmark(id, true)
                 }
             }
         })
@@ -817,7 +818,7 @@ function Map() {
         self.z += easeAmount * dz
         self.renderMap()
         if (!immediate) {
-            if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001 || Math.abs(dz) > 0.001) {
+            if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dz) > 0.1) {
                 requestAnimationFrame(function() {self.animate()})
             } else {
                 self.x = self.targetX
@@ -866,7 +867,7 @@ function Map() {
         self.renderMarkers()
         self.sortLandmarks(self.landmarksSort) // update indexById 
         self.renderList()
-        self.selectLandmark(self.l) // scroll into view. calls renderItem
+        self.setLandmark(self.l) // scroll into view. calls renderItem
         self.renderStatus()
     }
 
@@ -958,8 +959,6 @@ function Map() {
     }
 
     self.onHashchange = function(e) {
-        /*
-        THIS WOULD BE THE LOGIC FOR l IN URL
         let values = window.location.hash.slice(1).split(",")
         if (values.length > 4) {
             values[3] = values.slice(3).join(",")
@@ -969,9 +968,15 @@ function Map() {
         if (isNaN(last)) {
             if (self.landmarksById[last]) {
                 l = last
-                lx = self.landmarksById[last].igCoordinates[0]
-                ly = self.landmarksById[last].igCoordinates[1]
-                lz = 5
+                if (self.landmarksById[last].igCoordinates) {
+                    lx = self.landmarksById[last].igCoordinates[0]
+                    ly = self.landmarksById[last].igCoordinates[1]
+                    lz = 5
+                } else {
+                    lx = self.defaultX
+                    ly = self.defaultY
+                    lz = self.defaultZ
+                }
             } else {
                 last = last.toLowerCase()
                 const landmarks = self.landmarks.filter(function(landmark) {
@@ -979,9 +984,15 @@ function Map() {
                 })
                 if (landmarks.length == 1) {
                     l = landmarks[0].id
-                    lx = landmarks[0].igCoordinates[0]
-                    ly = landmarks[0].igCoordinates[1]
-                    lz = 5
+                    if (landmarks[0].igCoordinates) {
+                        lx = landmarks[0].igCoordinates[0]
+                        ly = landmarks[0].igCoordinates[1]
+                        lz = 5
+                    } else {
+                        lx = self.defaultX
+                        ly = self.defaultY
+                        lz = self.defaultZ
+                    }
                 }
             }
         }
@@ -1003,7 +1014,20 @@ function Map() {
             v = isNaN(v) ? defaultV : self.clamp(v, minV, maxV)
             return v.toFixed(3)
         }).join(",") + (l ? "," + l : "")
-        */
+        if (hash != window.location.hash.substr(1)) {
+            window.location.hash = hash
+            return
+        }
+        self.targetL = l
+        if (l != self.l) {
+            self.selectLandmark(l)
+        }
+        [self.targetX, self.targetY, self.targetZ] = values
+        if (!self.isAnimating) {
+            self.animate()
+        }
+        // */
+        /*
         let hash = window.location.hash.slice(1)
         let values
         if (self.landmarksById[hash]) {
@@ -1031,6 +1055,8 @@ function Map() {
         if (!self.isAnimating) {
             self.animate()
         }
+        */
+
     }
 
     self.onKeydown = function(e) {
@@ -1068,41 +1094,42 @@ function Map() {
                 }())
             }
             if (e.key == "Escape") {
-                self.selectLandmark(null)
+                self.setLandmark(null)
             }
 
         } else if (self.focus == "list") {
 
-            if (["ArrowDown", "ArrowUp"].includes(e.key)) {
-                e.preventDefault()
-            }
             if (self.l === null) {
                 return
             }
-            const index = self.currentLandmarkIndexById[self.l]
-            if (e.key == "ArrowDown") {
-                if (index < self.currentLandmarks.length - 1) {
-                    self.selectLandmark(self.currentLandmarks[index + 1].id)
-                    self.panToLandmark()
-                }
-            } else if (e.key == "ArrowLeft") {
-                if (index > 0) {
-                    self.selectLandmark(self.currentLandmarks[0].id)
-                    self.panToLandmark()
-                }
-            } else if (e.key == "ArrowRight") {
-                if (index < self.currentLandmarks.length - 1) {
-                    self.selectLandmark(self.currentLandmarks[self.currentLandmarks.length - 1].id)
-                    self.panToLandmark()
-                }
-            } else if (e.key == "ArrowUp") {
-                if (index > 0) {
-                    self.selectLandmark(self.currentLandmarks[index - 1].id)
-                    self.panToLandmark()
+            if (["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
+                e.preventDefault()
+                const index = self.currentLandmarkIndexById[self.l]
+                let id = self.l
+                if (e.key == "ArrowDown") {
+                    if (index < self.currentLandmarks.length - 1) {
+                        id = self.currentLandmarks[index + 1].id
+                        self.setLandmark(id, true)
+                    }
+                } else if (e.key == "ArrowLeft") {
+                    if (index > 0) {
+                        id = self.currentLandmarks[0].id
+                        self.setLandmark(id, true)
+                    }
+                } else if (e.key == "ArrowRight") {
+                    if (index < self.currentLandmarks.length - 1) {
+                        id = self.currentLandmarks[self.currentLandmarks.length - 1].id
+                        self.setLandmark(id, true)
+                    }
+                } else if (e.key == "ArrowUp") {
+                    if (index > 0) {
+                        id = self.currentLandmarks[index - 1].id
+                        self.setLandmark(id, true)
+                    }
                 }
             } else if (e.key == "Escape") {
                 if (self.l) {
-                    self.selectLandmark(null)
+                    self.setLandmark(null)
                 }
             }
 
@@ -1135,9 +1162,9 @@ function Map() {
         if (e.target.classList.contains("marker")) {
             const id = e.target.id.replace("marker_", "")
             if (e.target.classList.contains("selected") && e.metaKey) {
-                self.selectLandmark(null)
+                self.setLandmark(null)
             } else if (!e.target.classList.contains("selected")) {
-                self.selectLandmark(id)
+                self.setLandmark(id)
             }
             return
         }
@@ -1251,7 +1278,6 @@ function Map() {
         self.photoDialogTitle.style.width = dialogWidth - 80 + "px"
         self.photoDialogContent.style.width = dialogWidth + "px"
         self.photoDialogContent.style.height = dialogHeight - 32 + "px"
-        console.log("RESIZING")
         self.dialogPhoto.style.width = dialogWidth + "px"
         self.dialogPhoto.style.height = dialogHeight - 32 + "px"
     }
@@ -1259,13 +1285,6 @@ function Map() {
     self.closePhotoDialog = function() {
         self.dialogLayer.style.display = "none"
         self.focus = "list"
-    }
-
-    self.panToLandmark = function() {
-        const landmark = self.landmarksById[self.l]
-        if (landmark.igCoordinates !== null) {
-            self.setTarget(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
-        }
     }
 
     self.renderItem = function() {
@@ -1487,10 +1506,32 @@ function Map() {
     self.setHash = function() {
         const hash = [self.targetX, self.targetY, self.targetZ].map(function (v) {
             return v.toFixed(3)
-        }).join(',')
+        }).join(",") + (self.targetL ? "," + self.targetL : "")
         if (window.location.hash.slice(1) != hash) {
             // history.replaceState(null, "", "#" + hash)
             window.location.hash = hash
+        }
+    }
+
+    self.setLandmark = function(id, pan) {
+        self.targetL = id
+        if (pan) {
+            const landmark = self.landmarksById[id]
+            if (landmark.igCoordinates) {
+                self.targetX = landmark.igCoordinates[0]
+                self.targetY = landmark.igCoordinates[1]
+                self.targetZ = self.z
+            }
+        }
+        if (!self.isAnimating) {
+            self.setHash()
+        } else {
+            let interval = setInterval(function() {
+                if (!self.isAnimating) {
+                    clearInterval(interval)
+                    self.setHash()
+                }
+            }, 25)
         }
     }
 
