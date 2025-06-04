@@ -507,10 +507,6 @@ function Map() {
                 self.tiles[z][y] = []
                 for (let x = x0; x <= x1; x++) {
                     self.tiles[z][y][x] = new Image()
-                    if (z == zInt) {
-                        self.tiles[z][y][x].onload = self.render
-                        self.tiles[z][y][x].src = `tiles/${z}/${z},${y},${x}.png`
-                    }
                 }
             }
         }
@@ -1083,26 +1079,23 @@ function Map() {
             if (self.l === null) {
                 return
             }
+            const index = self.currentLandmarkIndexById[self.l]
             if (e.key == "ArrowDown") {
-                const index = self.currentLandmarkIndexById[self.l]
                 if (index < self.currentLandmarks.length - 1) {
                     self.selectLandmark(self.currentLandmarks[index + 1].id)
                     self.panToLandmark()
                 }
             } else if (e.key == "ArrowLeft") {
-                const index = self.currentLandmarkIndexById[self.l]
                 if (index > 0) {
                     self.selectLandmark(self.currentLandmarks[0].id)
                     self.panToLandmark()
                 }
             } else if (e.key == "ArrowRight") {
-                const index = self.currentLandmarkIndexById[self.l]
                 if (index < self.currentLandmarks.length - 1) {
                     self.selectLandmark(self.currentLandmarks[self.currentLandmarks.length - 1].id)
                     self.panToLandmark()
                 }
             } else if (e.key == "ArrowUp") {
-                const index = self.currentLandmarkIndexById[self.l]
                 if (index > 0) {
                     self.selectLandmark(self.currentLandmarks[index - 1].id)
                     self.panToLandmark()
@@ -1393,12 +1386,19 @@ function Map() {
 
         for (let y = minTy; y <= maxTy; y++) {
             for (let x = minTx; x <= maxTx; x++) {
-                const img = self.tiles[zInt][y][x];
+                const img = self.tiles[zInt][y][x]
                 if (!img.src) {
-                    img.onload = self.render
+                    img.onload = function() {
+                        self.context.drawImage(
+                            img,
+                            offsetX + x * tileSize,
+                            offsetY + y * tileSize,
+                            tileSize,
+                            tileSize
+                        )
+                    }
                     img.src = `tiles/${zInt}/${zInt},${y},${x}.png`;
-                }
-                if (img.naturalWidth) {
+                } else {
                     self.context.drawImage(
                         img,
                         offsetX + x * tileSize,
