@@ -125,7 +125,7 @@
     ["b124", "?, Vice-Dale County", [1858,-984], 0, "Palazzo del Sol, 7000 Fisher Island Dr, Miami Beach, FL 33109", [25.7633615,-80.1370677], 0, "residential", "2a8308", 1748079313],
     ["b125", "?, Vice-Dale County", [2068,-1181], 0, "Villa del Mare, 7292 Fisher Island Dr, Miami Beach, FL 33109", [25.762287,-80.134708], 0, "residential", "487aab", 1748079313],
     ["b126", "?, Vice-Dale County", [993,-1207], 0, "VOR-DME (VKZ), Virginia Key", [25.751915,-80.1543757], 0, "", "b90096", 1748079313],
-    ["b127", "?, Vice-Dale County", [-290,-1850], 0, "Crandon Park Tennis Center, 7300 Crandon Blvd, Key Biscayne, FL 33149", [25.7083248,-80.1591495], 0, "entertainment", "908fb1", 1748079313],
+    ["b127", "?, Key Catalan", [-290,-1850], 0, "Crandon Park Tennis Center, 7300 Crandon Blvd, Key Biscayne, FL 33149", [25.7083248,-80.1591495], 0, "entertainment", "908fb1", 1749036887],
     ["b128", "?, Tequesta Key", [-23,-1104], 0, "Brickell Key One, 520 Brickell Key Dr, Miami, FL 33131", [25.767054,-80.1848621], 0, "", "422894", 1748079313],
     ["b129", "?, Tequesta Key", [-71,-1140], 0, "Brickell Key Two, 540 Brickell Key Dr, Miami, FL 33131", [25.767837,-80.184252], 0, "", "54b379", 1748538283],
     ["b130", "?, Tequesta Key", [73,-1046], 0, "Two Tequesta Point, 808 Brickell Key Dr, Miami, FL 33131", [25.7687471,-80.1830486], 0, "residential", "1b9c30", 1748079313],
@@ -640,5 +640,15 @@
     ["x297", "?, Vice-Dale County", [679,1220], 0, "421 E Dilido Dr, Miami Beach, FL 33139", [25.7906408,-80.158205], 0, "", "5c8655", 1748970172],
     ["x298", "?, Vice Beach", [1807,1702], 0, "Pedestrian Bridge, Miami Beach, FL 33140", [25.800305,-80.1276887], 0, "", "7b0e3c", 1748970501],
     ["x299", "?, Leonida", [], 0, "Gator Golf Adventure Park, 6586 International Dr, Orlando, FL 32819", [28.4577,-81.4729749], 0, "", "36ae87", 1748970652],
-    ["x300", "?, Leonida", [], 0, "Lost Caverns Adventure Golf, 6306 International Dr, Orlando, FL 32819", [28.4601399,-81.4714589], 0, "", "24bc4b", 1748970790]
+    ["x300", "?, Leonida", [], 0, "Lost Caverns Adventure Golf, 6306 International Dr, Orlando, FL 32819", [28.4601399,-81.4714589], 0, "", "24bc4b", 1748970790],
+    ["x301", "?, Leonida Keys", [-4456,-7135], 0, "Bahia Honda State Park, FL 33043", [24.6597635,-81.2746629], 0, "", "ba657b", 1749026319],
+    ["x302", "?, Vice-Dale County", [15,-2993], 0, "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149", [25.6545537,-80.1744735], 0, "", "88b942", 1749036807],
+    ["x303", "?, Vice-Dale County", [106,-2948], 0, "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149", [25.6545537,-80.1744735], 0, "", "88b942", 1749036608],
+    ["x304", "?, Vice-Dale County", [-91,-2924], 0, "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149", [25.6545537,-80.1744735], 0, "", "88b942", 1749036807],
+    ["x305", "?, Vice-Dale County", [-13,-2834], 0, "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149", [25.6545537,-80.1744735], 0, "", "88b942", 1749036807],
+    ["x306", "?, Vice-Dale County", [188,-2739], 0, "Stiltsville, Crandon Blvd, Key Biscayne, FL 33149", [25.6545537,-80.1744735], 0, "", "88b942", 1749036807],
+    ["x307", "Bridge, Vice-Dale County", [-624,-3201], 0, "?", [], 0, "", "3f7703", 1749036807],
+    ["x308", "Bridge, Vice City", [-684,-1762], 0, "?", [], 0, "", "3f7703", 1749036887],
+    ["x309", "Bridge, Vice-Dale County", [226,-2150], 0, "?", [], 0, "", "3f7703", 1749036945],
+    ["x310", "Bridge, Vice-Dale County", [1002,-1009], 0, "?", [], 0, "", "3f7703", 1749036987]
 ]
