@@ -1042,37 +1042,6 @@ function Map() {
         if (!self.isAnimating) {
             self.animate()
         }
-        // */
-        /*
-        let hash = window.location.hash.slice(1)
-        let values
-        if (self.landmarksById[hash]) {
-            values = self.landmarksById[hash].igCoordinates.concat([5])
-        } else {
-            values = hash.split(",").slice(0, 3).map(parseFloat)
-            if (values.length == 1) {
-                values = [self.defaultX, self.defaultY, values[0]]
-            } else if (values.length == 2) {
-                values = [values[0], values[1], self.defaultZ]
-            }
-        }
-        hash = values.map(function(v, i) {
-            const defaultV = [self.defaultX, self.defaultY, self.defaultZ][i]
-            const minV = [self.minX, self.minY, self.minZ][i]
-            const maxV = [self.maxX, self.maxY, self.maxZ][i]
-            v = isNaN(v) ? defaultV : self.clamp(v, minV, maxV)
-            return v.toFixed(3)
-        }).join(",")
-        if (hash != window.location.hash.substr(1)) {
-            window.location.hash = hash
-            return
-        }
-        [self.targetX, self.targetY, self.targetZ] = values
-        if (!self.isAnimating) {
-            self.animate()
-        }
-        */
-
     }
 
     self.onKeydown = function(e) {
