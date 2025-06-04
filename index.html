@@ -438,6 +438,7 @@ function Map() {
         landmarks: [],
         landmarksById: {},
         currentLandmarks: [],
+        currentLandmarksIndexById: {},
         landmarkTypes: [
             "agriculture",
             "commercial",
@@ -964,7 +965,7 @@ function Map() {
             values[3] = values.slice(3).join(",")
         }
         let last = values[values.length - 1]
-        let l, lx, ly, lz
+        let l, lx, ly, lz, q
         if (isNaN(last)) {
             if (self.landmarksById[last]) {
                 l = last
@@ -993,10 +994,25 @@ function Map() {
                         ly = self.defaultY
                         lz = self.defaultZ
                     }
+                } else {
+                    q = last
+                    if (q != self.query) {
+                        self.query = q
+                        self.findElement.value = q
+                        self.clearFindButton.display = "block"
+                        self.findAndFilterLandmarks(last, "all")
+                    }
                 }
             }
         }
-        if (l || values.length == 4) {
+        if (l && self.currentLandmarksIndexById[l] === void 0) {
+            self.findElement.value = ""
+            self.clearFindButton.display = "none"
+            self.filterElement.value = "all"
+            self.clearFilterButton.display = "none"
+            self.findAndFilterLandmarks("", "all")
+        }
+        if (l || q || values.length == 4) {
             values = values.slice(0, -1)
         }
         values = values.map(parseFloat)
@@ -1104,7 +1120,7 @@ function Map() {
             }
             if (["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
                 e.preventDefault()
-                const index = self.currentLandmarkIndexById[self.l]
+                const index = self.currentLandmarksIndexById[self.l]
                 let id = self.l
                 if (e.key == "ArrowDown") {
                     if (index < self.currentLandmarks.length - 1) {
@@ -1575,7 +1591,7 @@ function Map() {
             })
             return sortValues[0] < sortValues[1] ? -1 : sortValues[0] > sortValues[1] ? 1 : 0
         })
-        self.currentLandmarkIndexById = self.currentLandmarks.reduce(function(a, v, i) {
+        self.currentLandmarksIndexById = self.currentLandmarks.reduce(function(a, v, i) {
             a[v.id] = i
             return a
         }, {})
