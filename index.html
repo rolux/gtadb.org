@@ -886,10 +886,7 @@ function Map() {
     }
 
     self.formatCoordinates = function(coordinates) {
-        if (coordinates[0] == 0 && coordinates[1] == 0) {
-            return "?"
-        }
-        return coordinates.join(",")
+        return coordinates ? coordinates.join(",") : "?"
     }
 
     self.formatDate = function(timestamp) {
@@ -1552,15 +1549,15 @@ function Map() {
                 if (self.landmarksSort == "igAddress") {
                     return v.igAddressSortString + "\n" + v.irlAddressSortString
                 } else if (self.landmarksSort == "igLatitude") {
-                    return -v.igCoordinates[1] || 1000
+                    return v.igCoordinates ? -v.igCoordinates[1] : 1e6
                 } else if (self.landmarksSort == "igLongitude") {
-                    return v.igCoordinates[0] || 1000
+                    return v.igCoordinates ? v.igCoordinates[0] : 1e6
                 } else if (self.landmarksSort == "irlAddress") {
                     return v.irlAddressSortString + "\n" + v.igAddressSortString
                 } else if (self.landmarksSort == "irlLatitude") {
-                    return -v.irlCoordinates[0] || 1000
+                    return v.irlCoordinates ? -v.irlCoordinates[0] : 1e6
                 } else if (self.landmarksSort == "irlLongitude") {
-                    return v.irlCoordinates[1] || 1000
+                    return v.irlCoordinates ? v.irlCoordinates[1] : 1e6
                 } else if (self.landmarksSort == "type") {
                     return [v.type].concat(v.igAddress.split(", ").reverse()).join(", ")
                 } else if (self.landmarksSort == "id") {
