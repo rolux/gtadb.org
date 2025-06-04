@@ -1516,6 +1516,8 @@ function Map() {
                 self.targetZ = self.z
             }
         }
+        self.setHash()
+        /*
         if (!self.isAnimating) {
             self.setHash()
         } else {
@@ -1526,6 +1528,7 @@ function Map() {
                 }
             }, 25)
         }
+        */
     }
 
     self.setTarget = function(x, y, z, immediate=false) {
