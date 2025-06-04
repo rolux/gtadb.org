@@ -845,7 +845,7 @@ function Map() {
             return landmark.findString.includes(self.query) && (
                 self.landmarksFilter == "all" ||
                 self.landmarksFilter == "igNameConfirmed" && !landmark.igAddress.includes("?") && landmark.igAddress[0] != '"' ||
-                self.landmarksFilter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?"  && !landmark.irlAddress.slice(-1) == "?" ||
+                self.landmarksFilter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?" ||
                 self.landmarksFilter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
                 self.landmarksFilter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
                 self.landmarksFilter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
