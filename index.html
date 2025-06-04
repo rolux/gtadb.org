@@ -844,8 +844,8 @@ function Map() {
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
             return landmark.findString.includes(self.query) && (
                 self.landmarksFilter == "all" ||
-                self.landmarksFilter == "igNameConfirmed" && !landmark.igAddress.includes("?") && !landmark.igAddress[0] == '"' ||
-                self.landmarksFilter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && !landmark.igAddress[0] == "?"  && !landmark.irlAddress.slice(-1) == "?" ||
+                self.landmarksFilter == "igNameConfirmed" && !landmark.igAddress.includes("?") && landmark.igAddress[0] != '"' ||
+                self.landmarksFilter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?"  && !landmark.irlAddress.slice(-1) == "?" ||
                 self.landmarksFilter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
                 self.landmarksFilter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
                 self.landmarksFilter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
@@ -999,7 +999,9 @@ function Map() {
                     if (q != self.query) {
                         self.query = q
                         self.findElement.value = q
-                        self.clearFindButton.display = "block"
+                        self.clearFindButton.style.display = "block"
+                        self.filterElement.value = "all"
+                        self.clearFilterButton.style.display = "none"
                         self.findAndFilterLandmarks(last, "all")
                     }
                 }
@@ -1007,9 +1009,9 @@ function Map() {
         }
         if (l && self.currentLandmarksIndexById[l] === void 0) {
             self.findElement.value = ""
-            self.clearFindButton.display = "none"
+            self.clearFindButton.style.display = "none"
             self.filterElement.value = "all"
-            self.clearFilterButton.display = "none"
+            self.clearFilterButton.style.display = "none"
             self.findAndFilterLandmarks("", "all")
         }
         if (l || q || values.length == 4) {
