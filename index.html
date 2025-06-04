@@ -1437,19 +1437,23 @@ function Map() {
     }
 
     self.renderMarkers = function() {
+        const left = -16
+        const right = self.canvas.width + 16
+        const top = -24
+        const bottom = self.canvas.height + 24
         const mppx = self.getMppx()
         const minX = self.x - mppx * self.canvas.width / 2
-        const maxX = self.x + mppx * self.canvas.width / 2
-        const minY = self.y - mppx * self.canvas.height / 2
         const maxY = self.y + mppx * self.canvas.height / 2
         self.currentLandmarks.filter(function(landmark) {
             return landmark.igCoordinates !== null
         }).forEach(function(landmark) {
             let markerElement = self.markers[landmark.id]
             const [x, y] = landmark.igCoordinates
-            if (x >= minX - 16 && x <= maxX + 16 && y >= minY -16 && y <= maxY + 16) {
-                markerElement.style.left = (x - minX) / mppx + "px"
-                markerElement.style.top = (maxY - y) / mppx + "px"
+            const screenX = (x - minX) / mppx
+            const screenY = (maxY - y) / mppx
+            if (screenX >= left && screenX <= right && screenY >= top && screenY <= bottom) {
+                markerElement.style.left = screenX + "px"
+                markerElement.style.top = screenY + "px"
                 markerElement.style.display = "block"
             } else {
                 markerElement.style.display = "none"
