@@ -791,51 +791,6 @@ function Map() {
         self.photoDialogContent.className = "content"
         self.photoDialog.appendChild(self.photoDialogContent)
 
-        document.addEventListener("keydown", function(e) {
-            // FIXME: move this
-            const activeElement = document.activeElement
-            if (activeElement.tagName == "INPUT") {
-                return
-            }
-            if (self.focus != "list") {
-                return
-            }
-            if (["ArrowDown", "ArrowUp"].includes(e.key)) {
-                e.preventDefault()
-            }
-            if (self.l === null) {
-                return
-            }
-            if (e.key == "ArrowDown") {
-                const index = self.currentLandmarkIndexById[self.l]
-                if (index < self.currentLandmarks.length - 1) {
-                    self.selectLandmark(self.currentLandmarks[index + 1].id)
-                    self.panToLandmark()
-                }
-            } else if (e.key == "ArrowLeft") {
-                const index = self.currentLandmarkIndexById[self.l]
-                if (index > 0) {
-                    self.selectLandmark(self.currentLandmarks[0].id)
-                    self.panToLandmark()
-                }
-            } else if (e.key == "ArrowRight") {
-                const index = self.currentLandmarkIndexById[self.l]
-                if (index < self.currentLandmarks.length - 1) {
-                    self.selectLandmark(self.currentLandmarks[self.currentLandmarks.length - 1].id)
-                    self.panToLandmark()
-                }
-            } else if (e.key == "ArrowUp") {
-                const index = self.currentLandmarkIndexById[self.l]
-                if (index > 0) {
-                    self.selectLandmark(self.currentLandmarks[index - 1].id)
-                    self.panToLandmark()
-                }
-            } else if (e.key == "Escape") {
-                if (self.l) {
-                    self.selectLandmark(null)
-                }
-            }
-        })
         self.listPanel.addEventListener("mousedown", function(e) {
             self.focus = "list"
             if (e.target.parentElement.classList.contains("item")) {
@@ -1083,49 +1038,91 @@ function Map() {
     }
 
     self.onKeydown = function(e) {
+
         const activeElement = document.activeElement
         if (activeElement.tagName == "INPUT") {
             return
         }
-        if (self.focus == "dialog") {
+
+        if (self.focus == "map") {
+
+            if (["1", "2", "3", "4", "5", "6"].includes(e.key)) {
+                self.setTarget(self.targetX, self.targetY, parseInt(e.key))
+            }
+            if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
+                if (self.keydownTimeout) {
+                    clearTimeout(self.keydownTimeout)
+                    self.keydownTimeout = null
+                }
+                (function keydownFn() {
+                    if (e.key == "-") {
+                        self.setTarget(self.targetX, self.targetY, self.targetZ - self.zoomAmount)
+                    } else if (e.key == "=") {
+                        self.setTarget(self.targetX, self.targetY, self.targetZ + self.zoomAmount)
+                    } else if (e.key == "ArrowDown") {
+                        self.setTarget(self.targetX, self.targetY - self.getMppx() * canvas.height * self.panAmount, self.targetZ)
+                    } else if (e.key == "ArrowLeft") {
+                        self.setTarget(self.targetX - self.getMppx() * canvas.height * self.panAmount, self.targetY, self.targetZ)
+                    } else if (e.key == "ArrowRight") {
+                        self.setTarget(self.targetX + self.getMppx() * canvas.height * self.panAmount, self.targetY, self.targetZ)
+                    } else if (e.key == "ArrowUp") {
+                        self.setTarget(self.targetX, self.targetY + self.getMppx() * canvas.height * self.panAmount, self.targetZ)
+                    }
+                    self.keydownTimeout = setTimeout(keydownFn)
+                }())
+            }
+            if (e.key == "Escape") {
+                self.selectLandmark(null)
+            }
+
+        } else if (self.focus == "list") {
+
+            if (["ArrowDown", "ArrowUp"].includes(e.key)) {
+                e.preventDefault()
+            }
+            if (self.l === null) {
+                return
+            }
+            if (e.key == "ArrowDown") {
+                const index = self.currentLandmarkIndexById[self.l]
+                if (index < self.currentLandmarks.length - 1) {
+                    self.selectLandmark(self.currentLandmarks[index + 1].id)
+                    self.panToLandmark()
+                }
+            } else if (e.key == "ArrowLeft") {
+                const index = self.currentLandmarkIndexById[self.l]
+                if (index > 0) {
+                    self.selectLandmark(self.currentLandmarks[0].id)
+                    self.panToLandmark()
+                }
+            } else if (e.key == "ArrowRight") {
+                const index = self.currentLandmarkIndexById[self.l]
+                if (index < self.currentLandmarks.length - 1) {
+                    self.selectLandmark(self.currentLandmarks[self.currentLandmarks.length - 1].id)
+                    self.panToLandmark()
+                }
+            } else if (e.key == "ArrowUp") {
+                const index = self.currentLandmarkIndexById[self.l]
+                if (index > 0) {
+                    self.selectLandmark(self.currentLandmarks[index - 1].id)
+                    self.panToLandmark()
+                }
+            } else if (e.key == "Escape") {
+                if (self.l) {
+                    self.selectLandmark(null)
+                }
+            }
+
+        } else if (self.focus == "dialog") {
+
             if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
                 self.switchPhotoDialog()
             } else if (e.key == "Escape") {
                 self.closePhotoDialog()
             }
+
         }
-        if (self.focus != "map") {
-            return
-        }
-        console.log(e.key)
-        if (["1", "2", "3", "4", "5", "6"].includes(e.key)) {
-            self.setTarget(self.targetX, self.targetY, parseInt(e.key))
-        }
-        if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
-            if (self.keydownTimeout) {
-                clearTimeout(self.keydownTimeout)
-                self.keydownTimeout = null
-            }
-            (function keydownFn() {
-                if (e.key == "-") {
-                    self.setTarget(self.targetX, self.targetY, self.targetZ - self.zoomAmount)
-                } else if (e.key == "=") {
-                    self.setTarget(self.targetX, self.targetY, self.targetZ + self.zoomAmount)
-                } else if (e.key == "ArrowDown") {
-                    self.setTarget(self.targetX, self.targetY - self.getMppx() * canvas.height * self.panAmount, self.targetZ)
-                } else if (e.key == "ArrowLeft") {
-                    self.setTarget(self.targetX - self.getMppx() * canvas.height * self.panAmount, self.targetY, self.targetZ)
-                } else if (e.key == "ArrowRight") {
-                    self.setTarget(self.targetX + self.getMppx() * canvas.height * self.panAmount, self.targetY, self.targetZ)
-                } else if (e.key == "ArrowUp") {
-                    self.setTarget(self.targetX, self.targetY + self.getMppx() * canvas.height * self.panAmount, self.targetZ)
-                }
-                self.keydownTimeout = setTimeout(keydownFn)
-            }())
-        }
-        if (e.key == "Escape") {
-            self.selectLandmark(null)
-        }
+
     }
 
     self.onKeyup = function(e) {
@@ -1268,7 +1265,7 @@ function Map() {
 
     self.closePhotoDialog = function() {
         self.dialogLayer.style.display = "none"
-        self.focus = "item"
+        self.focus = "list"
     }
 
     self.panToLandmark = function() {
