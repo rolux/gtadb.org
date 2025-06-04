@@ -853,30 +853,27 @@ function Map() {
     }
 
     self.animate = function(immediate=false) {
-        //console.log("animate", immediate)
         if (!immediate) {
             self.isAnimating = true
         }
-        const dx = self.hashX - self.x
-        const dy = self.hashY - self.y
-        const dz = self.hashZ - self.z
-        if (!immediate && Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001 && Math.abs(dz) <= 0.001) {
-            self.x = self.hashX
-            self.y = self.hashY
-            self.z = self.hashZ
-            //console.log("STOP ANIMATION", "immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
-            self.isAnimating = false
-            self.setHashURL()
-            return
-        }
-        //console.log("immediate", immediate, "dx", dx, "dy", dy, "dz", dz)
+        const dx = self.targetX - self.x
+        const dy = self.targetY - self.y
+        const dz = self.targetZ - self.z
         easeAmount = immediate ? 1 : self.easeAmount
         self.x += easeAmount * dx
         self.y += easeAmount * dy
         self.z += easeAmount * dz
         self.renderMap()
         if (!immediate) {
-            requestAnimationFrame(function() {self.animate()})
+            if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001 || Math.abs(dz) > 0.001) {
+                requestAnimationFrame(function() {self.animate()})
+            } else {
+                self.x = self.targetX
+                self.y = self.targetY
+                self.z = self.targetZ
+                self.isAnimating = false
+                self.setHash()
+            }
         }
     }
 
@@ -1078,11 +1075,10 @@ function Map() {
             window.location.hash = hash
             return
         }
-        [self.hashX, self.hashY, self.hashZ] = values
+        [self.targetX, self.targetY, self.targetZ] = values
         if (!self.isAnimating) {
             self.animate()
         }
-        //that.update.apply(null, values)
     }
 
     self.onKeydown = function(e) {
@@ -1102,7 +1098,7 @@ function Map() {
         }
         console.log(e.key)
         if (["1", "2", "3", "4", "5", "6"].includes(e.key)) {
-            self.setHash(self.hashX, self.hashY, parseInt(e.key))
+            self.setTarget(self.targetX, self.targetY, parseInt(e.key))
         }
         if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
             if (self.keydownTimeout) {
@@ -1111,17 +1107,17 @@ function Map() {
             }
             (function keydownFn() {
                 if (e.key == "-") {
-                    self.setHash(self.hashX, self.hashY, self.hashZ - self.zoomAmount)
+                    self.setTarget(self.targetX, self.targetY, self.targetZ - self.zoomAmount)
                 } else if (e.key == "=") {
-                    self.setHash(self.hashX, self.hashY, self.hashZ + self.zoomAmount)
+                    self.setTarget(self.targetX, self.targetY, self.targetZ + self.zoomAmount)
                 } else if (e.key == "ArrowDown") {
-                    self.setHash(self.hashX, self.hashY - self.getMppx() * canvas.height * self.panAmount, self.hashZ)
+                    self.setTarget(self.targetX, self.targetY - self.getMppx() * canvas.height * self.panAmount, self.targetZ)
                 } else if (e.key == "ArrowLeft") {
-                    self.setHash(self.hashX - self.getMppx() * canvas.height * self.panAmount, self.hashY, self.hashZ)
+                    self.setTarget(self.targetX - self.getMppx() * canvas.height * self.panAmount, self.targetY, self.targetZ)
                 } else if (e.key == "ArrowRight") {
-                    self.setHash(self.hashX + self.getMppx() * canvas.height * self.panAmount, self.hashY, self.hashZ)
+                    self.setTarget(self.targetX + self.getMppx() * canvas.height * self.panAmount, self.targetY, self.targetZ)
                 } else if (e.key == "ArrowUp") {
-                    self.setHash(self.hashX, self.hashY + self.getMppx() * canvas.height * self.panAmount, self.hashZ)
+                    self.setTarget(self.targetX, self.targetY + self.getMppx() * canvas.height * self.panAmount, self.targetZ)
                 }
                 self.keydownTimeout = setTimeout(keydownFn)
             }())
@@ -1157,14 +1153,14 @@ function Map() {
         self.isDragging = false
         const clientX = e.clientX
         const clientY = e.clientY
-        const [originalX, originalY, originalZ] = [self.hashX, self.hashY, self.hashZ]
+        const [originalX, originalY, originalZ] = [self.targetX, self.targetY, self.targetZ]
         const mppx = self.getMppx()
         function onMousemove(e) {
             if (!self.isDragging) {
                 self.isDragging = true
                 self.element.classList.add("dragging")
             }
-            self.setHash(
+            self.setTarget(
                 originalX - mppx * (e.clientX - clientX),
                 originalY + mppx * (e.clientY - clientY),
                 originalZ,
@@ -1177,12 +1173,12 @@ function Map() {
                 self.mouseTimeout = null
                 const x = originalX + mppx * (clientX - canvas.width / 2)
                 const y = originalY - mppx * (clientY - canvas.height / 2)
-                self.setHash(x, y, originalZ)
+                self.setTarget(x, y, originalZ)
                 navigator.clipboard.writeText(Math.round(x) + "," + Math.round(y))
             } else if (self.isDragging) {
                 self.isDragging = false
                 self.element.classList.remove("dragging")
-                self.setHashURL()
+                self.setHash()
             }
             document.removeEventListener("mousemove", onMousemove)
             document.removeEventListener("mouseup", onMouseup)
@@ -1218,14 +1214,14 @@ function Map() {
         const targetMppx = self.getMppx(targetZ)
         const offsetX = e.clientX - canvas.width / 2
         const offsetY = e.clientY - canvas.height / 2
-        self.setHash(
+        self.setTarget(
             self.x + mppx * offsetX - targetMppx * offsetX,
             self.y - mppx * offsetY + targetMppx * offsetY,
             targetZ,
             true
         )
         self.wheelTimeout = setTimeout(function() {
-            self.setHashURL()
+            self.setHash()
         }, 100)
     }
 
@@ -1277,7 +1273,7 @@ function Map() {
     self.panToLandmark = function() {
         const landmark = self.landmarksById[self.l]
         if (landmark.igCoordinates !== null) {
-            self.setHash(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
+            self.setTarget(landmark.igCoordinates[0], landmark.igCoordinates[1], self.z)
         }
     }
 
@@ -1298,7 +1294,7 @@ function Map() {
             if (landmark.igCoordinates) {
                 link.classList.add("link")
                 link.addEventListener("mousedown", function() {
-                    self.setHash(
+                    self.setTarget(
                         landmark.igCoordinates[0],
                         landmark.igCoordinates[1],
                         self.z
@@ -1490,28 +1486,27 @@ function Map() {
         self.renderItem()
     }
 
-    self.setHash = function(x, y, z, immediate=false) {
-        x = self.clamp(x, self.minX, self.maxX)
-        y = self.clamp(y, self.minY, self.maxY)
-        z = self.clamp(z, self.minZ, self.maxZ)
-        if (x != self.hashX || y != self.hashY || z != self.hashZ) {
-            self.hashX = x
-            self.hashY = y
-            self.hashZ = z
-            if (!self.isAnimating || immediate) {
-                self.animate(immediate)
-            }
-        }
-
-    }
-
-    self.setHashURL = function() {
-        const hash = [self.hashX, self.hashY, self.hashZ].map(function (v) {
+    self.setHash = function() {
+        const hash = [self.targetX, self.targetY, self.targetZ].map(function (v) {
             return v.toFixed(3)
         }).join(',')
         if (window.location.hash.slice(1) != hash) {
             // history.replaceState(null, "", "#" + hash)
             window.location.hash = hash
+        }
+    }
+
+    self.setTarget = function(x, y, z, immediate=false) {
+        x = self.clamp(x, self.minX, self.maxX)
+        y = self.clamp(y, self.minY, self.maxY)
+        z = self.clamp(z, self.minZ, self.maxZ)
+        if (x != self.targetX || y != self.targetY || z != self.targetZ) {
+            self.targetX = x
+            self.targetY = y
+            self.targetZ = z
+            if (!self.isAnimating || immediate) {
+                self.animate(immediate)
+            }
         }
     }
 
