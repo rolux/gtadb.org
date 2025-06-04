@@ -398,7 +398,7 @@
     ["x55", "Allied Crystal Sugar Mill, Ambrosia", [-3909,3399], 0, "US Sugar Mill, Georgia Ave, Clewiston, FL 33440", [26.7375924,-80.9383973], 0, "", "6d1e79", 1748079313],
     ["x56", "Allied Crystal Silo, Ambrosia", [-3806,3657], 0, "1500 Sonora Ave, Clewiston, FL 33440", [26.7391894,-80.9376947], 0, "", "289006", 1748885706],
     ["x57", "Allied Crystal Tank, Ambrosia", [-3947,3564], 0, "1500 Sonora Ave, Clewiston, FL 33440", [26.7391894,-80.9376947], 0, "", "289006", 1748079313],
-    ["x58", "Water Tower, Ambrosia", [-4317,3179], 0, "?", [], 0, "", "3f7703", 1748079313],
+    ["x58", "Water Tower, Ambrosia", [-4317,3179], 0, "Sebring Water Tower, Country Club Ln, Sebring, FL 33870?", [27.473246,-81.470079], 0, "", "3b0245", 1749054096],
     ["x59", "?, Ambrosia", [-4013,4031], 0, "100 E Sugarland Hwy, Clewiston, FL 33440", [26.7539437,-80.9365531], 0, "", "0f968a", 1748079313],
     ["x60", "?, Ambrosia", [-3975,3993], 0, "602 E Sugarland Hwy, Clewiston, FL 33440", [26.7540678,-80.928104], 0, "", "5d8bae", 1748079313],
     ["x61", "?, Ambrosia", [-3941,3962], 0, "600 E Sugarland Hwy, Clewiston, FL 33440", [26.7539089,-80.928329], 0, "", "ae784b", 1748079313],
@@ -586,7 +586,7 @@
     ["x243", "?, Vice City", [-1381,1689], 0, "1 NW 62nd St, Miami, FL 33150", [25.8328333,-80.1963767], 0, "", "7c2750", 1748718909],
     ["x244", "?, Vice City", [-757,1520], 0, "551 NW 71st St, Miami, FL 33150", [25.8400149,-80.2081536], 0, "", "bf5b39", 1748719084],
     ["x245", "?, Leonida Keys", [-4925,-6890], 0, "Old Bahia Honda Bridge, West, Summerland Key, FL 33043", [24.6550435,-81.2879863], 0, "", "2921a8", 1748719084],
-    ["x246", "?, Ambrosia", [-4030,4345], 0, "Orlando Speed World Oval Track, Orlando, FL 32833", [28.5387341,-81.0925207], 0, "", "bc2e6f", 1748719309],
+    ["x246", "?, Ambrosia", [-4030,4345], 0, "Orlando Speed World Oval Track, Orlando, FL 32833?", [28.5387341,-81.0925207], 0, "", "bc2e6f", 1749054096],
     ["x247", "?, Ambrosia", [-3511,3819], 0, "Orlando Station, 1400 Sligh Blvd, Orlando, FL 32806?", [28.5260208,-81.3827421], 0, "", "177014", 1748719616],
     ["x248", "?, Key Lento", [-3115,-6509], 0, "82758 Overseas Hwy, Islamorada, FL 33036", [24.9276852,-80.6272441], 0, "", "4d098b", 1748720327],
     ["x249", "?, Vice Beach", [1135,1842], 0, "Pelican Harbor Radio Tower, 1277 NE 79th St, Miami, FL 33138", [25.8486271,-80.1664244], 0, "", "bf7646", 1748720677],
@@ -652,5 +652,11 @@
     ["x309", "Bridge, Vice-Dale County", [226,-2150], 0, "?", [], 0, "", "3f7703", 1749036945],
     ["x310", "Bridge, Vice-Dale County", [1002,-1009], 0, "?", [], 0, "", "3f7703", 1749036987],
     ["x311", "Train Bridge, Kelly County", [-4907,5823], 0, "?", [], 0, "", "3f7703", 1749051012],
-    ["x312", "?, Vice City", [-647,1737], 0, "CEMEX Mid-Town Miami Concrete Plant, 1610 NW 21st Terrace, Miami, FL 33142", [25.7961376,-80.2244026], 0, "", "8a7935", 1749051012]
+    ["x312", "?, Vice City", [-647,1737], 0, "CEMEX Mid-Town Miami Concrete Plant, 1610 NW 21st Terrace, Miami, FL 33142", [25.7961376,-80.2244026], 0, "", "8a7935", 1749051012],
+    ["x313", "Water Tower, Ambrosia", [-4170,3738], 0, "?", [], 0, "", "3f7703", 1749054063],
+    ["x314", "?, Vice Beach", [1755,1656], 0, "2395 Flamingo Dr, Miami Beach, FL 33140", [25.8003916,-80.1308372], 0, "", "565d72", 1749059605],
+    ["x315", "?, Vice-Dale County", [624,1424], 0, "?", [], 0, "", "3f7703", 1749059808],
+    ["x316", "?, Vice-Dale County", [633,1393], 0, "?", [], 0, "", "3f7703", 1749059808],
+    ["x317", "?, Vice-Dale County", [637,1372], 0, "?", [], 0, "", "3f7703", 1749059808],
+    ["x318", "?, Vice-Dale County", [642,1352], 0, "?", [], 0, "", "3f7703", 1749059808]
 ]
