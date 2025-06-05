@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 """
-this script creates 7 levels of 1024x1024 px tiles, from 0 to 6,
+This script creates 7 levels of 1024x1024 px tiles, from 0 to 6,
 centered on (0, 0), so that at level 0, the entire map fits into
 a single tile, and at level 5, the map scale is exactly 1 px/m.
 """
@@ -57,11 +57,11 @@ for map_name, map_version, map_scale, map_zero in maps:
                 filename = f"tiles/{map_name},{map_version}/{z}/{z},{y},{x}.jpg"
                 if os.path.exists(filename):
                     continue
+                cropped = image.crop(crop)
                 if map_name == "dupzor":
                     tile_image = Image.new("RGBA", (tile_size, tile_size), (0, 0, 0, 255))
                 else:
                     tile_image = Image.open(f"tiles/{maps[0][0]},{maps[0][1]}/{z}/{z},{y},{x}.jpg").convert("RGBA")
-                cropped = image.crop(crop)
                 tile_image.paste(cropped, (0, 0), cropped)
                 tile_image = tile_image.convert("RGB")
                 print(f"writing {filename}")
