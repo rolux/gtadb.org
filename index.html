@@ -403,19 +403,33 @@ function Map() {
         maxX: 4000,
         minY: -8000,
         maxY: 12000,
-        minZ: 1,
+        minZ: 0,
         maxZ: 6,
-        zeroX: 22384,
-        zeroY: 18384,
+        zeroX: 16384,
+        zeroY: 16384,
         tileSize: 1024,
+        tileSets: ["dupzor,51", "rickrick,2"],
         tileRanges: {
-            1: [[ 0,  0], [ 1,  1]],
-            2: [[ 0,  0], [ 3,  3]],
-            3: [[ 1,  1], [ 6,  6]],
-            4: [[ 3,  3], [12, 12]],
-            5: [[ 6,  6], [25, 25]],
-            6: [[12, 12], [51, 51]]
+            "dupzor,51": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 1,  1]],
+                2: [[ 0,  0], [ 2,  2]],
+                3: [[ 0,  1], [ 4,  5]],
+                4: [[ 0,  2], [ 9, 11]],
+                5: [[ 0,  4], [19, 23]],
+                6: [[ 0,  8], [38, 47]]
+            },
+            "rickrick,2": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 1,  1]],
+                2: [[ 1,  1], [ 2,  2]],
+                3: [[ 3,  3], [ 4,  4]],
+                4: [[ 7,  6], [ 9,  9]],
+                5: [[14, 13], [18, 18]],
+                6: [[28, 26], [36, 36]]
+            }
         },
+        currentTileSet: "dupzor,51",
         tiles: {},
         defaultX: -4000,
         defaultY: 2000,
@@ -503,16 +517,19 @@ function Map() {
         document.body.appendChild(self.element)
 
         const zInt = Math.ceil(self.z)
-        for (let z = self.minZ; z <= self.maxZ; z++) {
-            self.tiles[z] = []
-            const [[x0, y0], [x1, y1]] = self.tileRanges[z]
-            for (let y = y0; y <= y1; y++) {
-                self.tiles[z][y] = []
-                for (let x = x0; x <= x1; x++) {
-                    self.tiles[z][y][x] = new Image()
+        self.tileSets.forEach(function(tileSet) {
+            self.tiles[tileSet] = {}
+            for (let z = self.minZ; z <= self.maxZ; z++) {
+                self.tiles[tileSet][z] = {}
+                const [[x0, y0], [x1, y1]] = self.tileRanges[tileSet][z]
+                for (let y = y0; y <= y1; y++) {
+                    self.tiles[tileSet][z][y] = {}
+                    for (let x = x0; x <= x1; x++) {
+                        self.tiles[tileSet][z][y][x] = new Image()
+                    }
                 }
             }
-        }
+        })
 
         self.markersLayer.addEventListener("click", self.onClick)
         window.addEventListener("hashchange", self.onHashchange)
@@ -927,7 +944,7 @@ function Map() {
     }
 
     self.getMppx = function(z=self.z) {
-        return self.mapW / (self.tileSize * Math.pow(2, z))
+        return self.mapW / (1024 * Math.pow(2, z))
     }
 
     self.loadJSON = async function(url) {
@@ -1055,10 +1072,13 @@ function Map() {
 
         if (self.focus == "map") {
 
-            if (["1", "2", "3", "4", "5", "6"].includes(e.key)) {
+            if (["0","1", "2", "3", "4", "5", "6"].includes(e.key)) {
                 self.setTarget(self.targetX, self.targetY, parseInt(e.key))
-            }
-            if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
+            } else if (e.key == "r") {
+                console.log("SWITCH TILESET")
+                self.currentTileSet = self.currentTileSet == "dupzor,51" ? "rickrick,2" : "dupzor,51"
+                self.renderMap()
+            } else if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
                 if (self.keydownTimeout) {
                     clearTimeout(self.keydownTimeout)
                     self.keydownTimeout = null
@@ -1079,8 +1099,7 @@ function Map() {
                     }
                     self.keydownTimeout = setTimeout(keydownFn)
                 }())
-            }
-            if (e.key == "Escape") {
+            } else if (e.key == "Escape") {
                 self.setLandmark(null)
             }
 
@@ -1384,33 +1403,51 @@ function Map() {
         const offsetY = self.canvas.height / 2 - cY;
         const tileSize = self.tileSize * Math.pow(2, self.z - zInt);
 
-        const [[x0, y0], [x1, y1]] = self.tileRanges[zInt]
-        const minTx = self.clamp(Math.floor(-offsetX / tileSize), x0, x1)
-        const maxTx = self.clamp(Math.ceil((self.canvas.width - offsetX) / tileSize), x0, x1)
-        const minTy = self.clamp(Math.floor(-offsetY / tileSize), y0, y1)
-        const maxTy = self.clamp(Math.ceil((self.canvas.height - offsetY) / tileSize), y0, y1)
+        const [[x0, y0], [x1, y1]] = self.tileRanges["dupzor,51"][zInt]
+        let xx0, yy0, xx1, yy1
+        if (self.currentTileSet == "rickrick,2") {
+            [[xx0, yy0], [xx1, yy1]] = self.tileRanges["rickrick,2"][zInt]
+        }
+
+        const minTx = Math.floor(-offsetX / tileSize)
+        const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)
+        const minTy = Math.floor(-offsetY / tileSize)
+        const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
 
         for (let y = minTy; y <= maxTy; y++) {
             for (let x = minTx; x <= maxTx; x++) {
-                const img = self.tiles[zInt][y][x]
-                if (!img.src) {
-                    (function(originalX, originalY, originalZ) {
-                        img.addEventListener("load", function() {
-                            if (originalX == self.x && originalY == self.y && originalZ == self.z) {
-                                self.context.drawImage(
-                                    img,
-                                    offsetX + x * tileSize,
-                                    offsetY + y * tileSize,
-                                    tileSize,
-                                    tileSize
-                                )
-                            }
-                        })
-                    })(self.x, self.y, self.z)
-                    img.src = `tiles/${zInt}/${zInt},${y},${x}.png`;
+                if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
+                    const tileSet = (
+                        self.currentTileSet == "rickrick,2"
+                        && x >= xx0 && x <= xx1 && y >= yy0 && y <= yy1
+                    ) ? "rickrick,2" : "dupzor,51"
+                    const img = self.tiles[tileSet][zInt][y][x]
+                    if (!img.src) {
+                        (function(originalX, originalY, originalZ) {
+                            img.addEventListener("load", function() {
+                                if (originalX == self.x && originalY == self.y && originalZ == self.z) {
+                                    self.context.drawImage(
+                                        img,
+                                        offsetX + x * tileSize,
+                                        offsetY + y * tileSize,
+                                        tileSize,
+                                        tileSize
+                                    )
+                                }
+                            })
+                        })(self.x, self.y, self.z)
+                        img.src = `tiles/${tileSet}/${zInt}/${zInt},${y},${x}.jpg`;
+                    } else {
+                        self.context.drawImage(
+                            img,
+                            offsetX + x * tileSize,
+                            offsetY + y * tileSize,
+                            tileSize,
+                            tileSize
+                        )
+                    }
                 } else {
-                    self.context.drawImage(
-                        img,
+                    self.context.clearRect(
                         offsetX + x * tileSize,
                         offsetY + y * tileSize,
                         tileSize,
