@@ -3,9 +3,9 @@ import os
 from PIL import Image
 
 """
-this script creates levels of 1024x1024 px tiles, from 0 to 6,
-centered on (0, 0), so that at level 0, the map fits into a
-single tile, and at level 5, the map scale is exactly 1 px/m.
+this script creates 7 levels of 1024x1024 px tiles, from 0 to 6,
+centered on (0, 0), so that at level 0, the entire map fits into
+a single tile, and at level 5, the map scale is exactly 1 px/m.
 """
 
 maps = [
