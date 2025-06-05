@@ -683,5 +683,15 @@
     ["x340", "?, Crosstown, Vice City", [-1136,397], 0, "?", [], 0, "", "3f7703", 1749137379],
     ["x341", "Construction Site, Crosstown, Vice City", [-727,270], 0, "?", [], 0, "", "3f7703", 1749137438],
     ["x342", "?, Crosstown, Vice City", [-967,-55], 0, "Main Library, 101 W Flagler St, Miami, FL 33130", [25.7743802,-80.2000636], 0, "", "278e08", 1749137552],
-    ["x343", "?, Vice City", [-563,-95], 0, "IVE Hotel Miami, 146 Biscayne Blvd, Miami, FL 33132", [25.7760686,-80.1907923], 0, "", "1c029b", 1749137714]
+    ["x343", "?, Vice City", [-563,-95], 0, "IVE Hotel Miami, 146 Biscayne Blvd, Miami, FL 33132", [25.7760686,-80.1907923], 0, "", "1c029b", 1749137714],
+    ["x344", "Prison, Hamlet", [-3061,-3840], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x345", "Container Crane #1, Port Vice City", [1028,-259], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x346", "Container Crane #2, Port Vice City", [1140,-346], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x347", "Container Crane #3, Port Vice City", [1218,-421], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x348", "Container Crane #4, Port Vice City", [1357,-542], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x349", "Container Crane #5, Port Vice City", [1455,-626], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x350", "Container Crane #6, Port Vice City", [1376,-720], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x351", "Container Crane #7, Port Vice City", [1276,-744], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x352", "Container Crane #8, Port Vice City", [1148,-773], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x353", "Container Crane #9, Port Vice City", [1049,-797], 0, "?", [], 0, "", "3f7703", 1749139502]
 ]
