@@ -1070,14 +1070,15 @@ function Map() {
             return
         }
 
+        if (e.key == "r") {
+            self.currentTileSet = self.currentTileSet == "dupzor,51" ? "rickrick,2" : "dupzor,51"
+            self.renderMap()
+        }
+
         if (self.focus == "map") {
 
-            if (["0","1", "2", "3", "4", "5", "6"].includes(e.key)) {
+            if (["0", "1", "2", "3", "4", "5", "6"].includes(e.key)) {
                 self.setTarget(self.targetX, self.targetY, parseInt(e.key))
-            } else if (e.key == "r") {
-                console.log("SWITCH TILESET")
-                self.currentTileSet = self.currentTileSet == "dupzor,51" ? "rickrick,2" : "dupzor,51"
-                self.renderMap()
             } else if (["-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
                 if (self.keydownTimeout) {
                     clearTimeout(self.keydownTimeout)
