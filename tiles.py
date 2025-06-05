@@ -5,7 +5,7 @@ from PIL import Image
 """
 this script creates levels of 1024x1024 px tiles, from 0 to 6,
 centered on (0, 0), so that at level 0, the map fits into a
-single tile, and at level 5, the map scale is 1 px/m.
+single tile, and at level 5, the map scale is exactly 1 px/m.
 """
 
 maps = [
@@ -58,7 +58,7 @@ for map_name, map_version, map_scale, map_zero in maps:
                 if os.path.exists(filename):
                     continue
                 if map_name == "dupzor":
-                    tile_image = Image.new("RGBA", (tile_size, tile_size), (0, 0, 0, 1))
+                    tile_image = Image.new("RGBA", (tile_size, tile_size), (0, 0, 0, 255))
                 else:
                     tile_image = Image.open(f"tiles/{maps[0][0]},{maps[0][1]}/{z}/{z},{y},{x}.jpg").convert("RGBA")
                 cropped = image.crop(crop)
