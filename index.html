@@ -1070,7 +1070,7 @@ function Map() {
             return
         }
 
-        if (e.key == "r") {
+        if (e.key == "r" && !e.metaKey) {
             self.currentTileSet = self.currentTileSet == "dupzor,51" ? "rickrick,2" : "dupzor,51"
             self.renderMap()
         }
