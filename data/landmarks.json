@@ -693,5 +693,11 @@
     ["x350", "Container Crane #6, Port Vice City", [1376,-720], 0, "?", [], 0, "", "3f7703", 1749139502],
     ["x351", "Container Crane #7, Port Vice City", [1276,-744], 0, "?", [], 0, "", "3f7703", 1749139502],
     ["x352", "Container Crane #8, Port Vice City", [1148,-773], 0, "?", [], 0, "", "3f7703", 1749139502],
-    ["x353", "Container Crane #9, Port Vice City", [1049,-797], 0, "?", [], 0, "", "3f7703", 1749139502]
+    ["x353", "Container Crane #9, Port Vice City", [1049,-797], 0, "?", [], 0, "", "3f7703", 1749139502],
+    ["x354", "?, Vice Beach", [2263,-576], 0, "South Pointe Park Pier, 1 Washington Ave, Miami Beach, FL 33139", [25.7635368,-80.1322455], 0, "", "160d12", 1749139615],
+    ["x355", "?, Stockyard, Vice City", [-610,1544], 0, "?", [], 0, "", "3f7703", 1749139855],
+    ["x356", "?, Vice City", [-329,1534], 0, "2125 Biscayne Blvd, Miami, FL 33137", [25.7979951,-80.1911469], 0, "", "4f538c", 1749140098],
+    ["x357", "Parking Garage, Stockyard, Vice City", [-435,1465], 0, "2000 N Bayshore Dr, Miami, FL 33137", [25.795458,-80.188282], 0, "", "6aba9c", 1749140155],
+    ["x358", "?, Stockyard, Vice City", [-605,1433], 0, "?", [], 0, "", "3f7703", 1749140155],
+    ["x359", "?, Vice City", [-1355,1678], 0, "?", [], 0, "", "3f7703", 1749140225]
 ]
