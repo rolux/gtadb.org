@@ -594,7 +594,7 @@
     ["x251", "?, Port Gellhorn", [], 0, "Ready Mix USA Panama City Concrete Plant, 1810 Martin Luther King Jr Blvd, Panama City, FL 32405", [30.1807792,-85.6515411], 0, "", "0e8864", 1748721645],
     ["x252", "Repair & Salvage, Port Gellhorn", [-6833,3597], 0, "?", [], 0, "", "3f7703", 1748721788],
     ["x253", "Train Bridge, Port Gellhorn", [-7519,4020], 0, "FEC Strauss Trunnion Bascule Bridge, Jacksonville, FL 32202?", [30.3210138,-81.6668842], 0, "", "631b62", 1748964159],
-    ["x254", "?, Vice Beach", [1457,1569], 0, "Residence Inn, 1231 17th St, Miami Beach, FL 33139", [25.792381,-80.142139], 0, "", "ab156b", 1748721909],
+    ["x254", "?, Vice Beach", [1457,1569], 0, "Residence Inn, 1231 17th St, Miami Beach, FL 33139?", [25.792381,-80.142139], 0, "", "ab156b", 1749136378],
     ["x255", "?, Rockridge, Vice City", [-1305,1075], 0, "1393 SW 1st St, Miami, FL 33135", [25.7725875,-80.2177977], 0, "", "7b2a71", 1748722340],
     ["x256", "?, Rockridge, Vice City", [-1274,1008], 0, "?", [], 0, "", "3f7703", 1748722417],
     ["x257", "?, Hamlet", [-2620,-3595], 0, "107 SW 7th St, Homestead, FL 33030?", [25.4632036,-80.4821113], 0, "", "65ab33", 1748722560],
@@ -666,5 +666,13 @@
     ["x323", "?, Port Gellhorn", [-6500,2875], 0, "?", [], 0, "", "3f7703", 1749068667],
     ["x324", "?, Port Gellhorn", [-6504,2910], 0, "?", [], 0, "", "3f7703", 1749068667],
     ["x325", "?, Port Gellhorn", [-6502,2971], 0, "?", [], 0, "", "3f7703", 1749068667],
-    ["x326", "?, Key Lento", [-3217,-6472], 0, "Islamorada Fishing Club, 104 Madeira Rd, Islamorada, FL 33036", [24.9221714,-80.6352546], 0, "", "24953a", 1749134190]
+    ["x326", "?, Key Lento", [-3217,-6472], 0, "Islamorada Fishing Club, 104 Madeira Rd, Islamorada, FL 33036", [24.9221714,-80.6352546], 0, "", "24953a", 1749134190],
+    ["x327", "?, Vice City", [-179,203], 0, "Bayside Marketplace, 401 Biscayne Blvd, Miami, FL 33132", [25.7784025,-80.1893687], 0, "", "ab9530", 1749135790],
+    ["x328", "?, Vice Beach", [1392,2171], 0, "7700 Tatum Waterway Dr, Miami Beach, FL 33141?", [25.8620714,-80.1284853], 0, "", "21823b", 1749136047],
+    ["x329", "?, Vice Beach", [1568,2349], 0, "Ashley Condominiums, 5640 Collins Ave, Miami Beach, FL 33140?", [25.8369908,-80.123938], 0, "", "631419", 1749136047],
+    ["x330", "?, Vice Beach", [1605,1621], 0, "Meridian Condominiums, 2001 Meridian Ave, Miami Beach, FL 33139", [25.7967752,-80.1406639], 0, "", "8a5a07", 1749136378],
+    ["x331", "?, Vice Beach", [1598,1300], 0, "Colony Theatre, 1040 Lincoln Rd, Miami Beach, FL 33139", [25.7902904,-80.1423634], 0, "", "96938e", 1749136378],
+    ["x332", "?, Vice Beach", [1798,1059], 0, "1435 Washington Ave, Miami Beach, FL 33139", [25.7865815,-80.1340624], 0, "", "964006", 1749136493],
+    ["x333", "Cipher Mall, Rockridge, Vice City", [-1370,802], 0, "?", [], 0, "", "3f7703", 1749136723],
+    ["x334", "?, Rockridge", [-1415,699], 0, "?", [], 0, "", "3f7703", 1749136769]
 ]
