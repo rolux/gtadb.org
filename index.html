@@ -431,9 +431,6 @@ function Map() {
         },
         currentTileSet: "dupzor,51",
         tiles: {},
-        defaultX: -4000,
-        defaultY: 2000,
-        defaultZ: 1,
         x: null,
         y: null,
         z: null,
@@ -466,9 +463,9 @@ function Map() {
             "residential",
             "transportation"
         ],
-        query: "",
-        landmarksFilter: "all",
-        landmarksFilterOptions: {
+        find: "",
+        filter: "all",
+        filterOptions: {
             "all": "all",
             "igNameConfirmed": "IG name confirmed",
             "igNameUnconfirmed": "IG name unconfirmed",
@@ -487,8 +484,8 @@ function Map() {
             "mapIncluded": "included on the map",
             "mapNotIncluded": "not included on the map"
         },
-        landmarksSort: "igAddress",
-        landmarksSortOptions: {
+        sort: "igAddress",
+        sortOptions: {
             igAddress: "in-game address",
             igLatitude: "in-game latitude",
             igLongitude: "in-game longitude",
@@ -500,10 +497,22 @@ function Map() {
             edited: "last edited"
         },
         markers: {},
-        focus: "map"
+        focus: "map",
+        defaults: {
+            x: -4000,
+            y: 2000,
+            z: 1,
+            l: null,
+            find: "",
+            filter: "all",
+            sort: "igAddress",
+            tileSet: "dupzor,51"
+        }
     }
 
     self.init = function() {
+
+        self.getUserSettings()
 
         self.element = document.createElement("div")
         self.element.id = "map"
@@ -591,14 +600,11 @@ function Map() {
         }).forEach(function(landmark) {
             self.markers[landmark.id] = document.createElement("div")
             self.markers[landmark.id].id = "marker_" + landmark.id
-            // self.markers[landmark.id].classList.add("marker", landmark.type)
             self.markers[landmark.id].className = "marker"
             self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
-            // self.markers[landmark.id].style.borderColor = "#" + landmark.borderColor 
             self.markers[landmark.id].title = landmark.title
             self.markersLayer.appendChild(self.markers[landmark.id])
         })
-        self.sortLandmarks(self.landmarksSort)
 
         self.listPanel = document.createElement("div")
         self.listPanel.className = "panel"
@@ -611,13 +617,14 @@ function Map() {
 
         self.findElement = document.createElement("input")
         self.findElement.type = "text"
+        self.findElement.value = self.find
         self.findElement.placeholder = "FIND"
         self.findElement.spellcheck = false
         self.findElement.addEventListener("change", function(e) {
             self.findElement.blur()
             setTimeout(function() {
                 // allow for clear button
-                self.findAndFilterLandmarks(self.findElement.value, self.landmarksFilter)
+                self.findAndFilterLandmarks(self.findElement.value, self.filter)
             })
         })
         self.findElement.addEventListener("input", function(e) {
@@ -628,9 +635,10 @@ function Map() {
         self.clearFindButton = document.createElement("div")
         self.clearFindButton.className = "clearButton"
         self.clearFindButton.innerHTML = "CLEAR"
+        self.clearFindButton.style.display = self.find ? "block" : "none"
         self.clearFindButton.addEventListener("mousedown", function() {
             self.findElement.value = ""
-            self.findAndFilterLandmarks("", self.landmarksFilter)
+            self.findAndFilterLandmarks("", self.filter)
             self.clearFindButton.style.display = "none"
         })
         self.findBar.appendChild(self.clearFindButton)
@@ -640,28 +648,29 @@ function Map() {
         self.listPanel.appendChild(self.filterBar)
 
         self.filterElement = document.createElement("select")
-        Object.entries(self.landmarksFilterOptions).forEach(function([key, value]) {
+        Object.entries(self.filterOptions).forEach(function([key, value]) {
             const element = document.createElement("option")
             element.value = key
             element.textContent = ("Filter: " + value).toUpperCase()
-            element.selected = key == self.landmarksFilter
+            element.selected = key == self.filter
             self.filterElement.appendChild(element)
         })
-        self.filterElement.addEventListener("change", function(e) {
+        self.filterElement.value = self.filter
+        self.filterElement.addEventListener("change", function() {
             this.blur()
-            self.clearFilterButton.style.display = self.filterElement.value != "all" ? "block" : "none"
-            self.findAndFilterLandmarks(self.query, this.value)
-            self.renderList()
+            self.clearFilterButton.style.display = this.value == "all" ? "none" : "block"
+            self.findAndFilterLandmarks(self.find, this.value)
         })
         self.filterBar.appendChild(self.filterElement)
 
         self.clearFilterButton = document.createElement("div")
         self.clearFilterButton.className = "clearButton"
         self.clearFilterButton.innerHTML = "CLEAR"
+        self.clearFilterButton.style.display = self.filter == "all" ? "none" : "block"
         self.clearFilterButton.addEventListener("mousedown", function() {
             self.filterElement.value = "all"
-            self.findAndFilterLandmarks(self.query, "all")
             self.clearFilterButton.style.display = "none"
+            self.findAndFilterLandmarks(self.find, "all")
         })
         self.filterBar.appendChild(self.clearFilterButton)
 
@@ -675,14 +684,15 @@ function Map() {
         self.listPanel.appendChild(self.sortBar)
 
         self.sortElement = document.createElement("select")
-        Object.entries(self.landmarksSortOptions).forEach(function([key, value]) {
+        Object.entries(self.sortOptions).forEach(function([key, value]) {
             const element = document.createElement("option")
             element.value = key
             element.textContent = ("Sort by " + value).toUpperCase()
-            element.selected = key == self.landmarksSort
+            element.selected = key == self.sort
             self.sortElement.appendChild(element)
         })
-        self.sortElement.addEventListener("change", function(e) {
+        self.sortElement.value = self.sort
+        self.sortElement.addEventListener("change", function() {
             this.blur()
             self.sortLandmarks(this.value)
             self.renderList()
@@ -705,8 +715,6 @@ function Map() {
         })
         self.renderStatus()
         self.listPanel.appendChild(self.statusBar)
-
-        self.renderList()
 
         self.itemPanel = document.createElement("div")
         self.itemPanel.className = "panel"
@@ -819,6 +827,9 @@ function Map() {
             }
         })
 
+        //self.findAndFilterLandmarks(self.find, self.filter)
+        //self.sortLandmarks(self.sort)
+        //self.renderList()
         self.onHashchange()
 
     }
@@ -851,32 +862,44 @@ function Map() {
         }
     }
 
+    self.checkValues = function(v) {
+        v.x = isNaN(v.x) ? 0 : self.clamp(v.x, self.minX, self.maxX)
+        v.y = isNaN(v.y) ? 0 : self.clamp(v.y, self.minY, self.maxY)
+        v.z = isNaN(v.z) ? 0 : self.clamp(v.z, self.minZ, self.maxZ)
+        v.l = self.landmarksById[v.l] ? v.l : self.defaults.l
+        v.filter = self.filterOptions[v.filter] ? v.filter : self.defaults.filter
+        v.sort = self.sortOptions[v.sort] ? v.sort : self.defaults.sort
+        v.tileSet = self.tileSets.includes(v.tileSet) ? v.tileSet : self.defaults.tileSet
+        return v
+    }
+
     self.clamp = function(n, min, max) {
         return Math.min(Math.max(n, min), max)
     }
 
-    self.findAndFilterLandmarks = function(query, filter) {
-        self.query = query.toLowerCase()
-        self.landmarksFilter = filter
+    self.findAndFilterLandmarks = function(find, filter) {
+        self.find = find.toLowerCase()
+        self.filter = filter
+        self.setUserSettings()
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
-            return landmark.findString.includes(self.query) && (
-                self.landmarksFilter == "all" ||
-                self.landmarksFilter == "igNameConfirmed" && !landmark.igAddress.includes("?") && landmark.igAddress[0] != '"' ||
-                self.landmarksFilter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?" ||
-                self.landmarksFilter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
-                self.landmarksFilter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
-                self.landmarksFilter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
-                self.landmarksFilter == "igLatLngUnknown" && landmark.igCoordinates === null ||
-                self.landmarksFilter == "igWithPhoto" && landmark.igPhoto ||
-                self.landmarksFilter == "igWithoutPhoto" && !landmark.igPhoto ||
-                self.landmarksFilter == "irlLandmarkConfirmed" && landmark.irlStatus == "confirmed" ||
-                self.landmarksFilter == "irlLandmarkUnconfirmed" && landmark.irlStatus == "unconfirmed" ||
-                self.landmarksFilter == "irlLandmarkUnknown" && landmark.irlStatus == "unknown" ||
-                self.landmarksFilter == "irlLatLngMissing" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates === null ||
-                self.landmarksFilter == "irlWithPhoto" && landmark.irlPhoto ||
-                self.landmarksFilter == "irlWithoutPhoto" && !landmark.irlPhoto ||
-                self.landmarksFilter == "mapIncluded" && landmark.id[0] == "b" ||
-                self.landmarksFilter == "mapNotIncluded" && landmark.id[0] == "x"
+            return landmark.findString.includes(self.find) && (
+                self.filter == "all" ||
+                self.filter == "igNameConfirmed" && !landmark.igAddress.includes("?") && landmark.igAddress[0] != '"' ||
+                self.filter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?" ||
+                self.filter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
+                self.filter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
+                self.filter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
+                self.filter == "igLatLngUnknown" && landmark.igCoordinates === null ||
+                self.filter == "igWithPhoto" && landmark.igPhoto ||
+                self.filter == "igWithoutPhoto" && !landmark.igPhoto ||
+                self.filter == "irlLandmarkConfirmed" && landmark.irlStatus == "confirmed" ||
+                self.filter == "irlLandmarkUnconfirmed" && landmark.irlStatus == "unconfirmed" ||
+                self.filter == "irlLandmarkUnknown" && landmark.irlStatus == "unknown" ||
+                self.filter == "irlLatLngMissing" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates === null ||
+                self.filter == "irlWithPhoto" && landmark.irlPhoto ||
+                self.filter == "irlWithoutPhoto" && !landmark.irlPhoto ||
+                self.filter == "mapIncluded" && landmark.id[0] == "b" ||
+                self.filter == "mapNotIncluded" && landmark.id[0] == "x"
             )
         })
         if (self.l && !self.currentLandmarks.map(function(landmark) {
@@ -886,7 +909,7 @@ function Map() {
         }
         self.clearMarkers()
         self.renderMarkers()
-        self.sortLandmarks(self.landmarksSort) // update indexById 
+        self.sortLandmarks(self.sort) // update indexById 
         self.renderList()
         self.setLandmark(self.l) // scroll into view. calls renderItem
         self.renderStatus()
@@ -947,6 +970,32 @@ function Map() {
         return self.mapW / (1024 * Math.pow(2, z))
     }
 
+    self.getUserSettings = function() {
+        let data = localStorage.getItem("gta6map")
+        let user
+        if (!data) {
+            user = self.defaults
+        } else {
+            user = self.checkValues(JSON.parse(localStorage.getItem("gta6map")).user)
+        }
+        for (const [key, value] of Object.entries(user)) {
+            self[key] = value
+        }
+    }
+
+    self.setUserSettings = function() {
+        localStorage.setItem("gta6map", JSON.stringify({"user": {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+            l: self.l,
+            find: self.find,
+            filter: self.filter,
+            sort: self.sort,
+            tileSet: self.tileSet
+        }}))
+    }
+
     self.loadJSON = async function(url) {
         try {
             const req = await fetch(url, {cache: "no-cache"})
@@ -976,13 +1025,13 @@ function Map() {
         img.src = src
     }
 
-    self.onHashchange = function(e) {
+    self.onHashchange = function() {
         let values = window.location.hash.slice(1).split(",")
         if (values.length > 4) {
             values[3] = values.slice(3).join(",")
         }
         let last = values[values.length - 1]
-        let l, lx, ly, lz, q
+        let l, lx, ly, lz, f
         if (isNaN(last)) {
             if (self.landmarksById[last]) {
                 l = last
@@ -991,9 +1040,9 @@ function Map() {
                     ly = self.landmarksById[last].igCoordinates[1]
                     lz = 5
                 } else {
-                    lx = self.defaultX
-                    ly = self.defaultY
-                    lz = self.defaultZ
+                    lx = self.x
+                    ly = self.y
+                    lz = self.z
                 }
             } else {
                 last = last.toLowerCase()
@@ -1007,57 +1056,62 @@ function Map() {
                         ly = landmarks[0].igCoordinates[1]
                         lz = 5
                     } else {
-                        lx = self.defaultX
-                        ly = self.defaultY
-                        lz = self.defaultZ
+                        lx = self.x
+                        ly = self.y
+                        lz = self.z
                     }
                 } else {
-                    q = last
-                    if (q != self.query) {
-                        self.query = q
-                        self.findElement.value = q
+                    f = last
+                    if (f != self.find) {
+                        // last part of hash is find query
+                        self.findElement.value = f
                         self.clearFindButton.style.display = "block"
                         self.filterElement.value = "all"
                         self.clearFilterButton.style.display = "none"
-                        self.findAndFilterLandmarks(last, "all")
+                        self.findAndFilterLandmarks(last, "all") // this calls setLandmark, which calls setHash
                     }
                 }
             }
         }
         if (l && self.currentLandmarksIndexById[l] === void 0) {
+            // selected landmark is not in current find & filter
+            self.find = ""
             self.findElement.value = ""
             self.clearFindButton.style.display = "none"
+            self.filter = "all"
             self.filterElement.value = "all"
             self.clearFilterButton.style.display = "none"
-            self.findAndFilterLandmarks("", "all")
+            self.findAndFilterLandmarks("", "all") // this calls setLandmark, which calls setHash
         }
-        if (l || q || values.length == 4) {
+        if (l || f || values.length == 4) {
             values = values.slice(0, -1)
         }
         values = values.map(parseFloat)
         if (values.length == 0) {
-            values = l ? [lx, ly, lz] : [self.defaultX, self.defaultY, self.defaultZ]
+            values = l ? [lx, ly, lz] : [self.x, self.y, self.z]
         } else if (values.length == 1) {
-            values = l ? [lx, ly, values[0]] : [self.defaultX, self.defaultY, values[0]]
+            values = l ? [lx, ly, values[0]] : [self.x, self.y, values[0]]
         } else if (values.length == 2) {
-            values = [values[0], values[1], self.defaultZ]
+            values = [values[0], values[1], self.z]
         }
         const hash = values.map(function(v, i) {
-            const defaultV = [self.defaultX, self.defaultY, self.defaultZ][i]
+            const value = [self.x, self.y, self.z][i]
             const minV = [self.minX, self.minY, self.minZ][i]
             const maxV = [self.maxX, self.maxY, self.maxZ][i]
-            v = isNaN(v) ? defaultV : self.clamp(v, minV, maxV)
+            v = isNaN(v) ? value : self.clamp(v, minV, maxV)
             return v.toFixed(3)
         }).join(",") + (l ? "," + l : "")
         if (hash != window.location.hash.substr(1)) {
             window.location.hash = hash
             return
         }
+        //;[self.x, self.y, self.z] = values
+        //self.l = l || self.l
+        //self.setUserSettings()
+        ;[self.targetX, self.targetY, self.targetZ] = values
+        self.findAndFilterLandmarks(self.find, self.filter)
+        self.selectLandmark(l) // this calls setHash!
         self.targetL = l
-        if (l != self.l) {
-            self.selectLandmark(l)
-        }
-        [self.targetX, self.targetY, self.targetZ] = values
         if (!self.isAnimating) {
             self.animate()
         }
@@ -1071,7 +1125,8 @@ function Map() {
         }
 
         if (e.key == "r" && !e.metaKey) {
-            self.currentTileSet = self.currentTileSet == "dupzor,51" ? "rickrick,2" : "dupzor,51"
+            self.tileSet = self.tileSet == "dupzor,51" ? "rickrick,2" : "dupzor,51"
+            self.setUserSettings()
             self.renderMap()
         }
 
@@ -1378,15 +1433,15 @@ function Map() {
             itemElement.style.borderLeftColor = "#" + landmark.color
             const igElement = document.createElement("div")
             igElement.className = "ig"
-            igElement.innerHTML = self.landmarksSort.includes("Address") ? landmark.igAddress
+            igElement.innerHTML = self.sort.includes("Address") ? landmark.igAddress
                     : landmark.igAddress + " &nbsp;|&nbsp; " + landmark.irlAddress
             itemElement.appendChild(igElement)
             const irlElement = document.createElement("div")
             irlElement.className = "irl"
-            irlElement.innerHTML = self.landmarksSort.includes("Address") ? landmark.irlAddress
-                    : self.landmarksSort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates)
-                    : self.landmarksSort.includes("irlL") ? self.formatCoordinates(landmark.irlCoordinates)
-                    : self.landmarksSort == "type" ? landmark.type.toUpperCase()
+            irlElement.innerHTML = self.sort.includes("Address") ? landmark.irlAddress
+                    : self.sort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates)
+                    : self.sort.includes("irlL") ? self.formatCoordinates(landmark.irlCoordinates)
+                    : self.sort == "type" ? landmark.type.toUpperCase()
                     : self.formatDate(landmark.edited)
             itemElement.appendChild(irlElement)
             self.listBody.appendChild(itemElement)
@@ -1406,7 +1461,7 @@ function Map() {
 
         const [[x0, y0], [x1, y1]] = self.tileRanges["dupzor,51"][zInt]
         let xx0, yy0, xx1, yy1
-        if (self.currentTileSet == "rickrick,2") {
+        if (self.tileSet == "rickrick,2") {
             [[xx0, yy0], [xx1, yy1]] = self.tileRanges["rickrick,2"][zInt]
         }
 
@@ -1419,7 +1474,7 @@ function Map() {
             for (let x = minTx; x <= maxTx; x++) {
                 if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
                     const tileSet = (
-                        self.currentTileSet == "rickrick,2"
+                        self.tileSet == "rickrick,2"
                         && x >= xx0 && x <= xx1 && y >= yy0 && y <= yy1
                     ) ? "rickrick,2" : "dupzor,51"
                     const img = self.tiles[tileSet][zInt][y][x]
@@ -1506,6 +1561,7 @@ function Map() {
 
     self.selectLandmark = function(id) {
         self.l = id
+        self.setUserSettings()
         let element = document.querySelector(".marker.selected")
         if (element) {
             element.classList.remove("selected")
@@ -1586,26 +1642,27 @@ function Map() {
     }
 
     self.sortLandmarks = function(option) {
-        self.landmarksSort = option
+        self.sort = option
+        self.setUserSettings()
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
-                if (self.landmarksSort == "igAddress") {
+                if (self.sort == "igAddress") {
                     return v.igAddressSortString + "\n" + v.irlAddressSortString
-                } else if (self.landmarksSort == "igLatitude") {
+                } else if (self.sort == "igLatitude") {
                     return v.igCoordinates ? -v.igCoordinates[1] : 1e6
-                } else if (self.landmarksSort == "igLongitude") {
+                } else if (self.sort == "igLongitude") {
                     return v.igCoordinates ? v.igCoordinates[0] : 1e6
-                } else if (self.landmarksSort == "irlAddress") {
+                } else if (self.sort == "irlAddress") {
                     return v.irlAddressSortString + "\n" + v.igAddressSortString
-                } else if (self.landmarksSort == "irlLatitude") {
+                } else if (self.sort == "irlLatitude") {
                     return v.irlCoordinates ? -v.irlCoordinates[0] : 1e6
-                } else if (self.landmarksSort == "irlLongitude") {
+                } else if (self.sort == "irlLongitude") {
                     return v.irlCoordinates ? v.irlCoordinates[1] : 1e6
-                } else if (self.landmarksSort == "type") {
+                } else if (self.sort == "type") {
                     return [v.type].concat(v.igAddress.split(", ").reverse()).join(", ")
-                } else if (self.landmarksSort == "id") {
+                } else if (self.sort == "id") {
                     return v.idSortString
-                } else if (self.landmarksSort == "edited") {
+                } else if (self.sort == "edited") {
                     return -v.edited
                 }
             })
