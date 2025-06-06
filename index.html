@@ -438,7 +438,6 @@ function Map() {
         targetX: 0,
         targetY: 0,
         targetZ: 0,
-        targetL: null,
         isAnimating: false,
         isDragging: false,
         key: null,
@@ -847,7 +846,7 @@ function Map() {
         self.z += easeAmount * dz
         self.renderMap()
         if (!immediate) {
-            if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dz) > 0.1) {
+            if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dz) > 0.01) {
                 requestAnimationFrame(function() {
                     self.animate()
                 })
@@ -902,17 +901,15 @@ function Map() {
                 self.filter == "mapNotIncluded" && landmark.id[0] == "x"
             )
         })
-        if (self.l && !self.currentLandmarks.map(function(landmark) {
-            return landmark.id
-        }).includes(self.l)) {
+        if (self.l && self.currentLandmarksIndexById[self.l] == void 0) {
             self.l = null
         }
         self.clearMarkers()
         self.renderMarkers()
         self.sortLandmarks(self.sort) // update indexById 
         self.renderList()
-        self.setLandmark(self.l) // scroll into view. calls renderItem
         self.renderStatus()
+        self.setLandmark(self.l) // scroll into view. calls renderItem
     }
 
     self.formatAddress = function(address) {
@@ -1109,9 +1106,9 @@ function Map() {
         //self.l = l || self.l
         //self.setUserSettings()
         ;[self.targetX, self.targetY, self.targetZ] = values
+        self.l = l
         self.findAndFilterLandmarks(self.find, self.filter)
         self.selectLandmark(l) // this calls setHash!
-        self.targetL = l
         if (!self.isAnimating) {
             self.animate()
         }
@@ -1595,7 +1592,7 @@ function Map() {
     self.setHash = function() {
         const hash = [self.targetX, self.targetY, self.targetZ].map(function (v) {
             return v.toFixed(3)
-        }).join(",") + (self.targetL ? "," + self.targetL : "")
+        }).join(",") + (self.l ? "," + self.l : "")
         if (window.location.hash.slice(1) != hash) {
             // history.replaceState(null, "", "#" + hash)
             window.location.hash = hash
@@ -1603,7 +1600,7 @@ function Map() {
     }
 
     self.setLandmark = function(id, pan) {
-        self.targetL = id
+        self.l = id
         if (pan) {
             const landmark = self.landmarksById[id]
             if (landmark.igCoordinates) {
