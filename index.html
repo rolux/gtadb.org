@@ -901,6 +901,11 @@ function Map() {
                 self.filter == "mapNotIncluded" && landmark.id[0] == "x"
             )
         })
+        // FIXME: duplicated
+        self.currentLandmarksIndexById = self.currentLandmarks.reduce(function(a, v, i) {
+            a[v.id] = i
+            return a
+        }, {})
         if (self.l && self.currentLandmarksIndexById[self.l] == void 0) {
             self.l = null
         }
@@ -1153,7 +1158,9 @@ function Map() {
                     self.keydownTimeout = setTimeout(keydownFn)
                 }())
             } else if (e.key == "Escape") {
-                self.setLandmark(null)
+                if (self.l) {
+                    self.setLandmark(null)
+                }
             }
 
         } else if (self.focus == "list") {
@@ -1380,6 +1387,7 @@ function Map() {
                     img.addEventListener("click", function() {
                         self.openPhotoDialog(landmark, "ig")
                     })
+                    self.itemIgPhoto.innerHTML = ""
                     self.itemIgPhoto.appendChild(img)
                 })
             } else {
@@ -1406,6 +1414,7 @@ function Map() {
                     img.addEventListener("click", function() {
                         self.openPhotoDialog(landmark, "irl")
                     })
+                    self.itemIrlPhoto.innerHTML = ""
                     self.itemIrlPhoto.appendChild(img)
                 })
             } else {
