@@ -408,8 +408,11 @@ function Map() {
         zeroX: 16384,
         zeroY: 16384,
         tileSize: 1024,
-        tileSets: ["dupzor,51", "rickrick,2"],
-        tileRanges: {
+        tileSets: [
+            "dupzor,51",
+            "yanis,4",
+        ],
+        tileSetRanges: {
             "dupzor,51": {
                 0: [[ 0,  0], [ 0,  0]],
                 1: [[ 0,  0], [ 1,  1]],
@@ -419,6 +422,26 @@ function Map() {
                 5: [[ 0,  4], [19, 23]],
                 6: [[ 0,  8], [38, 47]]
             },
+            "yanis,4": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 1,  1]],
+                2: [[ 0,  0], [ 2,  2]],
+                3: [[ 0,  1], [ 4,  5]],
+                4: [[ 0,  2], [ 9, 11]],
+                5: [[ 0,  4], [19, 23]],
+                6: [[ 0,  8], [38, 47]]
+            },
+        },
+        tileOverlayRanges: {
+            "aiwe,1": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 0,  0]],
+                2: [[ 1,  1], [ 1,  1]],
+                3: [[ 2,  3], [ 2,  3]],
+                4: [[ 4,  6], [ 5,  6]],
+                5: [[ 9, 12], [10, 13]],
+                6: [[18, 25], [20, 27]]
+            },
             "rickrick,2": {
                 0: [[ 0,  0], [ 0,  0]],
                 1: [[ 0,  0], [ 1,  1]],
@@ -427,10 +450,19 @@ function Map() {
                 4: [[ 7,  6], [ 9,  9]],
                 5: [[14, 13], [18, 18]],
                 6: [[28, 26], [36, 36]]
+            },
+            "vlad,1": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  1], [ 0,  1]],
+                2: [[ 1,  2], [ 1,  2]],
+                3: [[ 3,  4], [ 3,  4]],
+                4: [[ 6,  9], [ 7,  9]],
+                5: [[13, 18], [14, 19]],
+                6: [[26, 37], [28, 39]]
             }
         },
         currentTileSet: "dupzor,51",
-        tiles: {},
+        currentTileOverlays: 0,
         x: null,
         y: null,
         z: null,
@@ -505,7 +537,8 @@ function Map() {
             find: "",
             filter: "all",
             sort: "igAddress",
-            tileSet: "dupzor,51"
+            tileSet: "dupzor,51",
+            tileOverlays: 0
         }
     }
 
@@ -525,18 +558,49 @@ function Map() {
         document.body.appendChild(self.element)
 
         const zInt = Math.ceil(self.z)
-        self.tileSets.forEach(function(tileSet) {
+
+        const overlayString = Object.keys(self.tileOverlayRanges).join(",")
+        self.tiles = {}
+        self.tilePaths = {}
+        self.tileSets.forEach(function(tileSet, i) {
             self.tiles[tileSet] = {}
-            for (let z = self.minZ; z <= self.maxZ; z++) {
-                self.tiles[tileSet][z] = {}
-                const [[x0, y0], [x1, y1]] = self.tileRanges[tileSet][z]
-                for (let y = y0; y <= y1; y++) {
-                    self.tiles[tileSet][z][y] = {}
-                    for (let x = x0; x <= x1; x++) {
-                        self.tiles[tileSet][z][y][x] = new Image()
+            self.tilePaths[tileSet] = {}
+            ;[0, 1].forEach(function(overlay) {
+                self.tiles[tileSet][overlay] = {}
+                self.tilePaths[tileSet][overlay] = {}
+                for (let z = self.minZ; z <= self.maxZ; z++) {
+                    self.tiles[tileSet][overlay][z] = {}
+                    self.tilePaths[tileSet][overlay][z] = {}
+                    const [[x0, y0], [x1, y1]] = self.tileSetRanges[tileSet][z]
+                    for (let y = y0; y <= y1; y++) {
+                        self.tiles[tileSet][overlay][z][y] = {}
+                        self.tilePaths[tileSet][overlay][z][y] = {}
+                        for (let x = x0; x <= x1; x++) {
+                            self.tiles[tileSet][overlay][z][y][x] = new Image()
+                            self.tilePaths[tileSet][overlay][z][y][x] = tileSet
+                            if (overlay == 1) {
+                                Object.entries(self.tileOverlayRanges).forEach(function([name, ranges]) {
+                                    if (
+                                        x >= ranges[z][0][0] && x <= ranges[z][1][0] &&
+                                        y >= ranges[z][0][1] && y <= ranges[z][1][1] && (
+                                            [ranges[z][0][0], ranges[z][1][0]].includes(x) ||
+                                            [ranges[z][0][1], ranges[z][1][1]].includes(y)
+                                        )
+                                    ) {
+                                        self.tilePaths[tileSet][overlay][z][y][x] = `${tileSet},${overlayString}`
+                                    } else if (
+                                        x > ranges[z][0][0] && x < ranges[z][1][0] &&
+                                        y > ranges[z][0][1] && y < ranges[z][1][1] &&
+                                        self.tilePaths[tileSet][overlay][z][y][x] == tileSet
+                                    ) {
+                                        self.tilePaths[tileSet][overlay][z][y][x] = name
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
-            }
+            })
         })
 
         self.markersLayer.addEventListener("click", self.onClick)
@@ -869,6 +933,7 @@ function Map() {
         v.filter = self.filterOptions[v.filter] ? v.filter : self.defaults.filter
         v.sort = self.sortOptions[v.sort] ? v.sort : self.defaults.sort
         v.tileSet = self.tileSets.includes(v.tileSet) ? v.tileSet : self.defaults.tileSet
+        v.tileOverlays = v.tileOverlays ? 1 : 0
         return v
     }
 
@@ -994,7 +1059,8 @@ function Map() {
             find: self.find,
             filter: self.filter,
             sort: self.sort,
-            tileSet: self.tileSet
+            tileSet: self.tileSet,
+            tileOverlays: self.tileOverlays
         }}))
     }
 
@@ -1126,8 +1192,12 @@ function Map() {
             return
         }
 
-        if (e.key == "r" && !e.metaKey) {
-            self.tileSet = self.tileSet == "dupzor,51" ? "rickrick,2" : "dupzor,51"
+        if (["t", "T"].includes(e.key) && !e.metaKey) {
+            if (e.key == "t") {
+                self.tileSet = self.tileSet == self.tileSets[0] ? self.tileSets[1] : self.tileSets[0]
+            } else {
+                self.tileOverlays = 1 - self.tileOverlays
+            }
             self.setUserSettings()
             self.renderMap()
         }
@@ -1465,11 +1535,7 @@ function Map() {
         const offsetY = self.canvas.height / 2 - cY;
         const tileSize = self.tileSize * Math.pow(2, self.z - zInt);
 
-        const [[x0, y0], [x1, y1]] = self.tileRanges["dupzor,51"][zInt]
-        let xx0, yy0, xx1, yy1
-        if (self.tileSet == "rickrick,2") {
-            [[xx0, yy0], [xx1, yy1]] = self.tileRanges["rickrick,2"][zInt]
-        }
+        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self.tileSet][zInt]
 
         const minTx = Math.floor(-offsetX / tileSize)
         const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)
@@ -1479,11 +1545,7 @@ function Map() {
         for (let y = minTy; y <= maxTy; y++) {
             for (let x = minTx; x <= maxTx; x++) {
                 if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
-                    const tileSet = (
-                        self.tileSet == "rickrick,2"
-                        && x >= xx0 && x <= xx1 && y >= yy0 && y <= yy1
-                    ) ? "rickrick,2" : "dupzor,51"
-                    const img = self.tiles[tileSet][zInt][y][x]
+                    const img = self.tiles[self.tileSet][self.tileOverlays][zInt][y][x]
                     if (!img.src) {
                         (function(originalX, originalY, originalZ) {
                             img.addEventListener("load", function() {
@@ -1498,7 +1560,8 @@ function Map() {
                                 }
                             })
                         })(self.x, self.y, self.z)
-                        img.src = `tiles/${tileSet}/${zInt}/${zInt},${y},${x}.jpg`;
+                        const tilePath = self.tilePaths[self.tileSet][self.tileOverlays][zInt][y][x]
+                        img.src = `tiles/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`;
                     } else {
                         self.context.drawImage(
                             img,
