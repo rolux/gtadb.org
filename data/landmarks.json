@@ -458,7 +458,7 @@
     ["x115", "?, Tequesta, Vice City", [-709,-998], 0, "First Miami Presbyterian Church, 609 Brickell Ave, Miami, FL 33131", [25.767688,-80.1922389], 0, "", "515782", 1748586044],
     ["x116", "?, Vice City", [-2238,203], 0, "Embassy Suites Miami Airport, 3974 NW S River Dr, Miami, FL 33142?", [25.8066574,-80.2615857], 0, "", "68214f", 1748886435],
     ["x117", "?, Tequesta, Vice City", [-982,-848], 0, "Neo Vertika Building, Neo Vertika, Miami, FL 33130", [25.7680994,-80.1985524], 0, "", "90b41f", 1748586044],
-    ["x118", "?, Vice City", [-591,-663], 0, "One Miami Condominium, 325 S Biscayne Blvd, Miami, FL 33131", [25.7713767,-80.1889279], 0, "", "04130c", 1748783568],
+    ["x118", "?, Downtown, Vice City", [-591,-663], 0, "One Miami Condominium - West Tower, 325 S Biscayne Blvd, Miami, FL 33131", [25.7713794,-80.1878219], 0, "", "6045b8", 1752671447],
     ["x119", "?, Vice Beach", [1721,309], 0, "The Wolfsonian, 1001 Washington Ave, Miami Beach, FL 33139", [25.780896,-80.1324342], 0, "", "21a8bd", 1748079313],
     ["x120", "?, Vice Beach", [1571,292], 0, "Fifth and Alton, 1100 5th St, Miami Beach, FL 33139", [25.7754878,-80.1400909], 0, "", "7b3588", 1748706117],
     ["x121", "?, Vice Beach", [1675,1117], 0, "1446 Meridian Ave, Miami Beach, FL 33139?", [25.7869764,-80.1365925], 0, "", "7c2707", 1748521941],
@@ -727,5 +727,6 @@
     ["x384", "?, Watson Bay", [], 0, "497 2nd St, Cedar Key, FL 32625", [29.1367707,-83.0347949], 0, "", "03a204", 1750417988],
     ["x385", "?, Watson Bay", [], 0, "CK Marina, 12780 FL-24, Cedar Key, FL 32625", [29.142786,-83.0379913], 0, "", "682b16", 1750417988],
     ["x386", "?, Watson Bay", [], 0, "12789 SW 155 Ct, Cedar Key, FL 32625", [29.1418469,-83.0374913], 0, "", "0a5005", 1750417988],
-    ["x387", "?, Watson Bay", [], 0, "12790 SW 155 Ct, Cedar Key, FL 32625", [29.1420461,-83.0380901], 0, "", "275349", 1750417988]
+    ["x387", "?, Watson Bay", [], 0, "12790 SW 155 Ct, Cedar Key, FL 32625", [29.1420461,-83.0380901], 0, "", "275349", 1750417988],
+    ["x388", "?, Downtown, Vice City", [-539,-649], 0, "One Miami Condominium - East Tower, 335 S Biscayne Blvd, Miami, FL 33131", [25.7715603,-80.1869356], 0, "", "2756a8", 1752671447]
 ]
