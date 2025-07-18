@@ -164,12 +164,28 @@
             #listPanel {
                 left: 0;
             }
-            #findBar {
+            #titleBar {
                 border-bottom: 1px solid rgba(0, 0, 0, 0.125);
                 height: 31px;
                 left: 0;
                 position: absolute;
                 top: 0;
+                width: 256px
+            }
+            #titleBar #titleElement {
+                font-size: 12px;
+                left: 8px;
+                padding: 2px 4px;
+                position: absolute;
+                top: 7px;
+                width: 192px;
+            }
+            #findBar {
+                border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+                height: 31px;
+                left: 0;
+                position: absolute;
+                top: 32px;
                 width: 256px
             }
             #findBar input {
@@ -183,13 +199,13 @@
                 height: 31px;
                 left: 0;
                 position: absolute;
-                top: 32px;
+                top: 64px;
                 width: 256px
             }
             #filterBar select {
                 width: 192px
             }
-            .clearButton, .closeButton {
+            .aboutButton, .clearButton, .closeButton {
                 cursor: pointer;
                 font-size: 11px;
                 height: 12px;
@@ -206,7 +222,7 @@
                 height: 31px;
                 left: 0;
                 position: absolute;
-                top: 64px;
+                top: 96px;
                 width: 256px
             }
             #filterBar select, #sortBar select {
@@ -221,7 +237,7 @@
                 left: 0;
                 overflow-y: scroll;
                 position: absolute;
-                top: 96px;
+                top: 128px;
                 width: 256px;
             }
             #listBody > .item {
@@ -356,12 +372,15 @@
                 top: 0;
                 z-index: 1001;
             }
-            #photoDialog .bar {
+            .dialog {
+                display: none;
+            }
+            .dialog .bar {
                 background-color: rgba(255, 255, 255, 0.75);
                 border-radius: 8px 8px 0 0;
                 height: 32px;
             }
-            #photoDialog .bar .title {
+            .dialog .bar .title {
                 float: left;
                 font-size: 13px;
                 font-weight: bold;
@@ -370,9 +389,8 @@
                 left: 0;
                 overflow-x: hidden;
                 top: 0;
-                width: 944px;
             }
-            #photoDialog .bar .button {
+            .dialog .bar .button {
                 cursor: pointer;
                 float: left;
                 font-size: 11px;
@@ -383,6 +401,28 @@
                 top: 0;
                 width: 64px;
                 user-select: none;
+            }
+            .dialog .content {
+                border-radius: 0 0 8px 8px;
+            }
+            #aboutDialog {
+                width: 640px;
+                height: 480px;
+            }
+            #aboutDialog .bar .title {
+                width: 560px;
+            }
+            #aboutDialog .content {
+                background-color: rgba(255, 255, 255, 0.75);
+                height: 448px;
+            }
+            #aboutDialog .content img {
+                height: 256px;
+                margin: 96px 192px;
+                width: 256px;
+            }
+            #photoDialog .bar .title {
+                width: 944px;
             }
             #photoDialog .content img {
                 border-radius: 0 0 8px 8px;
@@ -683,6 +723,23 @@ function Map() {
         self.listPanel.id = "listPanel"
         self.element.appendChild(self.listPanel)
 
+        self.titleBar = document.createElement("div")
+        self.titleBar.id = "titleBar"
+        self.listPanel.appendChild(self.titleBar)
+
+        self.titleElement = document.createElement("div")
+        self.titleElement.id = "titleElement"
+        self.titleElement.innerHTML = "GTA VI LANDMARKS MAP"
+        self.titleBar.appendChild(self.titleElement)
+
+        self.aboutButton = document.createElement("div")
+        self.aboutButton.className = "aboutButton"
+        self.aboutButton.innerHTML = "ABOUT"
+        self.aboutButton.addEventListener("click", function() {
+            self.openAboutDialog()
+        })
+        self.titleBar.appendChild(self.aboutButton)
+
         self.findBar = document.createElement("div")
         self.findBar.id = "findBar"
         self.listPanel.appendChild(self.findBar)
@@ -863,7 +920,37 @@ function Map() {
         self.dialogLayer.id = "dialogLayer"
         self.element.appendChild(self.dialogLayer)
 
+        self.aboutDialog = document.createElement("div")
+        self.aboutDialog.className = "dialog"
+        self.aboutDialog.id = "aboutDialog"
+        self.dialogLayer.appendChild(self.aboutDialog)
+
+        self.aboutDialogBar = document.createElement("div")
+        self.aboutDialogBar.className = "bar"
+        self.aboutDialog.appendChild(self.aboutDialogBar)
+
+        self.aboutDialogTitle = document.createElement("div")
+        self.aboutDialogTitle.className = "title"
+        self.aboutDialogTitle.innerHTML = "GTA VI Landmarks Map"
+        self.aboutDialogBar.appendChild(self.aboutDialogTitle)
+
+        self.aboutDialogButton = document.createElement("div")
+        self.aboutDialogButton.className = "button"
+        self.aboutDialogButton.innerHTML = "CLOSE"
+        self.aboutDialogButton.addEventListener("click", function(e) {
+            self.closeAboutDialog()
+        })
+        self.aboutDialogBar.appendChild(self.aboutDialogButton)
+
+        self.aboutDialogContent = document.createElement("div")
+        self.aboutDialogContent.className = "content"
+        let img = document.createElement("img")
+        img.src = "gta6map.png"
+        self.aboutDialogContent.appendChild(img)
+        self.aboutDialog.appendChild(self.aboutDialogContent)
+
         self.photoDialog = document.createElement("div")
+        self.photoDialog.className = "dialog"
         self.photoDialog.id = "photoDialog"
         self.dialogLayer.appendChild(self.photoDialog)
 
@@ -1280,10 +1367,16 @@ function Map() {
 
         } else if (self.focus == "dialog") {
 
-            if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
-                self.switchPhotoDialog()
-            } else if (e.key == "Escape") {
-                self.closePhotoDialog()
+            if (self.aboutDialog.style.display == "block") {
+                if (e.key == "Escape") {
+                    self.closeAboutDialog()
+                }
+            } else {
+                if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
+                    self.switchPhotoDialog()
+                } else if (e.key == "Escape") {
+                    self.closePhotoDialog()
+                }
             }
 
         }
@@ -1388,6 +1481,18 @@ function Map() {
         }, 100)
     }
 
+    self.openAboutDialog = function() {
+        self.dialogLayer.style.display = "flex"
+        self.aboutDialog.style.display = "block"
+        self.focus = "dialog"
+    }
+
+    self.closeAboutDialog = function() {
+        self.dialogLayer.style.display = "none"
+        self.aboutDialog.style.display = "none"
+        self.focus = "list"
+    }
+
     self.openPhotoDialog = function(landmark, selected) {
         self.selectedPhoto = [landmark, selected]
         self.dialogPhoto = document.createElement("img")
@@ -1398,6 +1503,7 @@ function Map() {
         self.photoDialogContent.appendChild(self.dialogPhoto)
         self.resizePhotoDialog()
         self.dialogLayer.style.display = "flex"
+        self.photoDialog.style.display = "block"
         self.focus = "dialog"
     }
 
@@ -1429,6 +1535,7 @@ function Map() {
 
     self.closePhotoDialog = function() {
         self.dialogLayer.style.display = "none"
+        self.photoDialog.style.display = "none"
         self.focus = "list"
     }
 
@@ -1658,7 +1765,7 @@ function Map() {
             element = document.querySelector("#item_" + self.l)
             if (element) {
                 element.classList.add("selected")
-                const top = 96, bottom = window.innerHeight - 64
+                const top = 128, bottom = window.innerHeight - 64
                 const y = element.getBoundingClientRect().y
                 if (y < top) {
                     self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
