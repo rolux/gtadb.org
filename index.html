@@ -349,10 +349,16 @@
             #itemBody > div > div.coordinates > span.link:hover {
                 text-decoration: underline
             }
-            #itemStatus {
+            #itemTags {
                 float: left;
                 font-size: 11px;
                 margin: 8px 8px 2px 8px;
+                text-transform: uppercase;
+            }
+            #itemStatus {
+                float: left;
+                font-size: 11px;
+                margin: 2px 8px 2px 8px;
                 text-transform: uppercase;
             }
             #itemEdited {
@@ -908,6 +914,10 @@ function Map() {
         self.itemIrlPhoto = document.createElement("div")
         self.itemIrlPhoto.className = "photo"
         self.itemBody.appendChild(self.itemIrlPhoto)
+
+        self.itemTags = document.createElement("div")
+        self.itemTags.id = "itemTags"
+        self.itemBody.appendChild(self.itemTags)
 
         self.itemStatus = document.createElement("div")
         self.itemStatus.id = "itemStatus"
@@ -1591,6 +1601,11 @@ function Map() {
                 link.target = "_blank"
             }
             self.itemIrlCoordinates.appendChild(link)
+            self.itemTags.innerHTML = "TAGS: " + (
+                landmark.tags.length ? landmark.tags : ["none"]
+            ).map(function(tag) {
+                return tag.toUpperCase()
+            }).join(", ")
             self.itemStatus.innerHTML = `STATUS: ${landmark.irlStatus}`
             self.itemIrlPhoto.innerHTML = ""
             if (landmark.irlPhoto) {
