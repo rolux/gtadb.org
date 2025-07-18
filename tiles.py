@@ -23,7 +23,7 @@ print(f"{aiwe_zero=}")
 
 maps = [
     ("dupzor", 51, 0.558, (9037, 6693)),
-    ("yanis", 5, 0.558, (9037, 6693)),
+    ("yanis", 6, 0.558, (9037, 6693)),
 ]
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
