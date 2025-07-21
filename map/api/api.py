@@ -128,20 +128,18 @@ GEODATA_FILE = f"{DATA_DIR}/geodata.json"
 INVITES_FILE = f"{DATA_DIR}/invites.json"
 LANDMARKS_FILE = f"{DATA_DIR}/landmarks.json"
 LOG_FILE = f"{DATA_DIR}/edit_log.jsonl"
+SECRETS_FILE = f"{DATA_DIR}/secrets.json"
 SESSIONS_FILE = f"{DATA_DIR}/sessions.json"
 USERS_FILE = f"{DATA_DIR}/users.json"
-
-
-
-with open(API_KEY_FILE, "r") as f:
-    api_key = f.read()
-gmaps = googlemaps.Client(key=api_key)
 
 geodata = read_json(GEODATA_FILE)
 invites = read_json(INVITES_FILE)
 landmarks = read_json(LANDMARKS_FILE)
+secrets = read_json(SECRETS_FILE)
 sessions = read_json(SESSIONS_FILE)
 users = read_json(USERS_FILE)
+
+gmaps = googlemaps.Client(key=secrets["GOOGLE_MAPS_API_KEY"])
 
 
 
