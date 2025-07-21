@@ -146,6 +146,8 @@ gmaps = googlemaps.Client(key=secrets["GOOGLE_MAPS_API_KEY"])
 @app.route("/api", methods=["POST"])
 def api():
 
+    global invites
+
     if request.content_type.startswith("multipart/form-data"):
         req = request.form.to_dict()
         file = request.files.get("value")
