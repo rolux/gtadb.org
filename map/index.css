@@ -441,12 +441,13 @@ textarea:focus {
     top: 0;
 }
 #titleElement{
+    border-radius: 4px;
     color: rgb(255, 255, 255);
     font-size: 12px;
     font-weight: bold;
     height: 14px;
-    margin: 1px 4px;
-    padding: 4px;
+    margin: 2px 4px;
+    padding: 3px 6px;
 }
 #titleImage {
     cursor: pointer;
