@@ -19,12 +19,13 @@ gtadb.API = function(options) {
             return [ret.username, ret.session_id, ret.profile_color]
         })
     }
-    that.createAccount = function(inviteCode, username, password) {
+    that.createAccount = function(inviteCode, username, password, repeatPassword) {
         return self.sendRequest({
             action: "create_account",
             invite_code: inviteCode,
             username: username,
-            password: password
+            password: password,
+            repeat_password: repeatPassword
         }).then(function(ret) {
             if (ret.status == "ok") {
                 return ret.session_id
@@ -910,8 +911,11 @@ gtadb.Map = function() {
         // Title Bar
 
         self.titleElement = document.createElement("div")
-        self.titleElement.innerHTML = "MAP.GTADB.ORG"
+        self.titleElement.innerHTML = "map.gtadb.org"
         self.titleElement.id = "titleElement"
+        self.titleElement.style.backgroundColor = "rgb(" + [0, 1, 2].map(function() {
+            return Math.floor(Math.random() * 192)
+        }).join(", ") + ")"
 
         self.aboutButton = gtadb.Button({
             click: function() {
@@ -1387,7 +1391,7 @@ gtadb.Map = function() {
                     data.password,
                     data.repeatPassword
                 ).then(function(sessionId) {
-                    console.log(sessionId)
+                    self.onLogin(data.username, sessionId)
                 }).catch(function(error) {
                     self.createAccountForm.setMessage(error.message)
                     setTimeout(function() {
