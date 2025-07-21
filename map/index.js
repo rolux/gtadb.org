@@ -863,14 +863,14 @@ gtadb.Map = function() {
             if (username) {
                 self.onLogin(username, sessionId, profileColor)
             }
+        }).catch(function(error) {
+            console.log(error)
+        }).finally(function() {
             self.loadJSON("data/landmarks.json").then(function(landmarks) {
                 self.initUI(landmarks)
                 self.onHashchange()
                 self.initGooglemaps()
             })
-        }).catch(function(error) {
-            console.log(error)
-            self.loadJSON("data/landmarks.json").then(self.initUI)
         })
         
         return that
