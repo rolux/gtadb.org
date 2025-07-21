@@ -2586,7 +2586,9 @@ gtadb.Map = function() {
 
             self.itemIrlCoordinates.innerHTML = ""
             self.itemIrlCoordinatesLink = document.createElement("span")
-            self.itemIrlCoordinatesLink.innerHTML = landmark.irlCoordinates ? landmark.irlCoordinates.join(",") : "?"
+            self.itemIrlCoordinatesLink.innerHTML = landmark.irlCoordinates ? landmark.irlCoordinates.map(function(value) {
+                return value.toFixed(7)
+            }).join(",") : "?"
             if (landmark.irlCoordinates) {
                 self.itemIrlCoordinatesLink.classList.add("link")
                 self.itemIrlCoordinatesLink.addEventListener("mousedown", function() {
