@@ -1,0 +1,717 @@
+html, body {
+    background: rgb(0, 0, 0);
+    font-family: sans-serif;
+    font-size: 11px;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+}
+
+
+
+body.light,
+body.light a {
+    color: rgb(0, 0, 0);
+}
+body.light input[type="text"]:focus {
+    border-color: rgb(192, 192, 192);
+}
+body.light input[type="text"]::placeholder {
+    color: rgb(128, 128, 128);
+}
+body.light .bar {
+    border-color: rgba(0, 0, 0, 0.125);
+}
+body.light .dialog .bar,
+body.light .dialog .content,
+body.light .mapPanel {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+body.light .form .formMessage {
+    color: rgb(255, 128, 0);
+}
+body.light .input input[type="text"],
+body.light .input input[type="password"],
+body.light .input textarea,
+body.light .input .upload {
+    border-color: rgba(0, 0, 0, 0.25);
+}
+body.light .input .upload {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+body.light .input .upload.hover {
+    background-color: rgba(128, 192, 255, 0.25);
+}
+body.light .input .upload .removeButton {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+body.light .panel .menuItem:not(.selected):hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+body.light .panel .menuItem.selected {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+body.light #listBody > .item.selected {
+    background-color: rgb(255, 255, 255);
+}
+body.light #itemBody > div.photo,
+body.light #dialogLayer {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+body.light #dialogLayer.clicked {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+
+body.dark,
+body.dark a {
+    color: rgb(255, 255, 255);
+}
+body.dark input[type="text"]:focus {
+    border-color: rgb(64, 64, 64);
+}
+body.dark input[type="text"]::placeholder {
+    color: rgb(128, 128, 128)
+}
+body.dark .bar {
+    border-color: rgba(255, 255, 255, 0.125);
+}
+body.dark .dialog .bar,
+body.dark .dialog .content,
+body.dark .mapPanel {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+body.dark .form .formMessage {
+    color: rgb(255, 128, 0);
+}
+body.dark .input input[type="text"],
+body.dark .input input[type="password"],
+body.dark .input textarea,
+body.datk .input .upload {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+body.dark .input .upload {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+body.dark .input .upload.hover {
+    background-color: rgba(0, 64, 128, 0.25);
+}
+body.dark .input .upload .removeButton {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+body.dark .panel .menuItem:not(.selected):hover {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+body.dark .panel .menuItem.selected {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+body.dark #listBody > .item.selected {
+    background-color: rgb(0, 0, 0);
+}
+body.dark #itemBody > div.photo,
+body.dark #dialogLayer {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+body.dark #dialogLayer.clicked {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+
+body:not(.auth) .auth,
+body.googlemaps .auth {
+    display: none;
+}
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+input[type="password"],
+input[type="text"] {
+    all: unset;
+    appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    font-size: 12px;
+    height: 18px;
+    margin: 0;
+    padding: 2px 4px;
+    position: absolute;
+}
+input[type="text"]:focus {
+    border: 1px solid transparent;
+    outline: none;
+}
+select {
+    all: unset;
+    appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-family: sans-serif;
+    font-size: 12px;
+    margin: 0;
+    padding: 2px 4px;
+    text-overflow: ellipsis;
+}
+select:focus {
+    outline: none;
+}
+select::-ms-expand {
+    display: none
+}
+span.bold {
+    font-weight: bold;
+}
+td {
+    font-size: 12px;
+    padding: 4px;
+}
+textarea {
+    all: unset;
+    appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -webkit-appearance: none;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+textarea:focus {
+    outline: none;
+}
+
+
+
+.bar {
+    height: 23px;
+    padding: 4px;
+    position: absolute;
+}
+.bar.borderBottom {
+    border-bottom: 1px solid transparent
+}
+.bar.borderTop {
+    border-top: 1px solid transparent
+}
+.bar :first-child {
+    float: left;
+    margin: 5px 8px;
+}
+.bar .button, .bar .extra {
+    float: right;
+    margin: 6px 4px;
+}
+.bar.borderTop .button, .bar.borderTop .extra {
+    margin-top: 5px;
+}
+.button {
+    cursor: pointer;
+    font-size: 11px;
+    height: 12px;
+    margin: 5px 4px;
+    user-select: none;
+}
+.dialog {
+    background-color: transparent;
+    border-radius: 8px;
+}
+.dialog .bar {
+    border-radius: 8px 8px 0 0;
+}
+.dialog .bar :first-child {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    height: 16px;
+    margin: 5px 4px;
+    left: 0;
+    overflow-x: hidden;
+    top: 0;
+}
+.dialog .content {
+    border-radius: 0 0 8px 8px;
+    margin-top: 32px;
+}
+.form .formButton {
+    float: left;
+    cursor: pointer;
+    height: auto;
+    margin: 4px 6px;
+    user-select: none;
+    width: auto;
+}
+.form .formMessage {
+    float: right;
+    height: auto;
+    margin: 4px 6px;
+    text-align: right;
+    text-transform: uppercase;
+    width: auto;
+}
+.input {
+    //float: left;
+    margin: 4px;
+}
+.input .label {
+    font-size: 11px;
+    height: 16px;
+    margin-left: 2px;
+}
+.input input[type="password"],
+.input input[type="text"],
+.input textarea {
+    border: 1px solid transparent;
+    font-size: 12px;
+    padding: 3px;
+}
+.input input[type="text"] {
+    background-color: transparent;
+}
+.input .upload {
+    cursor: pointer;
+}
+.input .upload .removeButton {
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    display: none;
+    font-size: 11px;
+    height: fit-content;
+    margin-top: -19px;
+    padding: 2px 4px;
+    position: relative;
+    right: 0;
+    text-transform: uppercase;
+    width: fit-content;
+}
+.input .upload:hover .removeButton {
+    display: block;
+}
+.panel > div {
+    float: left
+}
+.panel select {
+    display: block;
+    margin-top: 8px;
+}
+.panel select:first-child {
+    margin-top: 0;
+}
+.panel .menuItem {
+    cursor: pointer;
+    font-size: 12px;
+    height: 14px;
+    padding: 9px 8px;
+    text-transform: uppercase;
+    user-select: none;
+    width: 240px;
+}
+
+
+
+#map, #canvas, #markers {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+#map {
+    cursor: default;
+    inset: 0;
+}
+#map.dragging {
+    cursor: grabbing;
+}
+#canvas {
+    filter: saturate(0.2);
+    user-select: none;
+}
+.marker {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 8px 8px 0 8px;
+    cursor: pointer;
+    display: none;
+    height: 14px;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -19.314px;
+    position: absolute;
+    top: 50%;
+    transform: rotate(45deg);
+    width: 14px;
+    z-index: 100;
+}
+.marker.selected {
+    border: 2.5px solid rgb(255, 255, 255);
+    height: 11px;
+    width: 11px;
+    z-index: 101;
+}
+.marker.dragging {
+    border: 2px solid rgb(128, 128,128);
+}
+.marker.agriculture {
+    background-color: rgb(192, 192, 0);
+}
+.marker.commercial {
+    background-color: rgb(0, 0, 255);
+}
+.marker.entertainment {
+    background-color: rgb(255, 128, 0);
+}
+.marker.government {
+    background-color: rgb(255, 0, 0);
+}
+.marker.hotel {
+    background-color: rgb(0, 255, 255);
+}
+.marker.infrastructure {
+    background-color: rgb(128, 128, 128);
+}
+.marker.industrial {
+    background-color: rgb(255, 255, 0);
+}
+.marker.monument {
+    background-color: rgb(128, 0, 0);
+}
+.marker.other {
+    background-color: rgb(240, 240, 240);
+}
+.marker.public {
+    background-color: rgb(255, 0, 255);
+}
+.marker.nature {
+    background-color: rgb(0, 128, 0);
+}
+.marker.residential {
+    background-color: rgb(0, 255, 0);
+}
+.marker.transport {
+    background-color: rgb(192, 192, 192);
+}
+
+#googlemapsLayer {
+    bottom: 0;
+    display: none;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.mapPanel {
+    bottom: 0;
+    position: absolute;
+    top: 0;
+    width: 256px;
+    z-index: 1000;
+}
+.mapPanel .bar {
+    width: 248px;
+}
+#listPanel {
+    left: 0;
+}
+
+#titleBar {
+    left: 0;
+    top: 0;
+}
+#titleElement{
+    font-size: 12px;
+}
+#titleImage {
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+}
+#userIcon {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 6px;
+    height: 10px;
+    width: 10px;
+}
+#findBar {
+    left: 0;
+    top: 32px;
+}
+#findBar input {
+    margin: 3px 3px;
+    width: 192px;
+}
+#filterBar {
+    left: 0;
+    top: 64px;
+}
+#filterBar select {
+    width: 192px
+}
+.clearButton, .closeButton {
+    cursor: pointer;
+    float: right;
+    font-size: 11px;
+    height: 12px;
+    margin: 9px 8px;
+    user-select: none;
+}
+.clearButton {
+    display: none;
+}
+#sortBar {
+    left: 0;
+    top: 96px;
+}
+#filterBar select, #sortBar select {
+    margin: 2px 3px;
+    white-space: nowrap;
+    width: 192px;
+}
+#listBody {
+    bottom: 32px;
+    left: 0;
+    overflow-y: scroll;
+    position: absolute;
+    top: 128px;
+    width: 256px;
+}
+#listBody > .item {
+    border-left: 8px solid transparent;
+    cursor: pointer;
+    height: 32px;
+    width: 248px;
+}
+#listBody > .item div {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#listBody > .item .ig {
+    font-size: 11px;
+    font-weight: bold;
+    height: 13px;
+    left: 8px;
+    padding: 4px 8px 1px 8px;
+    top: 0;
+    width: 232px;
+}
+#listBody > .item .irl {
+    bottom: 0;
+    font-size: 9px;
+    height: 11px;
+    left: 8px;
+    padding: 1px 8px 2px 8px;
+    width: 232px;
+}
+#listStatusBar {
+    bottom: 0;
+    left: 0;
+}
+#itemPanel, #editItemPanel {
+    display: none;
+    font-size: 13px;
+    right: 0
+}
+#itemBar, #editItemBar {
+    right: 0;
+    top: 0
+}
+#itemId, #editItemId {
+    font-size: 13px;
+    margin: -1px 0;
+}
+#itemBody {
+    border-right: 8px solid transparent;
+    bottom: 32px;
+    left: 0;
+    overflow-y: scroll;
+    padding: 4px;
+    position: absolute;
+    top: 32px;
+    width: 240px;
+}
+#itemBody > div.coordinates {
+    font-size: 11px;
+    margin: 4px;
+}
+#itemBody > div > div.coordinates > a,
+#itemBody > div.coordinates > span.link {
+    cursor: pointer;
+}
+#itemBody > div.coordinates > a:hover,
+#itemBody > div.coordinates > span.link:hover {
+    text-decoration: underline
+}
+#itemBody > div {
+    float: left;
+    //width: 240px;
+}
+#itemBody > div.address {
+    font-weight: bold;
+    margin: 4px;
+    width: 232px;
+}
+#itemBody > div.coordinates {
+    font-size: 11px;
+}
+#itemBody:not(.editing) > div:not(.photo) {
+    margin: 4px;
+}
+#itemBody:not(.editing) > div.photo {
+    height: 139.5px;
+    margin: 4px -4px;
+    width: 248px;
+}
+#itemBody:not(.editing) > div.photo > img {
+    cursor: pointer;
+}
+#removeIgCoordinatesButton,
+#removeIgPhotoButton,
+#removeIrlPhotoButton {
+    cursor: pointer;
+    margin-left: 8px;
+}
+#itemTags {
+    float: left;
+    font-size: 11px;
+    //margin: 8px 8px 2px 8px;
+    margin: 4px;
+    width: 232px;
+    text-transform: uppercase;
+}
+/*
+#itemBody.editing input,
+#itemBody.editing textarea {
+    padding: 2px 4px;
+}
+
+
+#itemBody > div.photo {
+    height: 139.5px;
+    margin-left: -4px;
+    width: 248px;
+}
+#itemBody > div.photo > img {
+    cursor: pointer;
+    width: 256px;
+}
+#itemBody > div > div {
+    float: left;
+    margin: 2px 2px;
+    width: 224px;
+}
+#itemBody > div.address {
+    font-weight: bold;
+}
+#itemBody > div.coordinates {
+    font-size: 11px;
+}
+itemBody > div > div.coordinates > a,
+#itemBody > div.coordinates > span.link {
+    cursor: pointer;
+}
+#itemBody > div.coordinates > a:hover,
+#itemBody > div.coordinates > span.link:hover {
+    text-decoration: underline
+}
+    */
+
+
+#itemStatus {
+    float: left;
+    font-size: 11px;
+    margin: 2px 8px 2px 8px;
+    text-transform: uppercase;
+}
+#itemEdited {
+    float: left;
+    font-size: 11px;
+    padding: 2px 8px 8px 8px;
+    text-transform: uppercase;
+}
+#editItemBody {
+    border-right: 8px solid transparent;
+    bottom: 0;
+    left: 0;
+    overflow-y: scroll;
+    padding: 4px;
+    position: absolute;
+    top: 32px;
+    width: 240px;
+}
+#editItemIgPhoto, #editItemIrlPhoto {
+    margin-left: -4px;
+}
+
+#itemStatusBar {
+    bottom: 0;
+    right: 0;
+}
+#itemStatusElement {
+    font-size: 11px;
+}
+#dialogLayer {
+    align-items: center;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1001;
+}
+
+#aboutDialog .content img {
+    height: 256px;
+    margin: 96px 96x;
+    width: 256px;
+}
+#photoDialog .bar .title {
+    width: 944px;
+}
+#photoDialog .content img {
+    border-radius: 0 0 8px 8px;
+    user-select: none;
+}
+#dialogPhoto {
+    border-radius: 0 0 8px 8px;
+}
+
+/*
+[contenteditable] {
+  outline: none;
+
+  display: inline-block;  
+
+  font: inherit;  
+  color: inherit;
+  line-height: inherit;
+  
+  white-space: normal;
+
+  user-select: text;
+}
+*/
+
+div[contenteditable="true"] {
+    all: unset;
+    outline: 1px dashed rgb(64, 128, 192)
+}
