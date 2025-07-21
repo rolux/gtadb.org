@@ -1254,7 +1254,7 @@ gtadb.Map = function() {
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>.</td><td>Open About dialog</td></tr>
-            <tr><td>,</td><td>Open Settins dialog</td></tr>
+            <tr><td>,</td><td>Open Settings dialog</td></tr>
             <tr><td>← →</td><td>Switch photo</td></tr>
             <tr><td>ESC</td><td>Close dialog</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
