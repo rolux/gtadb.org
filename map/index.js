@@ -1541,40 +1541,43 @@ gtadb.Map = function() {
                 rotateControl: false,
                 fullscreenControl: false,
             })
-            self.googleMarkers = {}
+            self.renderGooglemapsMarker = function(landmark) {
+                let customMarker = document.createElement("div")
+                customMarker.className = "marker googlemaps"
+                customMarker.id = "googlemapsMarker_" + landmark.id
+                customMarker.style.backgroundColor = "#" + landmark.color
+                customMarker.style.display = "block"
+                const googlemapsMarker = new AdvancedMarkerElement({
+                    map: self.googleMap,
+                    content: customMarker,
+                    position: {
+                        lat: landmark.irlCoordinates[0],
+                        lng: landmark.irlCoordinates[1]
+                    },
+                    title: landmark.title,
+                    gmpClickable: true,
+                    zIndex: 1
+                })
+                googlemapsMarker.addListener("click", function({domEvent, latLng}) {
+                    const {target} = domEvent
+                    const id = target.id.replace("googlemapsMarker_", "")
+                    const isSelected = target.classList.contains("selected")
+                    Object.values(self.googlemapsMarkers).forEach(function(gM) {
+                        gM.zIndex = 1
+                    })
+                    googlemapsMarker.zIndex = 10
+                    if (isSelected && domEvent.metaKey) {
+                        self.setLandmark(null)
+                    } else if (!isSelected) {
+                        self.setLandmark(id)
+                    }
+                })
+                return googlemapsMarker
+            }
+            self.googlemapsMarkers = {}
             self.landmarks.forEach(function(landmark) {
                 if (landmark.irlCoordinates) {
-                    let customMarker = document.createElement("div")
-                    customMarker.className = "marker googlemaps"
-                    customMarker.id = "googlemapsMarker_" + landmark.id
-                    customMarker.style.backgroundColor = "#" + landmark.color
-                    customMarker.style.display = "block"
-                    const googleMarker = new AdvancedMarkerElement({
-                        map: self.googleMap,
-                        content: customMarker,
-                        position: {
-                            lat: landmark.irlCoordinates[0],
-                            lng: landmark.irlCoordinates[1]
-                        },
-                        title: landmark.title,
-                        gmpClickable: true,
-                        zIndex: 1
-                    })
-                    googleMarker.addListener("click", function({domEvent, latLng}) {
-                        const {target} = domEvent
-                        const id = target.id.replace("googlemapsMarker_", "")
-                        const isSelected = target.classList.contains("selected")
-                        Object.values(self.googleMarkers).forEach(function(gM) {
-                            gM.zIndex = 1
-                        })
-                        googleMarker.zIndex = 10
-                        if (isSelected && domEvent.metaKey) {
-                            self.setLandmark(null)
-                        } else if (!isSelected) {
-                            self.setLandmark(id)
-                        }
-                    })
-                    self.googleMarkers[landmark.id] = googleMarker
+                    self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
                 }
             })
         }
@@ -1731,7 +1734,6 @@ gtadb.Map = function() {
         const id = self.l
         self.api.editLandmark(id, key, value).then(function(ret) {
             if (ret.status == "ok") {
-                console.log(ret)
                 let landmark = self.parseLandmark(id, ret.data)
                 let index = self.landmarks.findIndex(function(landmark) {
                     return landmark.id == id
@@ -1996,6 +1998,20 @@ gtadb.Map = function() {
     self.updateMarker = function(landmark) {
         self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
         self.markers[landmark.id].title = landmark.title
+        if (landmark.irlCoordinates) {
+            if (self.googlemapsMarkers[landmark.id]) {
+                self.googlemapsMarkers[landmark.id].position = {
+                    lat: landmark.irlCoordinates[0],
+                    lng: landmark.irlCoordinates[1]
+                }
+            } else {
+                self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
+            }
+            self.googlemapsMarkers[landmark.id].content.classList.add("selected")
+        } else if (self.googlemapsMarkers[landmark.id]) {
+            self.googlemapsMarkers[landmark.id].map = null
+            delete self.googlemapsMarkers[landmark.id]
+        }
     }
 
     // Photo Dialog ////////////////////////////////////////////////////////////////////////////////
