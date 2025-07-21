@@ -190,7 +190,7 @@ def api():
         return {"status": "error", "message": "Unknown landmark ID"}
 
     if action == "get_user":
-        color = users[user]["color"]
+        color = users[user]["color"] if user in users else get_color("???")
         return {"status": "ok", "username": user, "session_id": session_id, "profile_color": color}
 
     if action == "create_account":
