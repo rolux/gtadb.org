@@ -8,7 +8,7 @@ import os
 import re
 import time
 import uuid
-from flask import Flask, make_response, jsonify, request, send_from_directory
+from flask import Flask, jsonify, make_response, request, send_from_directory
 import googlemaps
 from PIL import Image
 
@@ -180,14 +180,12 @@ def api():
 
     if action in (
         "change_password", "logout",
-        "add_landmark", "edit_landmark", "remove_landmark",
-        "add_photo", "remove_photo"
+        "add_landmark", "edit_landmark", "remove_landmark"
     ) and not user:
         return {"status": "error", "message": "Unauthorized request"}
 
     if action in (
-        "edit_landmark", "remove_landmark",
-        "add_photo", "remove_photo"
+        "edit_landmark", "remove_landmark"
     ) and landmark_id not in list(landmarks.keys()):
         return {"status": "error", "message": "Unknown landmark ID"}
 
@@ -337,8 +335,9 @@ if __name__ == "__main__":
     os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(PHOTOS_DIR, exist_ok=True)
 
-    # FIXME
     INDEX_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+    # FIXME: Disable these routes in producttion (handled by caddy)
 
     @app.route("/data/<path:filename>")
     def serve_data(filename):
@@ -360,6 +359,5 @@ if __name__ == "__main__":
             path = "index.html"
         print("Serving static:", os.path.join(INDEX_DIR, path))
         return send_from_directory(INDEX_DIR, path)
-    #
 
     app.run(host="0.0.0.0", port=8080, debug=False)
