@@ -360,4 +360,4 @@ if __name__ == "__main__":
         return send_from_directory(INDEX_DIR, path)
     #
 
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=False)
