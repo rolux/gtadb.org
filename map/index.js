@@ -1175,7 +1175,6 @@ gtadb.Map = function() {
 
         self.editItemIrlPhoto = gtadb.Input({
             change: function(value) {
-                console.log("IRL PHOTO CHANGE", value)
                 self.editLandmark("rl_photo", value)
             },
             height: 139.5,
@@ -1715,7 +1714,6 @@ gtadb.Map = function() {
             if (ret.status == "ok") {
                 self.clearFindAndFilter()
                 let landmark = self.parseLandmark(ret.id, ret.data)
-                console.log("LANDMARK", landmark)
                 self.landmarks.push(landmark)
                 self.landmarksById[ret.id] = landmark
                 self.currentLandmarks.push(landmark)
@@ -1816,7 +1814,6 @@ gtadb.Map = function() {
     }
 
     self.parseLandmarks = function(landmarks) {
-        //console.log("PL", landmarks)
         self.landmarks = Object.entries(landmarks).map(function([id, item]) {
             return self.parseLandmark(id, item)
         })
@@ -1880,7 +1877,6 @@ gtadb.Map = function() {
         if (id == self.l && !pan) {
             return
         }
-        console.log("setLandmark", id)
         if (id != self.id && self.editing) {
             self.editing = false
             self.renderItem()
@@ -2412,7 +2408,6 @@ gtadb.Map = function() {
                     self.isDraggingMarker = false
                     document.removeEventListener("mousemove", onMousemove)
                     document.removeEventListener("mouseup", onMouseup)
-                    console.log("coo", coordinates)
                     self.editLandmark("ig_coordinates", coordinates)
                 }
                 document.addEventListener("mousemove", onMousemove)
@@ -2467,7 +2462,6 @@ gtadb.Map = function() {
     }
  
     self.onResize = function(render=true) {
-        console.log("WTF", canvas, self.canvas, window)
         self.canvas.width = window.innerWidth
         self.canvas.height = window.innerHeight
         self.canvas.style.width = window.innerWidth + "px"
@@ -2665,7 +2659,6 @@ gtadb.Map = function() {
                 self.itemTags.removeEventListener("paste", self.onPaste)
                 self.itemTags.removeEventListener("blur", self.onBlur)
             } else {
-                console.log(landmark, "??")
                 self.itemTags.innerHTML = landmark.tags.join(", ")
                 self.itemTags.contentEditable = "true"
                 self.itemTags.addEventListener("paste", self.onPaste)
@@ -2797,10 +2790,8 @@ gtadb.Map = function() {
 
     self.getUserSettings = function() {
         let data = localStorage.getItem("map.gtadb.org")
-        console.log("DATA", data)
         let user
         if (!data) {
-            console.log("NO DATA")
             user = self.defaults
         } else {
             user = self.checkUserSettings(JSON.parse(localStorage.getItem("map.gtadb.org")).user)
