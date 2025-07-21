@@ -2015,6 +2015,9 @@ gtadb.Map = function() {
 
     self.switchPhoto = function() {
         const selected = self.dialogPhoto.src.includes(",ig.jpg") ? "rl" : "ig"
+        self.photoDialog.set({
+            title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "irlAddress"]
+        })
         self.dialogPhoto.src = `photos/${self.l},${selected}.jpg?v=${landmark.edited}`
         self.resizePhotoDialog()
     }
