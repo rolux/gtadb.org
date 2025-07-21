@@ -1,9 +1,9 @@
-# gta6map
+# gtadb.org
 
-This is an interactive map of Grand Theft Auto VI, including all landmarks that have been identified so far.
+This is the repository for [gtadb.org](https://gtadb.org).
 
-You can see the map here: https://gta6map.github.io
+It includes the source code for [map.gtadb.org](https://map.gtadb.org) – an interactive map of Grand Theft Auto VI, featuring all landmarks that have been identified so far.
 
-You're also free to use the landmark data or map tiles for your own purposes.
+You're welcome to use the landmark data or map tiles for your own purposes.
 
 Public Domain. Thanks to all contributors!
