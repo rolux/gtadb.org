@@ -1801,7 +1801,7 @@ gtadb.Map = function() {
                 return (dec + 64).toString(16)
             }).join(""),
             "edited": item[8],
-            "findString": id + "\n" + item[0].toLowerCase() + "\n" + item[3].toLowerCase()
+            "findString": id + "\n" + item[0].toLowerCase() + "\n" + item[3].toLowerCase() + "\n" + item[6].join("\n")
         }
         landmark.igNameAndAddress = self.getLandmarkNameAndAddress(landmark.igAddress)
         landmark.irlNameAndAddress = self.getLandmarkNameAndAddress(landmark.irlAddress)
