@@ -1211,43 +1211,67 @@ gtadb.Map = function() {
 
         self.aboutThisMapElement = document.createElement("div")
         self.aboutThisMapElement.style.margin = "8px"
-        self.aboutThisMapElement.innerHTML = "COMING SOON"
+        self.aboutThisMapElement.innerHTML = `<p><b>map.gtadb.org</b>
+            is an interactive map of Grand Theft Auto VI that includes
+            every single landmark that has been identified so far.</p>
+            <p>Finding the real-life equivalent of every single in-game
+            building is going to be a collaborative effort, way beyond
+            the release of the game.</p>
+            <p>Huge thanks to all the contributors, on the GTA VI Mapping
+            Discord and elsewhere!</p>`
+
+        self.sourceCodeElement = document.createElement("div")
+        self.sourceCodeElement.style.margin = "8px"
+        self.sourceCodeElement.innerHTML = `<p>This website, including
+            the GTA VI map application, is free Open Source software,
+            written in JavaScript and Python.</p>
+            <p>You can get the source code on GitHub. That's also the
+            best place to request features or report bugs.</p>
+            <p><a href="https://github.com/rolux/gtadb.org"
+            target="_blank">https://github.com/rolux/gtadb.org</a>
+            </p>`
 
         self.landmarkDataElement = document.createElement("div")
         self.landmarkDataElement.style.margin = "8px"
-        self.landmarkDataElement.innerHTML = "COMING SOON"
+        self.landmarkDataElement.innerHTML = `<p>You are welcome
+            to use the landmark data for your own purposes.</p>
+            <p>The latest version can always be found here:</p>
+            <p><a href="https://map.gtadb.org/data/landmarks.json"
+            target="_blank">https://map.gtadb.org/data/landmarks.json</a>
+            </p>`
 
         self.keyboardShortcutsElement = document.createElement("div")
         self.keyboardShortcutsElement.style.margin = "8px"
         self.keyboardShortcutsElement.innerHTML = `<table>
-            <tr><td>← → ↑ ↓</td><td>PAN</td></tr>
-            <tr><td>0 1 2 3 4 5 6</td><td>SET ZOOM LEVEL</td></tr>
-            <tr><td>&ndash;</td><td>ZOON OUT</td></tr>
-            <tr><td>=</td><td>ZOOM IN</td></tr>
-            <tr><td>G</td><td>SWITCH MAP MODE</td></tr>
-            <tr><td>⇧ G</td><td>TOGGLE LABELS</td></tr>
-            <tr><td>T</td><td>SWITCH TILE SET</td></tr>
-            <tr><td>⇧ T</td><td>TOGGLE OVERLAYS</td></tr>
-            <tr><td>ESC</td><td>DESELECT ITEM</td></tr>
+            <tr><td>← → ↑ ↓</td><td>Pan</td></tr>
+            <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
+            <tr><td>&ndash;</td><td>Zoom out</td></tr>
+            <tr><td>=</td><td>Zoom in</td></tr>
+            <tr><td>G</td><td>Switch map mode</td></tr>
+            <tr><td>⇧ G</td><td>Toggle labels</td></tr>
+            <tr><td>T</td><td>Switch tile set</td></tr>
+            <tr><td>⇧ T</td><td>Toggle overlays</td></tr>
+            <tr><td>ESC</td><td>Deselect landmark</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-            <tr><td>.</td><td>OPEN ABOUT DIALOG</td></tr>
-            <tr><td>,</td><td>OPEN SETTINGS DIALOG</td></tr>
-            <tr><td>← →</td><td>SWITCH PHOTO</td></tr>
-            <tr><td>ESC</td><td>CLOSE DIALOG</td></tr>
+            <tr><td>.</td><td>Open About dialog</td></tr>
+            <tr><td>,</td><td>Open Settins dialog</td></tr>
+            <tr><td>← →</td><td>Switch photo</td></tr>
+            <tr><td>ESC</td><td>Close dialog</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-            <tr><td>A</td><td>ADD LANDMARK</td></tr>
-            <tr><td>E</td><td>EDIT LANDMARK</td></tr>
-            <tr><td>DEL</td><td>REMOVE LANDMARK</td></tr>
-        </table>`
+            <tr><td>A</td><td>Add landmark</td></tr>
+            <tr><td>E</td><td>Edit landmark</td></tr>
+            <tr><td>DEL</td><td>Remove Landmark</td></tr>
+            </table>`
 
         self.editingGuidelinesElement = document.createElement("div")
         self.editingGuidelinesElement.style.margin = "8px"
-        self.editingGuidelinesElement.innerHTML = "COMING SOON"
+        self.editingGuidelinesElement.innerHTML = `<p>Coming soon...</p>`
 
         self.aboutPanel = gtadb.Panel({
             height: 512,
             elements: {
                 "About This Map": self.aboutThisMapElement,
+                "Source Code": self.sourceCodeElement,
                 "Landmark Data": self.landmarkDataElement,
                 "Keyboard Shortcuts": self.keyboardShortcutsElement,
                 "Editing Guidelines": self.editingGuidelinesElement,
