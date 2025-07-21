@@ -219,7 +219,14 @@ def api():
         write_json(USERS_FILE, users)
         session_id = create_session(username)
         response = make_response({"status": "ok", "session_id": session_id})
-        response.set_cookie("session_id", session_id, httponly=True, samesite="Lax")
+        response.set_cookie(
+            "session_id",
+            session_id,
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+            path="/api"
+        )
         return response
 
     if action == "login":
