@@ -2004,6 +2004,7 @@ gtadb.Map = function() {
                     lat: landmark.irlCoordinates[0],
                     lng: landmark.irlCoordinates[1]
                 }
+                self.googlemapsMarkers[landmark.id].title = landmark.title
             } else {
                 self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
             }
@@ -2735,6 +2736,10 @@ gtadb.Map = function() {
             self.canvas.style.display = "none"
             self.markersLayer.style.display = "none"
             self.googlemapsLayer.style.display = "block"
+            if (self.editing) {
+                self.editing = false
+                self.renderItem()
+            }
         }
         self.updateRemoveItemButton()
     }
