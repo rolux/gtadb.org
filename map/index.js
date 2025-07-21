@@ -1254,6 +1254,7 @@ gtadb.Map = function() {
             <tr><td>⇧ G</td><td>Toggle labels</td></tr>
             <tr><td>T</td><td>Switch tile set</td></tr>
             <tr><td>⇧ T</td><td>Toggle overlays</td></tr>
+            <tr><td>ESC</td><td>Exit StreetView</td></tr>
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>.</td><td>Open About dialog</td></tr>
@@ -1536,10 +1537,20 @@ gtadb.Map = function() {
                 cameraControl: false,
                 mapTypeControl: false,
                 scaleControl: false,
-                streetViewControl: false,
+                streetViewControl: true,
+                streetViewControlOptions: {
+                    position: google.maps.ControlPosition.BOTTOM_CENTER
+                },
                 rotateControl: false,
                 fullscreenControl: false,
             })
+
+            const streetView = self.googleMap.getStreetView()
+            streetView.setOptions({
+                disableDefaultUI: true,
+                enableCloseButton: false,
+            })
+
             self.renderGooglemapsMarker = function(landmark) {
                 let customMarker = document.createElement("div")
                 customMarker.className = "marker googlemaps"
@@ -2225,6 +2236,11 @@ gtadb.Map = function() {
             activeElement.blur()
         }
         if (activeElement.matches("input, textarea, [contenteditable]")) {
+            return
+        }
+
+        if (e.key === "Escape" && self.mapMode == "googlemaps" && self.googleMap.getStreetView().getVisible()) {
+            self.googleMap.getStreetView().setVisible(false)
             return
         }
 
