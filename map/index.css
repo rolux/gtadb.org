@@ -122,7 +122,7 @@ body.dark #dialogLayer.clicked {
 
 
 body:not(.auth) .auth,
-body.googlemaps .auth {
+body.googlemaps .auth:not(.extra) {
     display: none;
 }
 a {
@@ -151,6 +151,11 @@ input[type="text"] {
 input[type="text"]:focus {
     border: 1px solid transparent;
     outline: none;
+}
+p {
+    font-size: 13px;
+    line-height: 18px;
+    padding: 4px;
 }
 select {
     all: unset;
