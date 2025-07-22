@@ -27,11 +27,7 @@ gtadb.API = function(options) {
             password: password,
             repeat_password: repeatPassword
         }).then(function(ret) {
-            if (ret.status == "ok") {
-                return ret.session_id
-            } else {
-                throw new Error(ret.message)
-            }
+            return ret.session_id
         })
     }
     that.login = function(username, password) {
@@ -40,21 +36,16 @@ gtadb.API = function(options) {
             username: username,
             password: password
         }).then(function(ret) {
-            if (ret.status == "ok") {
-                return ret.session_id
-            } else {
-                throw new Error(ret.message)
-            }
+            return ret.session_id
         })
     }
-    that.changePassword = function(oldPassword, newPassword, repeatNewPassword) {
+    that.changePassword = function(username, oldPassword, newPassword, repeatNewPassword) {
         return self.sendRequest({
             action: "change_password",
-            oldPassword: oldPassword,
-            newPassword: newPassword,
-            repeatNewPassword: repeatNewPassword,
-        }).then(function(ret) {
-            
+            username: username,
+            old_password: oldPassword,
+            new_password: newPassword,
+            repeat_new_password: repeatNewPassword,
         })
     }
     that.logout = function() {
@@ -69,7 +60,7 @@ gtadb.API = function(options) {
             key: key,
             value: value
         }).then(function(ret) {
-            
+            // TODO
         })
     }
     that.addLandmark = function(igCoordinates) {
@@ -113,8 +104,16 @@ gtadb.API = function(options) {
         if (!isFile) {
             requestData.headers = {"Content-Type": "application/json"}
         }
-        return fetch(self.options.url, requestData).then(function(r) {
-            return r.json()
+        return fetch(self.options.url, requestData).then(function(req) {
+            if (!req.ok) {
+                throw new Error(req.status)
+            }
+            return req.json()
+        }).then(function(ret) {
+            if (ret.status == "error") {
+                throw new Error(ret.message)
+            }
+            return ret
         })
     }
     return that
@@ -356,8 +355,13 @@ gtadb.Form = function(options) {
     self.message = document.createElement("div")
     self.message.className = "formMessage"
     that.element.appendChild(self.message)
-    that.setMessage = function(text) {
+    that.setMessage = function(status, text) {
+        self.message.classList.add(status)
         self.message.innerHTML = text
+        setTimeout(function() {
+            self.message.innerHTML = ""
+            self.message.classList.remove(status)
+        }, 3000)
     }
     return that
 }
@@ -1396,10 +1400,7 @@ gtadb.Map = function() {
                 ).then(function(sessionId) {
                     self.onLogin(data.username, sessionId)
                 }).catch(function(error) {
-                    self.createAccountForm.setMessage(error.message)
-                    setTimeout(function() {
-                        self.createAccountForm.setMessage("")
-                    }, 2500)
+                    self.createAccountForm.setMessage("error", error.message)
                 })
             },
             inputs: {
@@ -1412,15 +1413,18 @@ gtadb.Map = function() {
         })
         self.createAccountForm.element.style.margin = "8px"
 
-        self.manageAccountForm = gtadb.Form({
+        self.changePasswordForm = gtadb.Form({
             buttonText: "CHANGE PASSWORD",
             click: function(data) {
                 self.api.changePassword(
+                    self.username,
                     data.oldPassword,
                     data.newPassword,
                     data.repeatNewPassword
                 ).then(function() {
-
+                    self.changePasswordForm.setMessage("ok", "Password changed")
+                }).catch(function(error) {
+                    self.changePasswordForm.setMessage("error", error.message)
                 })
             },
             inputs: {
@@ -1432,7 +1436,7 @@ gtadb.Map = function() {
             width: 496,
             _readonly: ["username"] // only present to prevent find input autofill
         })
-        self.manageAccountForm.element.style.margin = "8px"
+        self.changePasswordForm.element.style.margin = "8px"
 
         self.loginForm = gtadb.Form({
             buttonText: "LOGIN",
@@ -1443,10 +1447,7 @@ gtadb.Map = function() {
                 ).then(function(sessionId) {
                     self.onLogin(data.username, sessionId)
                 }).catch(function(error) {
-                    self.loginForm.setMessage(error.message)
-                    setTimeout(function() {
-                        self.loginForm.setMessage("")
-                    }, 2500)
+                    self.loginForm.setMessage("error", error.message)
                 })
             },
             inputs: {
@@ -1458,7 +1459,7 @@ gtadb.Map = function() {
         self.loginForm.element.style.margin = "8px"
 
         self.logoutForm = gtadb.Form({
-            buttonText: "CLICK HERE TO LOGOUT",
+            buttonText: "LOGOUT",
             click: function() {
                 self.api.logout().then(function() {
                     self.onLogout()
@@ -1466,8 +1467,11 @@ gtadb.Map = function() {
 
                 })
             },
-            inputs: {},
-            width: 496
+            inputs: {
+                "username": ["USERNAME", "username", self.username],
+            },
+            width: 496,
+            _readonly: ["username"]
         })
         self.logoutForm.element.style.margin = "8px"
 
@@ -1476,7 +1480,7 @@ gtadb.Map = function() {
             elements: self.sessionId ? {
                 "Appearance": self.appearanceElement,
                 "Map Settings": self.mapSettingsElement,
-                "Manage Account": self.manageAccountForm.element,
+                "Change Password": self.changePasswordForm.element,
                 "Logout": self.logoutForm.element,
             } : {
                 "Appearance": self.appearanceElement,
@@ -1569,16 +1573,16 @@ gtadb.Map = function() {
                     },
                     title: landmark.title,
                     gmpClickable: true,
-                    zIndex: 1
+                    zIndex: 10
                 })
                 googlemapsMarker.addListener("click", function({domEvent, latLng}) {
                     const {target} = domEvent
                     const id = target.id.replace("googlemapsMarker_", "")
                     const isSelected = target.classList.contains("selected")
                     Object.values(self.googlemapsMarkers).forEach(function(gM) {
-                        gM.zIndex = 1
+                        gM.zIndex = 10
                     })
-                    googlemapsMarker.zIndex = 10
+                    googlemapsMarker.zIndex = 100
                     if (isSelected && domEvent.metaKey) {
                         self.setLandmark(null)
                     } else if (!isSelected) {
@@ -2816,7 +2820,7 @@ gtadb.Map = function() {
             elements: self.sessionId ? {
                 "Appearance": self.appearanceElement,
                 "Map Tiles": self.mapSettingsElement,
-                "Manage Account": self.manageAccountForm.element,
+                "Change Password": self.changePasswordForm.element,
                 "Logout": self.logoutForm.element,
             } : {
                 "Appearance": self.appearanceElement,
