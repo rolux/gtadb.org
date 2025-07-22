@@ -309,8 +309,13 @@ def api():
             if key == "rl_address":
                 landmarks[landmark_id][LM.RL_COORDINATES] = get_coordinates(value)
                 landmarks[landmark_id][LM.COLOR] = get_landmark_color(value)
+        last_edited = landmarks[landmark_id][LM.LAST_EDITED]
         timestamp = time.time()
-        landmarks[landmark_id][LM.LAST_EDITED] = timestamp
+        landmarks[landmark_id][LM.LAST_EDITED] = [
+            int(timestamp),
+            int(timestamp) if key == "ig_photo" else last_edited[1],
+            int(timestamp) if key == "rl_photo" else last_edited[2]
+        ]
         write_log([timestamp, user, action, landmark_id, key, value])
         write_landmarks()
         return {"status": "ok", "data": landmarks[landmark_id]}
