@@ -1217,11 +1217,11 @@ gtadb.Map = function() {
         self.aboutThisMapElement.style.margin = "8px"
         self.aboutThisMapElement.innerHTML = `<p><b>map.gtadb.org</b>
             is an interactive map of Grand Theft Auto VI that includes
-            every single landmark that has been identified so far.</p>
-            <p>Finding the real-life equivalent of every single in-game
-            building is going to be a collaborative effort, way beyond
-            the release of the game.</p>
-            <p>Huge thanks to all the contributors, on the GTA VI Mapping
+            all landmarks that have been identified so far.</p>
+            <p>The goal is to find the real-life equivalent of every
+            single in-game building. This is going to be a collaborative
+            effort, way beyond the release of the game.</p>
+            <p>Huge thanks to all contributors, on the GTA VI Mapping
             Discord and elsewhere!</p>`
 
         self.sourceCodeElement = document.createElement("div")
@@ -1762,6 +1762,8 @@ gtadb.Map = function() {
                 self.renderMarkers()
                 self.renderList()
                 self.renderStatus()
+                self.editing = true
+                self.renderItem()
             } else {
                 console.log(ret)
             }
@@ -1787,6 +1789,7 @@ gtadb.Map = function() {
                     self.currentLandmarks[index] = landmark
                 }
                 self.updateMarker(landmark)
+                self.renderMarkers()
                 self.updateGooglemapsMarker(landmark)
                 self.renderList()
                 self.renderStatus()
@@ -1911,7 +1914,7 @@ gtadb.Map = function() {
     }
 
     self.setLandmark = function(id, pan) {
-        if (id != self.id && self.editing) {
+        if (id != self.l && self.editing) {
             self.editing = false
             self.renderItem()
         }
@@ -1963,12 +1966,14 @@ gtadb.Map = function() {
     // Markers /////////////////////////////////////////////////////////////////////////////////////
 
     self.addMarker = function(landmark) {
-        self.markers[landmark.id] = document.createElement("div")
-        self.markers[landmark.id].id = "marker_" + landmark.id
-        self.markers[landmark.id].className = "marker"
-        self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
-        self.markers[landmark.id].title = landmark.title
-        self.markersLayer.appendChild(self.markers[landmark.id])
+        if (!self.markers[landmark.id]) {
+            self.markers[landmark.id] = document.createElement("div")
+            self.markers[landmark.id].id = "marker_" + landmark.id
+            self.markers[landmark.id].className = "marker"
+            self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
+            self.markers[landmark.id].title = landmark.title
+            self.markersLayer.appendChild(self.markers[landmark.id])
+        }
     }
 
     self.clearMarkers = function() {
@@ -1984,13 +1989,25 @@ gtadb.Map = function() {
     }
 
     self.removeMarker = function(id) {
-        self.markers[id].remove()
-        delete self.markers[id]
+        if (self.markers[id]) {
+            self.markers[id].remove()
+            delete self.markers[id]
+        }
     }
 
     self.updateMarker = function(landmark) {
-        self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
-        self.markers[landmark.id].title = landmark.title
+        if (landmark.igCoordinates) {
+            if (self.markers[landmark.id]) {
+                self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
+                self.markers[landmark.id].title = landmark.title
+            } else {
+                self.addMarker(landmark)
+            }
+            self.markers[landmark.id].classList.add("selected")
+        } else if (self.markers[landmark.id]) {
+            self.removeMarker(landmark.id)
+        }
+
     }
 
     self.addGooglemapsMarker = function(landmark) {
@@ -2265,10 +2282,18 @@ gtadb.Map = function() {
         }
 
         if (self.focus != "dialog" && !e.metaKey) {
-            if (e.key == "e") {
-                if (self.l && self.sessionId && self.mapMode == "gta") {
+            if (e.key == "a") {
+                if (self.sessionId && self.mapMode == "gta") {
+                    self.addLandmark()
+                }
+            } else if (e.key == "e") {
+                if (self.sessionId && self.mapMode == "gta" && self.l) {
                     self.editing = !self.editing
                     self.renderItem()
+                }
+            } else if (e.key == "Delete") {
+                if (self.sessionId && self.mapMode == "gta" && self.l) {
+                    self.removeLandmark(self.l)
                 }
             } else if (e.key == "g") {
                 self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
@@ -2590,8 +2615,14 @@ gtadb.Map = function() {
             self.itemIgCoordinates.appendChild(self.itemIgCoordinatesLink)
             if (self.editing) {
                 let button = document.createElement("span")
-                button.id = "removeIgCoordinatesButton"
-                button.innerHTML = "REMOVE"
+                button.id = "editIgCoordinatesButton"
+                button.innerHTML = landmark.igCoordinates ? "REMOVE" : "ADD"
+                button.addEventListener("click", function() {
+                    self.editLandmark("ig_coordinates", landmark.igCoordinates ? [] : [
+                        Math.round(self.x),
+                        Math.round(self.y)
+                    ])
+                })
                 self.itemIgCoordinates.appendChild(button)
             }
 
