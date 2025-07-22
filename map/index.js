@@ -1968,7 +1968,7 @@ gtadb.Map = function() {
                 } else if (self.sort == "id") {
                     return v.idSortString
                 } else if (self.sort == "edited") {
-                    return -v.edited
+                    return -v.edited[0]
                 }
             })
             return sortValues[0] < sortValues[1] ? -1 : sortValues[0] > sortValues[1] ? 1 : 0
@@ -2062,7 +2062,8 @@ gtadb.Map = function() {
 
     self.openPhotoDialog = function(landmark, selected) {
         self.dialogPhoto = document.createElement("img")
-        self.dialogPhoto.src = `photos/${landmark.id},${selected}.jpg?v=${landmark.edited}`
+        const index = selected == "ig" ? 1 : 2
+        self.dialogPhoto.src = `photos/${landmark.id},${selected}.jpg?v=${landmark.edited[index]}`
         self.dialogPhoto.id = "dialogPhoto"
         self.photoDialog.set({
             content: self.dialogPhoto,
@@ -2078,7 +2079,8 @@ gtadb.Map = function() {
         self.photoDialog.set({
             title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "irlAddress"]
         })
-        self.dialogPhoto.src = `photos/${self.l},${selected}.jpg?v=${landmark.edited}`
+        const index = selected == "ig" ? 1 : 2
+        self.dialogPhoto.src = `photos/${self.l},${selected}.jpg?v=${landmark.edited[index]}`
         self.resizePhotoDialog()
     }
 
@@ -2620,7 +2622,7 @@ gtadb.Map = function() {
                     self.itemIgPhoto.style.width = width + "px"
                     self.itemIgPhoto.style.height = height + "px"
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},ig.jpg?v=${landmark.edited}`
+                    img.src = `photos/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
@@ -2633,7 +2635,7 @@ gtadb.Map = function() {
             } else {
                 if (landmark.igPhotoRatio) {
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},ig.jpg?v=${landmark.edited}`
+                    img.src = `photos/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
                     const width = 248
                     const height = width / landmark.igPhotoRatio
                     self.editItemIgPhoto.set({height: height, image: img, removeButton: true})
@@ -2680,7 +2682,7 @@ gtadb.Map = function() {
                     self.itemIrlPhoto.style.width = width + "px"
                     self.itemIrlPhoto.style.height = height + "px"
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},rl.jpg?v=${landmark.edited}`
+                    img.src = `photos/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
@@ -2693,7 +2695,7 @@ gtadb.Map = function() {
             } else {
                 if (landmark.irlPhotoRatio) {
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},rl.jpg?v=${landmark.edited}`
+                    img.src = `photos/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     const width = 248
                     const height = width / landmark.irlPhotoRatio
                     self.editItemIrlPhoto.set({height: height, image: img, removeButton: true})
@@ -2719,7 +2721,7 @@ gtadb.Map = function() {
             } 
 
             //self.itemStatus.innerHTML = `STATUS: ${landmark.irlStatus}`
-            self.itemStatusElement.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited)
+            self.itemStatusElement.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited[0])
             //self.editItemPanel.style.display = "none"
             self.itemPanel.style.display = "block"
 
@@ -2750,7 +2752,7 @@ gtadb.Map = function() {
                     : self.sort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates)
                     : self.sort.includes("irlL") ? self.formatCoordinates(landmark.irlCoordinates)
                     : self.sort == "tags" ? landmark.tags.join(", ").toUpperCase()
-                    : self.formatDate(landmark.edited)
+                    : self.formatDate(landmark.edited[0])
             itemElement.appendChild(irlElement)
             self.listBody.appendChild(itemElement)
         })
