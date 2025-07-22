@@ -2816,13 +2816,11 @@ gtadb.Map = function() {
 
     self.updateUserIcon = function() {
         if (!self.userIcon) {
-            console.log("DELAYED")
             setTimeout(function() {
                 self.updateUserIcon()
             }, 100) // FIXME!
             return
         }
-        console.log(self.username[0], "???")
         self.userIcon.style.backgroundColor = "#" + self.profileColor
         self.userIcon.innerHTML = self.username[0]
         self.userIcon.title = self.sessionId ? self.username : ""
@@ -2884,7 +2882,6 @@ gtadb.Map = function() {
     }
 
     self.onLogin = function(username, sessionId, profileColor) {
-        console.log("ON LOGIN")
         document.body.classList.add("auth")
         self.username = username
         self.sessionId = sessionId
