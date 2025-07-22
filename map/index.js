@@ -1554,7 +1554,10 @@ gtadb.Map = function() {
                 streetViewControlOptions: {
                     position: google.maps.ControlPosition.BOTTOM_CENTER
                 },
-                rotateControl: false,
+                rotateControl: true,
+                rotateControlOptions: {
+                    position: google.maps.ControlPosition.TOP_CENTER
+                },
                 fullscreenControl: false,
             })
 
