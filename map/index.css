@@ -15,6 +15,9 @@ body.light,
 body.light a {
     color: rgb(0, 0, 0);
 }
+body.light p a {
+    color: rgb(64, 128, 192);
+}
 body.light input[type="text"]:focus {
     border-color: rgb(192, 192, 192);
 }
@@ -72,6 +75,9 @@ body.light #dialogLayer.clicked {
 body.dark,
 body.dark a {
     color: rgb(255, 255, 255);
+}
+body.dark p a {
+    color: rgb(128, 192, 255);
 }
 body.dark input[type="text"]:focus {
     border-color: rgb(64, 64, 64);
