@@ -773,6 +773,9 @@ gtadb.Map = function() {
             filter: "all",
             mapMode: "gta",
             mapType: "satellite",
+            lat: 27,
+            lng: -81,
+            zoom: 8,
             profileColor: "3f7703",
             sort: "igAddress",
             theme: "light",
@@ -1522,6 +1525,7 @@ gtadb.Map = function() {
     }
 
     self.initGooglemaps = function() {
+
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",
         q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,
         e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));
@@ -1533,14 +1537,15 @@ gtadb.Map = function() {
             key: GOOGLE_MAPS_API_KEY,
             v: "weekly",
         });
+
         async function init() {
             const { Map } = await google.maps.importLibrary("maps")
             const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
             self.googleMap = new Map(document.getElementById("googlemapsLayer"), {
                 mapId: "b7ed25226b73d4cc3e56b039",
-                center: {lat: 27, lng: -81},
+                center: {lat: self.lat, lng: self.lng},
                 mapTypeId: self.mapType,
-                zoom: 8,
+                zoom: self.zoom,
                 zoomControl: false,
                 cameraControl: false,
                 mapTypeControl: false,
@@ -1592,12 +1597,22 @@ gtadb.Map = function() {
                 })
                 return googlemapsMarker
             }
+
             self.googlemapsMarkers = {}
             self.landmarks.forEach(function(landmark) {
                 if (landmark.irlCoordinates) {
                     self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
                 }
             })
+
+            google.maps.event.addListener(self.googleMap, 'idle', function() {
+                const center = self.googleMap.getCenter()
+                self.lat = center.lat()
+                self.lng = center.lng()
+                self.zoom = self.googleMap.getZoom()
+                self.setUserSettings()
+            })
+
         }
         init().then(function() {
             if (self.mapMode == "googlemaps") {
@@ -2890,11 +2905,14 @@ gtadb.Map = function() {
             l: self.l,
             find: self.find,
             filter: self.filter,
+            sort: self.sort,
             mapMode: self.mapMode,
             mapType: self.mapType,
+            lat: self.lat,
+            lng: self.lng,
+            zoom: self.zoom,
             profileColor: self.profileColor,
             sessionId: self.sessionId,
-            sort: self.sort,
             theme: self.theme,
             tileSet: self.tileSet,
             tileOverlays: self.tileOverlays,
@@ -2910,11 +2928,14 @@ gtadb.Map = function() {
         checked.l = self.landmarksById[v.l] ? v.l : self.defaults.l
         checked.find = v.find
         checked.filter = self.filterOptions[v.filter] ? v.filter : self.defaults.filter
+        checked.sort = self.sortOptions[v.sort] ? v.sort : self.defaults.sort
         checked.mapMode = self.mapModes.includes(v.mapMode) ? v.mapMode : self.defaults.mapMode
         checked.mapType = self.mapTypes.includes(v.mapType) ? v.mapType : self.defaults.mapType
+        checked.lat = isNaN(v.lat) ? self.defaults.lat : v.lat
+        checked.lng = isNaN(v.lng) ? self.defaults.lng : v.lng
+        checked.zoom = isNaN(v.zoom) ? self.defaults.zoom : v.zoom
         checked.profileColor = /^[0-9A-Fa-f]{6}$/.test(v.profileColor) ? v.profileColor : self.defaults.profileColor,
         checked.sessionId = v.sessionId || ""
-        checked.sort = self.sortOptions[v.sort] ? v.sort : self.defaults.sort
         checked.theme = self.themes.includes(v.theme) ? v.theme : self.defaults.theme
         checked.tileSet = self.tileSets.includes(v.tileSet) ? v.tileSet : self.defaults.tileSet
         checked.tileOverlays = v.tileOverlays ? 1 : 0
