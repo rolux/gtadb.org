@@ -605,7 +605,7 @@ textarea:focus {
 #itemBody:not(.editing) > div.photo > img {
     cursor: pointer;
 }
-#removeIgCoordinatesButton,
+#editIgCoordinatesButton,
 #removeIgPhotoButton,
 #removeIrlPhotoButton {
     cursor: pointer;
