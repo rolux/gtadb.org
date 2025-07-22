@@ -2705,6 +2705,10 @@ gtadb.Map = function() {
                     if (self.mapMode == "gta") {
                         self.setMapMode("googlemaps")
                     }
+                    const panorama = self.googleMap.getStreetView()
+                    if (panorama.getVisible()) {
+                        panorama.setVisible(false)
+                    }
                     self.googleMap.setZoom(16)
                     self.panGooglemaps(landmark.id)
                 }) 
