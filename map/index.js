@@ -1269,7 +1269,10 @@ gtadb.Map = function() {
 
         self.editingGuidelinesElement = document.createElement("div")
         self.editingGuidelinesElement.style.margin = "8px"
-        self.editingGuidelinesElement.innerHTML = `<p>Coming soon...</p>`
+        self.editingGuidelinesElement.innerHTML = `<p>Coming soon...</p>
+            <p>For now, the site in test mode, so expect your edits to
+            get rolled back. If you're already doing work that needs to
+            be preserved, please get in touch.</p>`
 
         self.aboutPanel = gtadb.Panel({
             height: 512,
