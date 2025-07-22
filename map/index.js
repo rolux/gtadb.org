@@ -1914,9 +1914,6 @@ gtadb.Map = function() {
     }
 
     self.setLandmark = function(id, pan) {
-        if (id == self.l && !pan) {
-            return
-        }
         if (id != self.id && self.editing) {
             self.editing = false
             self.renderItem()
