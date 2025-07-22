@@ -2193,7 +2193,7 @@ gtadb.Map = function() {
         }[this.id]
         let value = this.innerText.trim()
         if (key == "tags") {
-            value = value.replace("^TAGS:", "")
+            value = value.replace(/^TAGS:/, "")
             value = value.split(",").map(function(tag) {
                 return tag.trim().replace(" ", "").toLowerCase()
             })
@@ -2931,9 +2931,9 @@ gtadb.Map = function() {
         checked.sort = self.sortOptions[v.sort] ? v.sort : self.defaults.sort
         checked.mapMode = self.mapModes.includes(v.mapMode) ? v.mapMode : self.defaults.mapMode
         checked.mapType = self.mapTypes.includes(v.mapType) ? v.mapType : self.defaults.mapType
-        checked.lat = isNaN(v.lat) ? self.defaults.lat : v.lat
-        checked.lng = isNaN(v.lng) ? self.defaults.lng : v.lng
-        checked.zoom = isNaN(v.zoom) ? self.defaults.zoom : v.zoom
+        checked.lat = isNaN(v.lat) ? self.defaults.lat : self.clamp(v.lat, -90, 90)
+        checked.lng = isNaN(v.lng) ? self.defaults.lng : self.clamp(v.lng, -180, 180)
+        checked.zoom = isNaN(v.zoom) ? self.defaults.zoom : self.clamp(parseInt(v.zoom), 0, 24)
         checked.profileColor = /^[0-9A-Fa-f]{6}$/.test(v.profileColor) ? v.profileColor : self.defaults.profileColor,
         checked.sessionId = v.sessionId || ""
         checked.theme = self.themes.includes(v.theme) ? v.theme : self.defaults.theme
@@ -2987,7 +2987,7 @@ gtadb.Map = function() {
 
     self.formatDate = function(timestamp) {
         // return new Date(timestamp * 1000).toISOString().slice(0, -5).replace("T", " ") + " UTC"
-        return new Date(timestamp * 1000).toLocaleString('sv-SE', {hour12: false});
+        return new Date(timestamp * 1000).toLocaleString('sv-SE', {hour12: false})
     }
 
     self.getAddressSortString = function(address) {
