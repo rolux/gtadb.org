@@ -56,9 +56,7 @@ gtadb.API = function(options) {
     that.getLandmarks = function(since) {
         return self.sendRequest({
             action: "get_landmarks",
-            id: id,
-            key: key,
-            value: value
+            since: since
         }).then(function(ret) {
             // TODO
         })
@@ -129,7 +127,6 @@ gtadb.Bar = function(options) {
             border: "bottom",
             buttons: [],
             element: null,
-            extras: [],
         },
         options: options
     }
@@ -138,10 +135,6 @@ gtadb.Bar = function(options) {
     const className = self.options.border == "bottom" ? "borderBottom" : "borderTop"
     that.element.className = "bar " + className
     that.element.appendChild(self.options.element)
-    self.options.extras.reverse().forEach(function(extra) {
-        extra.classList.add("extra")
-        that.element.appendChild(extra)
-    })
     self.options.buttons.reverse().forEach(function(button) {
         that.element.appendChild(button.element)
     })
@@ -915,11 +908,22 @@ gtadb.Map = function() {
         // Title Bar
 
         self.titleElement = document.createElement("div")
-        self.titleElement.innerHTML = "map.gtadb.org"
         self.titleElement.id = "titleElement"
-        self.titleElement.style.backgroundColor = "rgb(" + [0, 1, 2].map(function() {
+
+        self.siteIcon = document.createElement("div")
+        self.siteIcon.innerHTML = "map.gtadb.org"
+        self.siteIcon.id = "siteIcon"
+        self.siteIcon.style.backgroundColor = "rgb(" + [0, 1, 2].map(function() {
             return Math.floor(Math.random() * 192)
         }).join(", ") + ")"
+        self.titleElement.appendChild(self.siteIcon)
+
+        self.userIcon = document.createElement("div")
+        self.userIcon.classList.add("auth")
+        self.userIcon.id = "userIcon"
+        self.userIcon.title = self.username
+        self.userIcon.style.backgroundColor = "#" + self.profileColor
+        self.titleElement.appendChild(self.userIcon)
 
         self.aboutButton = gtadb.Button({
             click: function() {
@@ -938,17 +942,10 @@ gtadb.Map = function() {
             text: "SETTINGS",
             tooltip: ","
         })
-
-        self.userIcon = document.createElement("div")
-        self.userIcon.classList.add("auth")
-        self.userIcon.id = "userIcon"
-        self.userIcon.title = self.username
-        self.userIcon.style.backgroundColor = "#" + self.profileColor
        
         self.titleBar = gtadb.Bar({
             buttons: [self.aboutButton, self.settingsButton],
             element: self.titleElement,
-            extras: [self.userIcon],
         })
         self.titleBar.element.id = "titleBar"
         self.listPanel.appendChild(self.titleBar.element)
@@ -1844,10 +1841,6 @@ gtadb.Map = function() {
             "irlPhotoRatio": item[5].length ? [item[5][0] / item[5][1]] : 0,
             "tags": item[6],
             "color": item[7],
-            "borderColor": [0, 1, 2].map(function(i) {
-                const dec = Number("0x" + item[7].slice(i * 2, (i + 1) * 2))
-                return (dec + 64).toString(16)
-            }).join(""),
             "edited": item[8],
             "findString": id + "\n" + item[0].toLowerCase() + "\n" + item[3].toLowerCase() + "\n" + item[6].join("\n")
         }
@@ -2823,9 +2816,15 @@ gtadb.Map = function() {
 
     self.updateUserIcon = function() {
         if (!self.userIcon) {
+            console.log("DELAYED")
+            setTimeout(function() {
+                self.updateUserIcon()
+            }, 100) // FIXME!
             return
         }
+        console.log(self.username[0], "???")
         self.userIcon.style.backgroundColor = "#" + self.profileColor
+        self.userIcon.innerHTML = self.username[0]
         self.userIcon.title = self.sessionId ? self.username : ""
     }
 
@@ -2885,6 +2884,7 @@ gtadb.Map = function() {
     }
 
     self.onLogin = function(username, sessionId, profileColor) {
+        console.log("ON LOGIN")
         document.body.classList.add("auth")
         self.username = username
         self.sessionId = sessionId
