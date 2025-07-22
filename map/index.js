@@ -27,7 +27,7 @@ gtadb.API = function(options) {
             password: password,
             repeat_password: repeatPassword
         }).then(function(ret) {
-            return ret.session_id
+            return [ret.username, ret.session_id, ret.profile_color]
         })
     }
     that.login = function(username, password) {
@@ -36,7 +36,7 @@ gtadb.API = function(options) {
             username: username,
             password: password
         }).then(function(ret) {
-            return ret.session_id
+            return [ret.username, ret.session_id, ret.profile_color]
         })
     }
     that.changePassword = function(username, oldPassword, newPassword, repeatNewPassword) {
@@ -356,6 +356,9 @@ gtadb.Form = function(options) {
             self.message.classList.remove(status)
         }, 3000)
     }
+    that.setValue = function(index, value) {
+        self.inputs[index].set({value: value})
+    }
     return that
 }
 
@@ -571,7 +574,6 @@ gtadb.Panel = function(options) {
         if ("elements" in options) {
             self.options.elements = options.elements
             self.renderElements()
-            that.set({selected: self.options.selected})
         }
         if ("selected" in options) {
             self.menuItems[self.options.selected].classList.remove("selected")
@@ -860,6 +862,8 @@ gtadb.Map = function() {
         self.api.getUser().then(function([username, sessionId, profileColor]) {
             if (username) {
                 self.onLogin(username, sessionId, profileColor)
+            } else {
+                self.onLogout()
             }
         }).catch(function(error) {
             console.log(error)
@@ -1394,8 +1398,8 @@ gtadb.Map = function() {
                     data.username,
                     data.password,
                     data.repeatPassword
-                ).then(function(sessionId) {
-                    self.onLogin(data.username, sessionId)
+                ).then(function([username, sessionId, profileColor]) {
+                    self.onLogin(username, sessionId, profileColor)
                 }).catch(function(error) {
                     self.createAccountForm.setMessage("error", error.message)
                 })
@@ -1441,8 +1445,8 @@ gtadb.Map = function() {
                 self.api.login(
                     data.username,
                     data.password
-                ).then(function(sessionId) {
-                    self.onLogin(data.username, sessionId)
+                ).then(function([username, sessionId, profileColor]) {
+                    self.onLogin(username, sessionId, profileColor)
                 }).catch(function(error) {
                     self.loginForm.setMessage("error", error.message)
                 })
@@ -2083,6 +2087,9 @@ gtadb.Map = function() {
     }
 
     self.resizePhotoDialog = function() {
+        if (!self.dialogPhoto) {
+            return
+        }
         const margin = 64
         const windowRatio = (window.innerWidth - margin) / (window.innerHeight - margin)
         const dialogRatio = self.dialogPhoto.naturalWidth / (self.dialogPhoto.naturalHeight + 32)
@@ -2830,6 +2837,8 @@ gtadb.Map = function() {
         if (!self.settingsPanel) {
             return
         }
+        self.changePasswordForm.setValue(0, self.username)
+        self.logoutForm.setValue(0, self.username)
         self.settingsPanel.set({
             elements: self.sessionId ? {
                 "Appearance": self.appearanceElement,
@@ -2841,7 +2850,8 @@ gtadb.Map = function() {
                 "Map Tiles": self.mapSettingsElement,
                 "Create Account": self.createAccountForm.element,
                 "Login": self.loginForm.element,
-            }
+            },
+            selected: 3
         })
     }
 

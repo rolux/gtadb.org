@@ -203,8 +203,8 @@ def api():
         return {"status": "error", "message": "Unknown landmark ID"}
 
     if action == "get_user":
-        color = users[user]["color"] if user in users else get_color("???")
-        return {"status": "ok", "username": user, "session_id": session_id, "profile_color": color}
+        profile_color = users[user]["profile_color"] if user in users else get_color("???")
+        return {"status": "ok", "username": user, "session_id": session_id, "profile_color": profile_color}
 
     if action == "create_account":
         if not invite_code:
@@ -228,10 +228,16 @@ def api():
             if not test_against_hash(invite_code, invite_hash)
         }
         write_json(INVITES_FILE, invites)
-        users[username] = {"color": get_color(username), "password_hash": get_hash(password)}
+        profile_color = get_color(username)
+        users[username] = {"password_hash": get_hash(password), "profile_color": profile_color}
         write_json(USERS_FILE, users)
         session_id = create_session(username)
-        response = make_response({"status": "ok", "session_id": session_id})
+        response = make_response({
+            "status": "ok",
+            "username": username,
+            "session_id": session_id,
+            "profile_color": profile_color
+        })
         response.set_cookie(
             "session_id",
             session_id,
@@ -248,8 +254,20 @@ def api():
         if not test_against_hash(password, users[username]["password_hash"]):
             return {"status": "error", "message": "Invalid credentials"}
         session_id = create_session(username)
-        response = make_response({"status": "ok", "session_id": session_id})
-        response.set_cookie("session_id", session_id, httponly=True, samesite="Lax")
+        response = make_response({
+            "status": "ok",
+            "username": username,
+            "session_id": session_id,
+            "profile_color": profile_color
+        })
+        response.set_cookie(
+            "session_id",
+            session_id,
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+            path="/api"
+        )
         return response
 
     if action == "change_password":
