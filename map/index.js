@@ -1631,6 +1631,31 @@ gtadb.Map = function() {
         }
     }
 
+    self.renderMarkers = function() {
+        const left = -16
+        const right = self.canvas.width + 16
+        const top = -24
+        const bottom = self.canvas.height + 24
+        const mppx = self.getMppx()
+        const minX = self.x - mppx * self.canvas.width / 2
+        const maxY = self.y + mppx * self.canvas.height / 2
+        self.currentLandmarks.filter(function(landmark) {
+            return landmark.igCoordinates !== null
+        }).forEach(function(landmark) {
+            let markerElement = self.markers[landmark.id]
+            const [x, y] = landmark.igCoordinates
+            const screenX = (x - minX) / mppx
+            const screenY = (maxY - y) / mppx
+            if (screenX >= left && screenX <= right && screenY >= top && screenY <= bottom) {
+                markerElement.style.left = screenX + "px"
+                markerElement.style.top = screenY + "px"
+                markerElement.style.display = "block"
+            } else {
+                markerElement.style.display = "none"
+            }
+        })
+    }
+
     self.renderMap = function() {
 
         const zInt = Math.ceil(self.z)
@@ -1761,6 +1786,7 @@ gtadb.Map = function() {
                     self.currentLandmarks[index] = landmark
                 }
                 self.updateMarker(landmark)
+                self.updateGooglemapsMarker(landmark)
                 self.renderList()
                 self.renderStatus()
                 self.renderItem()
@@ -1952,7 +1978,7 @@ gtadb.Map = function() {
         }, {})
     }
 
-    // Markers
+    // Markers /////////////////////////////////////////////////////////////////////////////////////
 
     self.addMarker = function(landmark) {
         self.markers[landmark.id] = document.createElement("div")
@@ -1980,34 +2006,25 @@ gtadb.Map = function() {
         delete self.markers[id]
     }
 
-    self.renderMarkers = function() {
-        const left = -16
-        const right = self.canvas.width + 16
-        const top = -24
-        const bottom = self.canvas.height + 24
-        const mppx = self.getMppx()
-        const minX = self.x - mppx * self.canvas.width / 2
-        const maxY = self.y + mppx * self.canvas.height / 2
-        self.currentLandmarks.filter(function(landmark) {
-            return landmark.igCoordinates !== null
-        }).forEach(function(landmark) {
-            let markerElement = self.markers[landmark.id]
-            const [x, y] = landmark.igCoordinates
-            const screenX = (x - minX) / mppx
-            const screenY = (maxY - y) / mppx
-            if (screenX >= left && screenX <= right && screenY >= top && screenY <= bottom) {
-                markerElement.style.left = screenX + "px"
-                markerElement.style.top = screenY + "px"
-                markerElement.style.display = "block"
-            } else {
-                markerElement.style.display = "none"
-            }
-        })
-    }
-
     self.updateMarker = function(landmark) {
         self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
         self.markers[landmark.id].title = landmark.title
+    }
+
+    self.addGooglemapsMarker = function(landmark) {
+        if (!self.googlemapsMarkers[landmark.id] && landmark.irlCoordinates) {
+            self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
+        }
+    }
+
+    self.removeGooglemapsMarker = function(landmark) {
+        if (self.googlemapsMarkers[landmark.id]) {
+            self.googlemapsMarkers[landmark.id].map = null
+            delete self.googlemapsMarkers[landmark.id]
+        }
+    }
+
+    self.updateGooglemapsMarker = function(landmark) {
         if (landmark.irlCoordinates) {
             if (self.googlemapsMarkers[landmark.id]) {
                 self.googlemapsMarkers[landmark.id].position = {
@@ -2016,13 +2033,28 @@ gtadb.Map = function() {
                 }
                 self.googlemapsMarkers[landmark.id].title = landmark.title
             } else {
-                self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
+                self.addGooglemapsMarker(landmark)
             }
             self.googlemapsMarkers[landmark.id].content.classList.add("selected")
         } else if (self.googlemapsMarkers[landmark.id]) {
-            self.googlemapsMarkers[landmark.id].map = null
-            delete self.googlemapsMarkers[landmark.id]
+            self.removeGooglemapsMarker(landmark)
         }
+    }
+
+    self.updateGooglemapsMarkers = function() {
+        // not yet present on page load,
+        // but gets invoked via onHashchange
+        if (!self.googlemapsMarkers) {
+            return
+        }
+        self.landmarks.filter(function(landmark) {
+            return !self.currentLandmarks.includes(landmark)
+        }).forEach(function(landmark) {
+            self.removeGooglemapsMarker(landmark)
+        })
+        self.currentLandmarks.forEach(function(landmark) {
+            self.addGooglemapsMarker(landmark)
+        })
     }
 
     // Photo Dialog ////////////////////////////////////////////////////////////////////////////////
@@ -2116,11 +2148,12 @@ gtadb.Map = function() {
             a[v.id] = i
             return a
         }, {})
-        if (self.l && self.currentLandmarksIndexById[self.l] == void 0) {
+        if (self.l && self.currentLandmarksIndexById[self.l] === void 0) {
             self.l = null
         }
         self.clearMarkers()
         self.renderMarkers()
+        self.updateGooglemapsMarkers()
         self.sortLandmarks(self.sort) // update indexById 
         self.renderList()
         self.renderStatus()
