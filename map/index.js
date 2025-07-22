@@ -1932,18 +1932,6 @@ gtadb.Map = function() {
             }
         }
         self.setHash()
-        /*
-        if (!self.isAnimating) {
-            self.setHash()
-        } else {
-            let interval = setInterval(function() {
-                if (!self.isAnimating) {
-                    clearInterval(interval)
-                    self.setHash()
-                }
-            }, 25)
-        }
-        */
     }
 
     self.sortLandmarks = function(option) {
