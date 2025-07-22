@@ -254,6 +254,7 @@ def api():
         if not test_against_hash(password, users[username]["password_hash"]):
             return {"status": "error", "message": "Invalid credentials"}
         session_id = create_session(username)
+        profile_color = users[username]["profile_color"]
         response = make_response({
             "status": "ok",
             "username": username,
