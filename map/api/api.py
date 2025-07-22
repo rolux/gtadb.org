@@ -77,13 +77,22 @@ def get_landmark_color(address):
             break
     return get_color(name)
 
-def get_new_landmark_id():
+def get_new_landmark_id(landmarks):
     last_id = list(landmarks.keys())[-1]
     return f"x{int(last_id[1:]) + 1}"
 
 def read_json(filename):
     with open(filename, "r") as f:
         return json.load(f)
+
+def remove_photo(filename):
+    if os.path.exists(filename):
+        filename_new = filename.replace(
+            f"{PHOTOS_DIR}/", f"{TRASH_DIR}/"
+        ).replace(
+            ".jpg", f",{int(time.time())}.jpg"
+        )
+        os.replace(filename, filename_new)
 
 def test_against_hash(string, stored_hash):
     decoded = base64.b64decode(stored_hash)
@@ -107,7 +116,7 @@ def write_json(filename, data, sort_fn=lambda kv: kv):
     jdata += "}"
     write_file(filename, jdata)
 
-def write_landmarks():
+def write_landmarks(landmarks):
     write_json(LANDMARKS_FILE, landmarks, sort_fn=lambda kv: (kv[0][0], int(kv[0][1:])))
 
 def write_log(item):
@@ -138,7 +147,6 @@ invites = read_json(INVITES_FILE)
 landmarks = read_json(LANDMARKS_FILE)
 sessions = read_json(SESSIONS_FILE)
 users = read_json(USERS_FILE)
-
 gmaps = googlemaps.Client(key=config["GOOGLE_MAPS_API_KEY"])
 
 
@@ -146,7 +154,12 @@ gmaps = googlemaps.Client(key=config["GOOGLE_MAPS_API_KEY"])
 @app.route("/api", methods=["POST"])
 def api():
 
-    global invites
+    # multiple workers, update for every call
+    geodata = read_json(GEODATA_FILE)
+    invites = read_json(INVITES_FILE)
+    landmarks = read_json(LANDMARKS_FILE)
+    sessions = read_json(SESSIONS_FILE)
+    users = read_json(USERS_FILE)
 
     if request.content_type and request.content_type.startswith("multipart/form-data"):
         req = request.form.to_dict()
@@ -270,15 +283,15 @@ def api():
     if action == "add_landmark":
         if key != "ig_coordinates" or not value:
             return {"status": "error", "message": "missing in-game coordinates"}
-        landmark_id = get_new_landmark_id()
+        landmark_id = get_new_landmark_id(landmarks)
         timestamp = time.time()
         landmarks[landmark_id] = [
             "?", value, [],
             "?", [], [],
-            [], get_landmark_color("?"), timestamp
+            [], get_landmark_color("?"), [timestamp, 0, 0]
         ]
         write_log([timestamp, user, action, landmark_id, key, value])
-        write_landmarks()
+        write_landmarks(landmarks)
         return {"status": "ok", "id": landmark_id, "data": landmarks[landmark_id]}
 
     if action == "edit_landmark":
@@ -293,6 +306,8 @@ def api():
         if key in ("ig_photo", "rl_photo"):
             if not file:
                 landmarks[landmark_id][index] = []
+                source = key.split("_")[0]
+                remove_photo(f"{PHOTOS_DIR}/{landmark_id},{source}.jpg")
             else:
                 ext = file.filename.split(".")[-1].lower()
                 if ext not in ("jpeg", "jpg", "png", "webp"):
@@ -317,18 +332,15 @@ def api():
             int(timestamp) if key == "rl_photo" else last_edited[2]
         ]
         write_log([timestamp, user, action, landmark_id, key, value])
-        write_landmarks()
+        write_landmarks(landmarks)
         return {"status": "ok", "data": landmarks[landmark_id]}
 
     if action == "remove_landmark":
         write_log([time.time(), user, action, landmark_id, None, None])
         del landmarks[landmark_id]
-        write_landmarks()
+        write_landmarks(landmarks)
         for source in ("ig", "rl"):
-            filename = f"{PHOTOS_DIR}/{landmark_id},{source}.jpg"
-            if os.path.exists(filename):
-                filename_new = f"{TRASH_DIR}/{landmark_id},{source},{int(time.time())}.jpg"
-                os.replace(filename, filename_new)
+            remove_photo(f"{PHOTOS_DIR}/{landmark_id},{source}.jpg")
         return {"status": "ok"}
 
     return {"status": "error", "message": "Invalid request"}
