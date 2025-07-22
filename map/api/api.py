@@ -148,7 +148,7 @@ def api():
 
     global invites
 
-    if request.content_type.startswith("multipart/form-data"):
+    if request.content_type and request.content_type.startswith("multipart/form-data"):
         req = request.form.to_dict()
         file = request.files.get("value")
     else:
@@ -337,7 +337,7 @@ if __name__ == "__main__":
 
     INDEX_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-    # FIXME: Disable these routes in producttion (handled by caddy)
+    # TODO: Disable these routes in producttion (handled by caddy)
 
     @app.route("/data/<path:filename>")
     def serve_data(filename):
