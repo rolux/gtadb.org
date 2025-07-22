@@ -29,8 +29,11 @@ body.light .dialog .content,
 body.light .mapPanel {
     background-color: rgba(255, 255, 255, 0.75);
 }
-body.light .form .formMessage {
-    color: rgb(255, 128, 0);
+body.light .form .formMessage.error {
+    color: rgb(192, 64, 64);
+}
+body.light .form .formMessage.ok {
+    color: rgb(64, 192, 64);
 }
 body.light .input input[type="text"],
 body.light .input input[type="password"],
@@ -84,8 +87,11 @@ body.dark .dialog .content,
 body.dark .mapPanel {
     background-color: rgba(0, 0, 0, 0.75);
 }
-body.dark .form .formMessage {
-    color: rgb(255, 128, 0);
+body.dark .form .formMessage.error {
+    color: rgb(192, 64, 64);
+}
+body.dark .form .formMessage.ok {
+    color: rgb(64, 192, 64);
 }
 body.dark .input input[type="text"],
 body.dark .input input[type="password"],
@@ -265,14 +271,13 @@ textarea:focus {
 }
 .form .formMessage {
     float: right;
+    font-size: 12px;
     height: auto;
-    margin: 4px 6px;
+    margin: 3px 6px;
     text-align: right;
-    text-transform: uppercase;
     width: auto;
 }
 .input {
-    //float: left;
     margin: 4px;
 }
 .input .label {
@@ -572,7 +577,6 @@ textarea:focus {
 }
 #itemBody > div {
     float: left;
-    //width: 240px;
 }
 #itemBody > div.address {
     font-weight: bold;
