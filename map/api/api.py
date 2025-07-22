@@ -124,22 +124,22 @@ PHOTOS_DIR = f"{ROOT_DIR}/photos"
 TILES_DIR = f"{ROOT_DIR}/tiles"
 TRASH_DIR = f"{ROOT_DIR}/trash"
 API_KEY_FILE = f"{DATA_DIR}/google_maps_api_key.txt"
+CONFIG_FILE = f"{DATA_DIR}/config.json"
 GEODATA_FILE = f"{DATA_DIR}/geodata.json"
 INVITES_FILE = f"{DATA_DIR}/invites.json"
 LANDMARKS_FILE = f"{DATA_DIR}/landmarks.json"
 LOG_FILE = f"{DATA_DIR}/edit_log.jsonl"
-SECRETS_FILE = f"{DATA_DIR}/secrets.json"
 SESSIONS_FILE = f"{DATA_DIR}/sessions.json"
 USERS_FILE = f"{DATA_DIR}/users.json"
 
+config = read_json(CONFIG_FILE)
 geodata = read_json(GEODATA_FILE)
 invites = read_json(INVITES_FILE)
 landmarks = read_json(LANDMARKS_FILE)
-secrets = read_json(SECRETS_FILE)
 sessions = read_json(SESSIONS_FILE)
 users = read_json(USERS_FILE)
 
-gmaps = googlemaps.Client(key=secrets["GOOGLE_MAPS_API_KEY"])
+gmaps = googlemaps.Client(key=config["GOOGLE_MAPS_API_KEY"])
 
 
 
