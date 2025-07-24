@@ -4,9 +4,9 @@ from PIL import Image
 
 
 """
-This script creates 7 levels of 1024x1024 px tiles, from 0 to 6,
+This script creates 7 levels of 256x256 px tiles, from 0 to 6,
 centered on (0, 0), so that at level 0, the entire map fits into
-a single tile, and at level 5, the map scale is exactly 1 px/m.
+1024x1024 px, and at level 5, the map scale is exactly 1 px/m.
 
 It also allows to render overlays without duplicating any tiles.
 """
@@ -34,7 +34,7 @@ overlays = [
 overlays_string  = ",".join([
     f"{name},{version}" for name, version, scale, zero in overlays
 ])
-tile_size = 1024
+tile_size = 256
 level_bounds = (
     (-16384, -16384),
     (16384, 16384)
@@ -47,7 +47,7 @@ def render_tiles(
     base_map_name=None, base_map_version=None
 ):
 
-    map_image = Image.open(f"maps/{map_name},{map_version}.png").convert("RGBA")
+    map_image = Image.open(f"maps/6/{map_name},{map_version}.png").convert("RGBA")
     map_mppx = 1 / map_scale
     map_size = map_image.size
     map_bounds = (
@@ -90,13 +90,13 @@ def render_tiles(
                     max(tile_ranges[z][1][0], x),
                     max(tile_ranges[z][1][1], y),
                 ]]
-                filename = f"tiles/{map_name},{map_version}/{z}/{z},{y},{x}.png"
+                filename = f"tiles/6/{map_name},{map_version}/{z}/{z},{y},{x}.png"
                 if os.path.exists(filename):
                     continue
                 if base_map_name:
-                    base_filename = f"tiles/{base_map_name},{base_map_version},{overlays_string}/{z}/{z},{y},{x}.png"
+                    base_filename = f"tiles/6/{base_map_name},{base_map_version},{overlays_string}/{z}/{z},{y},{x}.png"
                     if not os.path.exists(base_filename):
-                        base_filename =  f"tiles/{base_map_name},{base_map_version}/{z}/{z},{y},{x}.png"
+                        base_filename =  f"tiles/6/{base_map_name},{base_map_version}/{z}/{z},{y},{x}.png"
                     tile_image = Image.open(base_filename).convert("RGBA")
                 else:
                     tile_image = Image.new("RGBA", (tile_size, tile_size), (0, 0, 0, 255))
@@ -107,8 +107,8 @@ def render_tiles(
                 os.makedirs(os.path.dirname(filename), exist_ok=True)
                 tile_image.save(filename)
         if base_map_name:
-            src_dirname = f"tiles/{map_name},{map_version}/{z}"
-            dst_dirname = f"tiles/{base_map_name},{base_map_version},{overlays_string}/{z}"
+            src_dirname = f"tiles/6/{map_name},{map_version}/{z}"
+            dst_dirname = f"tiles/6/{base_map_name},{base_map_version},{overlays_string}/{z}"
             for y in range(tile_ranges[z][0][1], tile_ranges[z][1][1] + 1):
                 for x in range(tile_ranges[z][0][0], tile_ranges[z][1][0] + 1):
                     if x in (tile_ranges[z][0][0], tile_ranges[z][1][0]) \
@@ -141,6 +141,6 @@ for path, dirnames, filenames in os.walk("tiles"):
             dst_filename = src_filename.replace(".png", ".jpg")
             print(f"encoding {src_filename} as {dst_filename}")
             Image.open(src_filename).save(dst_filename)
-            # os.remove(src_filename)
+            os.remove(src_filename)
 
 print(f"{tile_ranges=}")
