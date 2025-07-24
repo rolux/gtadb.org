@@ -468,6 +468,7 @@ textarea:focus {
 .icon {
     border-radius: 4px;
     color: rgb(255, 255, 255);
+    cursor: pointer;
     font-weight: bold;
     font-size: 12px;
     height: 14px;
@@ -488,12 +489,10 @@ body:not(.googlemaps) #googlemapsIcon {
     background-color: rgb(192, 192, 192)
 }
 #gameIcon {
-    cursor: pointer;
     padding: 3px;
     margin: 2px 4px;
 }
 #googlemapsIcon {
-    cursor: pointer;
     padding: 3px 3px 3px 3px;
     margin: 2px 4px;
 }

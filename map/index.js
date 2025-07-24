@@ -1012,6 +1012,9 @@ gtadb.Map = function() {
         self.siteIcon.style.backgroundColor = "rgb(" + [0, 1, 2].map(function() {
             return Math.floor(Math.random() * 192)
         }).join(", ") + ")"
+        self.siteIcon.addEventListener("click", function() {
+            window.location.href = "https://gtadb.org"
+        })
         self.titleElement.appendChild(self.siteIcon)
 
         self.gameIcon = document.createElement("div")
@@ -1041,6 +1044,10 @@ gtadb.Map = function() {
         self.userIcon.id = "userIcon"
         self.userIcon.title = self.username
         self.userIcon.style.backgroundColor = "#" + self.profileColor
+        self.userIcon.addEventListener("click", function() {
+            self.settingsPanel.set({selected: 3})
+            self.settingsDialog.open()
+        })
         self.titleElement.appendChild(self.userIcon)
 
         self.aboutButton = gtadb.Button({
