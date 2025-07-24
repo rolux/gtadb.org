@@ -2689,7 +2689,7 @@ gtadb.Map = function() {
                     ]
                     // make sure we can zoom while dragging
                     self.landmarksById[id].igCoordinates = coordinates
-                    self.itemIgCoordinatesLink.innerHTML = coordinates.join(",")
+                    self.itemIgCoordinatesLink.innerHTML = self.formatCoordinates("ig", coordinates)
                 }
                 function onMouseup(e) {
                     self.isDraggingMarker = false
@@ -2991,8 +2991,8 @@ gtadb.Map = function() {
             const irlElement = document.createElement("div")
             irlElement.className = "irl"
             irlElement.innerHTML = self.sort.includes("Address") ? landmark.irlAddress
-                    : self.sort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates)
-                    : self.sort.includes("irlL") ? self.formatCoordinates(landmark.irlCoordinates)
+                    : self.sort.includes("igL") ? self.formatCoordinates("ig", landmark.igCoordinates)
+                    : self.sort.includes("irlL") ? self.formatCoordinates("irl", landmark.irlCoordinates)
                     : self.sort == "tags" ? landmark.tags.join(", ").toUpperCase()
                     : self.formatDate(landmark.edited[0])
             itemElement.appendChild(irlElement)
@@ -3247,8 +3247,10 @@ gtadb.Map = function() {
         return address
     }
 
-    self.formatCoordinates = function(coordinates) {
-        return coordinates ? coordinates.join(",") : "?"
+    self.formatCoordinates = function(key, coordinates) {
+        return coordinates ? coordinates.map(function(value) {
+            return value.toFixed(key == "ig" ? 0 : 7)
+        }).join(",") : "?"
     }
 
     self.formatDate = function(timestamp) {
