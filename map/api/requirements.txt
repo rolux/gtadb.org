@@ -1,0 +1,4 @@
+flask==2.3.3
+googlemaps==4.10.0
+pillow==10.3.0
+gunicorn==21.2.0
