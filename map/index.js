@@ -57,28 +57,29 @@ gtadb.API = function(options) {
         return self.sendRequest({
             action: "get_landmarks",
             since: since
-        }).then(function(ret) {
-            // TODO
         })
     }
-    that.addLandmark = function(igCoordinates) {
+    that.addLandmark = function(game, igCoordinates) {
         return self.sendRequest({
             action: "add_landmark",
+            game: game,
             key: "ig_coordinates",
             value: igCoordinates
         })
     }
-    that.editLandmark = function(id, key, value) {
+    that.editLandmark = function(game, id, key, value) {
         return self.sendRequest({
             action: "edit_landmark",
+            game: game,
             id: id,
             key: key,
             value: value
         })
     }
-    that.removeLandmark = function(id) {
+    that.removeLandmark = function(game, id) {
         return self.sendRequest({
             action: "remove_landmark",
+            game: game,
             id: id,
         })
     }
@@ -87,6 +88,7 @@ gtadb.API = function(options) {
         if (isFile) {
             const form = new FormData()
             form.append("action", data.action)
+            form.append("game", data.game)
             form.append("id", data.id)
             form.append("key", data.key)
             form.append("value", data.value)
@@ -615,6 +617,17 @@ gtadb.Map = function() {
 
     let that = this
     let self = {
+        v: 6,
+        vs: [5, 6],
+        gameColors: {
+            4: "rgb(192, 64, 64)",
+            5: "rgb(64, 192, 64)",
+            6: "rgb(64, 64, 192)"
+        },
+        gta: {
+            5: {},
+            6: {}
+        },
         mapMode: "gta",
         mapModes: ["gta", "googlemaps"],
         mapW: 32768,
@@ -628,11 +641,43 @@ gtadb.Map = function() {
         zeroX: 16384,
         zeroY: 16384,
         tileSize: 1024,
-        tileSets: [
-            "dupzor,51",
-            "yanis,6",
-        ],
         tileSetRanges: {
+            "atlas": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 1,  1]],
+                2: [[ 1,  0], [ 2,  2]],
+                3: [[ 2,  1], [ 5,  4]],
+                4: [[ 5,  3], [11,  9]],
+                5: [[10,  7], [22, 19]],
+                6: [[20, 15], [45, 39]]
+            },
+            "hybrid": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 1,  1]],
+                2: [[ 1,  0], [ 2,  2]],
+                3: [[ 2,  1], [ 5,  4]],
+                4: [[ 5,  3], [11,  9]],
+                5: [[10,  7], [22, 19]],
+                6: [[20, 15], [45, 39]]
+            },
+            "roadmap": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 1,  1]],
+                2: [[ 1,  0], [ 2,  2]],
+                3: [[ 2,  1], [ 5,  4]],
+                4: [[ 5,  3], [11,  9]],
+                5: [[10,  7], [22, 19]],
+                6: [[20, 15], [45, 39]]
+            },
+            "satellite": {
+                0: [[ 0,  0], [ 0,  0]],
+                1: [[ 0,  0], [ 1,  1]],
+                2: [[ 1,  0], [ 2,  2]],
+                3: [[ 2,  1], [ 5,  4]],
+                4: [[ 5,  3], [11,  9]],
+                5: [[10,  7], [22, 19]],
+                6: [[20, 15], [45, 39]]
+            },
             "dupzor,51": {
                 0: [[ 0,  0], [ 0,  0]],
                 1: [[ 0,  0], [ 1,  1]],
@@ -690,12 +735,11 @@ gtadb.Map = function() {
                 6: [[26, 37], [28, 39]]
             }
         },
-        currentTileSet: "dupzor,51",
-        currentTileOverlays: 0,
         x: null,
         y: null,
         z: null,
         l: null,
+        landmarks: [],
         targetX: 0,
         targetY: 0,
         targetZ: 0,
@@ -710,19 +754,6 @@ gtadb.Map = function() {
         landmarksById: {},
         currentLandmarks: [],
         currentLandmarksIndexById: {},
-        landmarkTypes: [
-            "agriculture",
-            "commercial",
-            "entertainment",
-            "government",
-            "hotel",
-            "industry",
-            "monument",
-            "public",
-            "natural",
-            "residential",
-            "transportation"
-        ],
         find: "",
         filter: "all",
         filterOptions: {
@@ -759,30 +790,57 @@ gtadb.Map = function() {
         themes: ["light", "dark"],
         markers: {},
         focus: "map",
-        mapType: "satellite",
-        mapTypes: ["satellite", "hybrid"],
         api: gtadb.API("api"),
         username: "",
         sessionId: "",
         defaults: {
-            x: -4000,
-            y: 2000,
-            z: 1,
-            l: null,
-            find: "",
-            filter: "all",
+            v: 6,
+            gta5: {
+                x: -4000,
+                y: 2000,
+                z: 1,
+                l: null,
+                find: "",
+                filter: "all",
+                sort: "igAddress",
+                tileSet: "satellite",
+                tileSets: [
+                    "atlas",
+                    "hybrid",
+                    "roadmap",
+                    "satellite"
+                ]
+            },
+            gta6: {
+                x: -4000,
+                y: 2000,
+                z: 1,
+                l: null,
+                find: "",
+                filter: "all",
+                sort: "igAddress",
+                tileSet: "dupzor,51",
+                tileSets: [
+                    "dupzor,51",
+                    "yanis,6",
+                ]
+            },
+            googlemaps: {
+                lat: 27,
+                lng: -81,
+                zoom: 8,
+                mapType: "satellite",
+                mapTypes: ["satellite", "hybrid"],
+            },
             mapMode: "gta",
-            mapType: "satellite",
-            lat: 27,
-            lng: -81,
-            zoom: 8,
             profileColor: "3f7703",
-            sort: "igAddress",
             theme: "light",
-            tileSet: "dupzor,51",
             tileOverlays: 0
         },
     }
+    Object.entries(self.defaults).forEach(function([key, value]) {
+        self[key] = value
+    })
 
     // Init ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -807,45 +865,52 @@ gtadb.Map = function() {
         const overlayString = Object.keys(self.tileOverlayRanges).join(",")
         self.tiles = {}
         self.tilePaths = {}
-        self.tileSets.forEach(function(tileSet, i) {
-            self.tiles[tileSet] = {}
-            self.tilePaths[tileSet] = {}
-            ;[0, 1].forEach(function(overlay) {
-                self.tiles[tileSet][overlay] = {}
-                self.tilePaths[tileSet][overlay] = {}
-                for (let z = self.minZ; z <= self.maxZ; z++) {
-                    self.tiles[tileSet][overlay][z] = {}
-                    self.tilePaths[tileSet][overlay][z] = {}
-                    const [[x0, y0], [x1, y1]] = self.tileSetRanges[tileSet][z]
-                    for (let y = y0; y <= y1; y++) {
-                        self.tiles[tileSet][overlay][z][y] = {}
-                        self.tilePaths[tileSet][overlay][z][y] = {}
-                        for (let x = x0; x <= x1; x++) {
-                            self.tiles[tileSet][overlay][z][y][x] = new Image()
-                            self.tilePaths[tileSet][overlay][z][y][x] = tileSet
-                            if (overlay == 1) {
-                                Object.entries(self.tileOverlayRanges).forEach(function([name, ranges]) {
-                                    if (
-                                        x >= ranges[z][0][0] && x <= ranges[z][1][0] &&
-                                        y >= ranges[z][0][1] && y <= ranges[z][1][1] && (
-                                            [ranges[z][0][0], ranges[z][1][0]].includes(x) ||
-                                            [ranges[z][0][1], ranges[z][1][1]].includes(y)
-                                        )
-                                    ) {
-                                        self.tilePaths[tileSet][overlay][z][y][x] = `${tileSet},${overlayString}`
-                                    } else if (
-                                        x > ranges[z][0][0] && x < ranges[z][1][0] &&
-                                        y > ranges[z][0][1] && y < ranges[z][1][1] &&
-                                        self.tilePaths[tileSet][overlay][z][y][x] == tileSet
-                                    ) {
-                                        self.tilePaths[tileSet][overlay][z][y][x] = name
-                                    }
-                                })
+        self.vs.forEach(function(v) {
+            let gta = "gta" + v
+            self.tiles[v] = {}
+            self.tilePaths[v] = {}
+            let overlays = {5: [0], 6: [0, 1]}[v]
+            self[gta].tileSets.forEach(function(tileSet) {
+                self.tiles[v][tileSet] = {}
+                self.tilePaths[v][tileSet] = {}
+                overlays.forEach(function(overlay) {
+                    self.tiles[v][tileSet][overlay] = {}
+                    self.tilePaths[v][tileSet][overlay] = {}
+                    for (let z = self.minZ; z <= self.maxZ; z++) {
+                        self.tiles[v][tileSet][overlay][z] = {}
+                        self.tilePaths[v][tileSet][overlay][z] = {}
+                        const [[x0, y0], [x1, y1]] = self.tileSetRanges[tileSet][z]
+                        for (let y = y0; y <= y1; y++) {
+                            self.tiles[v][tileSet][overlay][z][y] = {}
+                            self.tilePaths[v][tileSet][overlay][z][y] = {}
+                            for (let x = x0; x <= x1; x++) {
+                                self.tiles[v][tileSet][overlay][z][y][x] = new Image()
+                                self.tilePaths[v][tileSet][overlay][z][y][x] = tileSet
+                                if (overlay == 1) {
+                                    Object.entries(self.tileOverlayRanges).forEach(function([name, ranges]) {
+                                        if (
+                                            x >= ranges[z][0][0] && x <= ranges[z][1][0] &&
+                                            y >= ranges[z][0][1] && y <= ranges[z][1][1] && (
+                                                [ranges[z][0][0], ranges[z][1][0]].includes(x) ||
+                                                [ranges[z][0][1], ranges[z][1][1]].includes(y)
+                                            )
+                                        ) {
+                                            self.tilePaths[v][tileSet][overlay][z][y][x] = `${tileSet},${overlayString}`
+                                        } else if (
+                                            x > ranges[z][0][0] && x < ranges[z][1][0] &&
+                                            y > ranges[z][0][1] && y < ranges[z][1][1] &&
+                                            self.tilePaths[v][tileSet][overlay][z][y][x] == tileSet
+                                        ) {
+                                            self.tilePaths[v][tileSet][overlay][z][y][x] = name
+                                        }
+                                    })
+                                }
                             }
                         }
                     }
-                }
+                })
             })
+
         })
 
         self.markersLayer.addEventListener("click", self.onClick)
@@ -858,10 +923,6 @@ gtadb.Map = function() {
 
         self.onResize(false)
 
-        self.getUserSettings()
-        self.setTheme()
-        self.setMapMode(self.mapMode)
-
         self.api.getUser().then(function([username, sessionId, profileColor]) {
             if (username) {
                 self.onLogin(username, sessionId, profileColor)
@@ -871,10 +932,21 @@ gtadb.Map = function() {
         }).catch(function(error) {
             console.log(error)
         }).finally(function() {
-            self.loadJSON("data/landmarks.json").then(function(landmarks) {
-                self.initUI(landmarks)
-                self.onHashchange()
-                self.initGooglemaps()
+            const urls = self.vs.map(function(v) {
+                return `data/${v}/landmarks.json`
+            })
+            self.loadJSON(urls).then(function(landmarks) {
+                self.landmarksData = {}
+                self.vs.map(function(v, i) {
+                    self.landmarksData[v] = landmarks[i]
+                })
+                self.getUserSettings()
+                self.setTheme()
+                self.setMapMode(self.mapMode)
+                self.initUI(self.landmarksData[self.v])
+                self.initGooglemaps().then(function() {
+                    self.onHashchange()
+                })
             })
         })
         
@@ -882,9 +954,24 @@ gtadb.Map = function() {
 
     }
 
+    self.initMarkers = function() {
+        if (self.markers) {
+            self.removeMarkers()
+        }
+        self.markers = {}
+        self.landmarks.filter(function(landmark) {
+            return landmark.igCoordinates !== null
+        }).sort(function(a, b) {
+            return b.igCoordinates[1] - a.igCoordinates[1]
+        }).forEach(function(landmark) {
+            self.addMarker(landmark)
+        })
+    }
+
     self.initUI = function(landmarks) {
 
-        self.parseLandmarks(landmarks)
+        self.parseLandmarks(landmarks) // populates self.landmarks / ...ById / current...
+        self.initMarkers()
 
         self.markers = {}
         self.landmarks.filter(function(landmark) {
@@ -918,14 +1005,37 @@ gtadb.Map = function() {
         self.titleElement.id = "titleElement"
 
         self.siteIcon = document.createElement("div")
-        self.siteIcon.innerHTML = "map.gtadb.org"
+        self.siteIcon.classList.add("icon")
         self.siteIcon.id = "siteIcon"
+        self.siteIcon.innerHTML = "gtadb"
         self.siteIcon.style.backgroundColor = "rgb(" + [0, 1, 2].map(function() {
             return Math.floor(Math.random() * 192)
         }).join(", ") + ")"
         self.titleElement.appendChild(self.siteIcon)
 
+        self.gameIcon = document.createElement("div")
+        self.gameIcon.classList.add("icon")
+        self.gameIcon.id = "gameIcon"
+        self.gameIcon.innerHTML = "VI"
+        self.gameIcon.title = "V"
+        self.gameIcon.style.backgroundColor = self.gameColors[self.v]
+        self.gameIcon.addEventListener("click", function() {
+            self.setGameVersion(self.v == 5 ? 6 : 5)
+        })
+        self.titleElement.appendChild(self.gameIcon)
+
+        self.googlemapsIcon = document.createElement("div")
+        self.googlemapsIcon.classList.add("icon")
+        self.googlemapsIcon.id = "googlemapsIcon"
+        self.googlemapsIcon.innerHTML = "G"
+        self.googlemapsIcon.title = "G"
+        self.googlemapsIcon.addEventListener("click", function() {
+            self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
+        })
+        self.titleElement.appendChild(self.googlemapsIcon)
+        
         self.userIcon = document.createElement("div")
+        self.userIcon.classList.add("icon")
         self.userIcon.classList.add("auth")
         self.userIcon.id = "userIcon"
         self.userIcon.title = self.username
@@ -1329,58 +1439,60 @@ gtadb.Map = function() {
         self.mapSettingsElement = document.createElement("div")
         self.mapSettingsElement.style.margin = "8px"
 
-        self.mapModeSelect = document.createElement("select")
-        self.mapModes.forEach(function(mapMode) {
+        self.gameVersionSelect = document.createElement("select")
+        self.vs.forEach(function(v) {
             const element = document.createElement("option")
-            element.value = mapMode
-            element.textContent = ("MAP MODE: " + mapMode).toUpperCase()
-            element.selected = mapMode == self.mapMode
-            self.mapModeSelect.appendChild(element)
+            element.value = v
+            element.textContent = "GAME VERSION: GTA " + ({5: "V", 6: "VI"}[v])
+            element.selected = v == self.v
+            self.gameVersionSelect.appendChild(element)
         })
-        self.mapModeSelect.value = self.mapMode
-        self.mapModeSelect.addEventListener("change", function() {
+        self.gameVersionSelect.value = self.v
+        self.gameVersionSelect.addEventListener("change", function() {
             this.blur()
-            self.setMapMode(this.value)
+            self.setGameVersion(this.value)
         })
-        self.mapSettingsElement.appendChild(self.mapModeSelect)
+        self.mapSettingsElement.appendChild(self.gameVersionSelect) 
 
-        self.mapTypeSelect = document.createElement("select")
-        self.mapTypes.forEach(function(mapType) {
-            const element = document.createElement("option")
-            element.value = mapType
-            element.textContent = ("MAP TYPE: " + mapType).toUpperCase()
-            element.selected = mapType == self.mapType
-            self.mapTypeSelect.appendChild(element)
-        })
-        self.mapTypeSelect.value = self.mapType
-        self.mapTypeSelect.addEventListener("change", function() {
-            this.blur()
-            self.setMapType(this.value)
-        })
-        self.mapSettingsElement.appendChild(self.mapTypeSelect)
-
-        self.tileSetSelect = document.createElement("select")
-        self.tileSets.forEach(function(tileSet) {
+        self.tileSetVSelect = document.createElement("select")
+        self.defaults.gta5.tileSets.forEach(function(tileSet) {
             const element = document.createElement("option")
             element.value = tileSet
-            element.textContent = ("TILE SET: " + tileSet.replace(",", " V")).toUpperCase()
-            element.selected = tileSet == self.tileSet
-            self.tileSetSelect.appendChild(element)
+            element.textContent = ("GTA V TILE SET: " + tileSet).toUpperCase()
+            element.selected = tileSet == self.gta5.tileSet
+            self.tileSetVSelect.appendChild(element)
         })
-        self.tileSetSelect.value = self.tileSet
-        self.tileSetSelect.addEventListener("change", function() {
+        self.tileSetVSelect.value = self.gta5.tileSet
+        self.tileSetVSelect.addEventListener("change", function() {
             this.blur()
-            self.tileSet = this.value
+            self.gta5.tileSet = this.value
             self.setUserSettings()
             self.renderMap()
         })
-        self.mapSettingsElement.appendChild(self.tileSetSelect)
+        self.mapSettingsElement.appendChild(self.tileSetVSelect)
+
+        self.tileSetVISelect = document.createElement("select")
+        self.defaults.gta6.tileSets.forEach(function(tileSet) {
+            const element = document.createElement("option")
+            element.value = tileSet
+            element.textContent = ("GTA VI TILE SET: " + tileSet.replace(",", " V")).toUpperCase()
+            element.selected = tileSet == self.gta6.tileSet
+            self.tileSetVISelect.appendChild(element)
+        })
+        self.tileSetVISelect.value = self.gta6.tileSet
+        self.tileSetVISelect.addEventListener("change", function() {
+            this.blur()
+            self.gta6.tileSet = this.value
+            self.setUserSettings()
+            self.renderMap()
+        })
+        self.mapSettingsElement.appendChild(self.tileSetVISelect)
 
         self.tileOverlaysSelect = document.createElement("select")
         ;["off", "on"].forEach(function(value, i) {
             const element = document.createElement("option")
             element.value = i
-            element.textContent = ("TILE OVERLAYS: " + value).toUpperCase()
+            element.textContent = ("GTA VI TILE OVERLAYS: " + value).toUpperCase()
             element.selected = value == self.tileOverlays
             self.tileOverlaysSelect.appendChild(element)
         })
@@ -1392,6 +1504,36 @@ gtadb.Map = function() {
             self.renderMap()
         })
         self.mapSettingsElement.appendChild(self.tileOverlaysSelect)
+
+        self.mapModeSelect = document.createElement("select")
+        self.mapModes.forEach(function(mapMode) {
+            const element = document.createElement("option")
+            element.value = mapMode
+            element.textContent = ("MAP MODE: " + mapMode.replace("googlemaps", "google maps")).toUpperCase()
+            element.selected = mapMode == self.mapMode
+            self.mapModeSelect.appendChild(element)
+        })
+        self.mapModeSelect.value = self.mapMode
+        self.mapModeSelect.addEventListener("change", function() {
+            this.blur()
+            self.setMapMode(this.value)
+        })
+        self.mapSettingsElement.appendChild(self.mapModeSelect)
+
+        self.mapTypeSelect = document.createElement("select")
+        self.defaults.googlemaps.mapTypes.forEach(function(mapType) {
+            const element = document.createElement("option")
+            element.value = mapType
+            element.textContent = ("GOOGLE MAPS MAP TYPE: " + mapType).toUpperCase()
+            element.selected = mapType == self.googlemaps.mapType
+            self.mapTypeSelect.appendChild(element)
+        })
+        self.mapTypeSelect.value = self.googlemaps.mapType
+        self.mapTypeSelect.addEventListener("change", function() {
+            this.blur()
+            self.setMapType(this.value)
+        })
+        self.mapSettingsElement.appendChild(self.mapTypeSelect)
 
         self.createAccountForm = gtadb.Form({
             buttonText: "CREATE ACCOUNT",
@@ -1524,7 +1666,7 @@ gtadb.Map = function() {
 
     }
 
-    self.initGooglemaps = function() {
+    self.initGooglemaps = async function() {
 
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",
         q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,
@@ -1543,22 +1685,22 @@ gtadb.Map = function() {
             const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
             self.googleMap = new Map(document.getElementById("googlemapsLayer"), {
                 mapId: "b7ed25226b73d4cc3e56b039",
-                center: {lat: self.lat, lng: self.lng},
-                mapTypeId: self.mapType,
-                zoom: self.zoom,
-                zoomControl: false,
+                center: {lat: self.googlemaps.lat, lng: self.googlemaps.lng},
+                zoom: self.googlemaps.zoom,
+                mapTypeId: self.googlemaps.mapType,
                 cameraControl: false,
+                fullscreenControl: false,
                 mapTypeControl: false,
+                rotateControl: true,
+                rotateControlOptions: {
+                    position: google.maps.ControlPosition.TOP_CENTER
+                },
                 scaleControl: false,
                 streetViewControl: true,
                 streetViewControlOptions: {
                     position: google.maps.ControlPosition.BOTTOM_CENTER
                 },
-                rotateControl: true,
-                rotateControlOptions: {
-                    position: google.maps.ControlPosition.TOP_CENTER
-                },
-                fullscreenControl: false,
+                zoomControl: false,
             })
 
             const streetView = self.googleMap.getStreetView()
@@ -1566,6 +1708,18 @@ gtadb.Map = function() {
                 disableDefaultUI: true,
                 enableCloseButton: false,
             })
+
+            self.initGooglemapsMarkers = function() {
+                if (self.googlemapsMarkers) {
+                    self.removeGooglemapsMarkers()
+                }
+                self.googlemapsMarkers = {}
+                self.landmarks.forEach(function(landmark) {
+                    if (landmark.irlCoordinates) {
+                        self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
+                    }
+                })
+            }
 
             self.renderGooglemapsMarker = function(landmark) {
                 let customMarker = document.createElement("div")
@@ -1601,27 +1755,24 @@ gtadb.Map = function() {
                 return googlemapsMarker
             }
 
-            self.googlemapsMarkers = {}
-            self.landmarks.forEach(function(landmark) {
-                if (landmark.irlCoordinates) {
-                    self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
-                }
-            })
+            self.initGooglemapsMarkers()
 
             google.maps.event.addListener(self.googleMap, 'idle', function() {
                 const center = self.googleMap.getCenter()
-                self.lat = center.lat()
-                self.lng = center.lng()
-                self.zoom = self.googleMap.getZoom()
+                self.googlemaps.lat = center.lat()
+                self.googlemaps.lng = center.lng()
+                self.googlemaps.zoom = self.googleMap.getZoom()
                 self.setUserSettings()
             })
 
         }
-        init().then(function() {
-            if (self.mapMode == "googlemaps") {
-                self.setMapMode("googlemaps")
-            }
-        })
+
+        await init()
+
+        if (self.mapMode == "googlemaps") {
+            self.setMapMode("googlemaps")
+        }
+
     }
 
     // Map /////////////////////////////////////////////////////////////////////////////////////////
@@ -1690,17 +1841,18 @@ gtadb.Map = function() {
         const offsetY = self.canvas.height / 2 - cY;
         const tileSize = self.tileSize * Math.pow(2, self.z - zInt);
 
-        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self.tileSet][zInt]
+        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self["gta" + self.v].tileSet][zInt]
 
         const minTx = Math.floor(-offsetX / tileSize)
         const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)
         const minTy = Math.floor(-offsetY / tileSize)
         const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
 
+        const overlays = {5: 0, 6: self.tileOverlays}[self.v]
         for (let y = minTy; y <= maxTy; y++) {
             for (let x = minTx; x <= maxTx; x++) {
                 if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
-                    const img = self.tiles[self.tileSet][self.tileOverlays][zInt][y][x]
+                    const img = self.tiles[self.v][self.tileSet][overlays][zInt][y][x]
                     if (!img.src) {
                         (function(originalX, originalY, originalZ) {
                             img.addEventListener("load", function() {
@@ -1719,8 +1871,8 @@ gtadb.Map = function() {
                                 }
                             })
                         })(self.x, self.y, self.z)
-                        const tilePath = self.tilePaths[self.tileSet][self.tileOverlays][zInt][y][x]
-                        img.src = `tiles/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`;
+                        const tilePath = self.tilePaths[self.v][self.tileSet][overlays][zInt][y][x]
+                        img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`;
                     } else {
                         self.context.drawImage(
                             img,
@@ -1745,11 +1897,12 @@ gtadb.Map = function() {
     }
 
     self.setHash = function() {
-        const hash = [self.targetX, self.targetY, self.targetZ].map(function (v) {
+        const hash = {5: "V", 6: "VI"}[self.v] + "," + [self.targetX, self.targetY, self.targetZ].map(function (v) {
             return v.toFixed(3)
         }).join(",") + (self.l ? "," + self.l : "")
         if (window.location.hash.slice(1) != hash) {
             // history.replaceState(null, "", "#" + hash)
+            console.log("SET HASH", hash)
             window.location.hash = hash
         }
     }
@@ -1772,7 +1925,7 @@ gtadb.Map = function() {
 
     self.addLandmark = function() {
         const igCoordinates = [Math.round(self.x), Math.round(self.y)]
-        self.api.addLandmark(igCoordinates).then(function(ret) {
+        self.api.addLandmark(self.v, igCoordinates).then(function(ret) {
             if (ret.status == "ok") {
                 self.clearFindAndFilter()
                 let landmark = self.parseLandmark(ret.id, ret.data)
@@ -1794,9 +1947,11 @@ gtadb.Map = function() {
 
     self.editLandmark = function(key, value) {
         const id = self.l
-        self.api.editLandmark(id, key, value).then(function(ret) {
+        self.api.editLandmark(self.v, id, key, value).then(function(ret) {
             if (ret.status == "ok") {
                 let landmark = self.parseLandmark(id, ret.data)
+                // FIXME: can we replace this index dance with
+                // something like self.landmarkIndexById?
                 let index = self.landmarks.findIndex(function(landmark) {
                     return landmark.id == id
                 })
@@ -1823,7 +1978,7 @@ gtadb.Map = function() {
     }
 
     self.removeLandmark = function() {
-        self.api.removeLandmark(self.l).then(function(ret) {
+        self.api.removeLandmark(self.v, self.l).then(function(ret) {
             if (ret.status == "ok") {
                 let index = self.landmarks.findIndex(function(landmark) {
                     return landmark.id == self.l
@@ -1888,6 +2043,7 @@ gtadb.Map = function() {
 
     self.selectLandmark = function(id) {
         self.l = id
+        console.log("callsite selectLandmark")
         self.setUserSettings()
         /*
         let element = document.querySelector(".marker.selected")
@@ -1954,6 +2110,7 @@ gtadb.Map = function() {
 
     self.sortLandmarks = function(option) {
         self.sort = option
+        console.log("callsite sortLandmarks")
         self.setUserSettings()
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
@@ -2017,6 +2174,12 @@ gtadb.Map = function() {
         }
     }
 
+    self.removeMarkers = function() {
+        Object.keys(self.markers).forEach(function(id) {
+            self.removeMarker(id)
+        })
+    }
+
     self.updateMarker = function(landmark) {
         if (landmark.igCoordinates) {
             if (self.markers[landmark.id]) {
@@ -2038,11 +2201,17 @@ gtadb.Map = function() {
         }
     }
 
-    self.removeGooglemapsMarker = function(landmark) {
-        if (self.googlemapsMarkers[landmark.id]) {
-            self.googlemapsMarkers[landmark.id].map = null
-            delete self.googlemapsMarkers[landmark.id]
+    self.removeGooglemapsMarker = function(id) {
+        if (self.googlemapsMarkers[id]) {
+            self.googlemapsMarkers[id].map = null
+            delete self.googlemapsMarkers[id]
         }
+    }
+
+    self.removeGooglemapsMarkers = function() {
+        Object.keys(self.googlemapsMarkers).forEach(function(id) {
+            self.removeGooglemapsMarker(id)
+        })
     }
 
     self.updateGooglemapsMarker = function(landmark) {
@@ -2058,7 +2227,7 @@ gtadb.Map = function() {
             }
             self.googlemapsMarkers[landmark.id].content.classList.add("selected")
         } else if (self.googlemapsMarkers[landmark.id]) {
-            self.removeGooglemapsMarker(landmark)
+            self.removeGooglemapsMarker(landmark.id)
         }
     }
 
@@ -2071,7 +2240,7 @@ gtadb.Map = function() {
         self.landmarks.filter(function(landmark) {
             return !self.currentLandmarks.includes(landmark)
         }).forEach(function(landmark) {
-            self.removeGooglemapsMarker(landmark)
+            self.removeGooglemapsMarker(landmark.id)
         })
         self.currentLandmarks.forEach(function(landmark) {
             self.addGooglemapsMarker(landmark)
@@ -2083,7 +2252,7 @@ gtadb.Map = function() {
     self.openPhotoDialog = function(landmark, selected) {
         self.dialogPhoto = document.createElement("img")
         const index = selected == "ig" ? 1 : 2
-        self.dialogPhoto.src = `photos/${landmark.id},${selected}.jpg?v=${landmark.edited[index]}`
+        self.dialogPhoto.src = `photos/5/${landmark.id},${selected}.jpg?v=${landmark.edited[index]}`
         self.dialogPhoto.id = "dialogPhoto"
         self.photoDialog.set({
             content: self.dialogPhoto,
@@ -2100,7 +2269,7 @@ gtadb.Map = function() {
             title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "irlAddress"]
         })
         const index = selected == "ig" ? 1 : 2
-        self.dialogPhoto.src = `photos/${self.l},${selected}.jpg?v=${landmark.edited[index]}`
+        self.dialogPhoto.src = `photos/5/${self.l},${selected}.jpg?v=${landmark.edited[index]}`
         self.resizePhotoDialog()
     }
 
@@ -2110,7 +2279,11 @@ gtadb.Map = function() {
         }
         const margin = 64
         const windowRatio = (window.innerWidth - margin) / (window.innerHeight - margin)
-        const dialogRatio = self.dialogPhoto.naturalWidth / (self.dialogPhoto.naturalHeight + 32)
+        ///const dialogRatio = self.dialogPhoto.naturalWidth / (self.dialogPhoto.naturalHeight + 32)
+        ///console.log("naturalWidth", self.dialogPhoto.naturalWidth)
+        const key = self.dialogPhoto.src.includes(",ig.jpg") ? "igPhotoSize" : "irlPhotoSize"
+        const dialogRatio = self.landmarksById[self.l][key][0] / (self.landmarksById[self.l][key][1] + 32)
+        ///console.log("DR", dialogRatio, self.dialogPhoto.naturalWidth, self.dialogPhoto.width)
         let dialogWidth, dialogHeight
         if (dialogRatio >= windowRatio) {
             dialogWidth = window.innerWidth - margin
@@ -2147,6 +2320,7 @@ gtadb.Map = function() {
     self.findAndFilterLandmarks = function(find, filter) {
         self.find = find.toLowerCase()
         self.filter = filter
+        console.log("callsite findAndFilterLandmarks")
         self.setUserSettings()
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
             return landmark.findString.includes(self.find) && (
@@ -2206,11 +2380,17 @@ gtadb.Map = function() {
 
     self.onHashchange = function() {
         let values = window.location.hash.slice(1).split(",")
-        if (values.length > 4) {
-            values[3] = values.slice(3).join(",")
+        if (values.length > 5) {
+            values[4] = values.slice(4).join(",")
+        }
+        let v, l, lx, ly, lz, f
+        if (["V", "VI"].includes(values[0])) {
+            v = values[0]
+            values = values.slice(1)
+        } else {
+            v = {5: "V", 6: "VI"}[self.defaults.v]
         }
         let last = values[values.length - 1]
-        let l, lx, ly, lz, f
         if (isNaN(last)) {
             if (self.landmarksById[last]) {
                 l = last
@@ -2268,7 +2448,7 @@ gtadb.Map = function() {
         } else if (values.length == 2) {
             values = [values[0], values[1], self.z]
         }
-        const hash = values.map(function(v, i) {
+        const hash = v + "," + values.map(function(v, i) {
             const value = [self.x, self.y, self.z][i]
             const minV = [self.minX, self.minY, self.minZ][i]
             const maxV = [self.maxX, self.maxY, self.maxZ][i]
@@ -2282,10 +2462,15 @@ gtadb.Map = function() {
         //;[self.x, self.y, self.z] = values
         //self.l = l || self.l
         //self.setUserSettings()
+        v = {"V": 5, "VI": 6}[v]
+        if (v != self.v) {
+            self.v = v
+            self.setGameVersion(self.v)
+        }
         ;[self.targetX, self.targetY, self.targetZ] = values
         self.l = l
         self.findAndFilterLandmarks(self.find, self.filter)
-        self.selectLandmark(l) // this calls setHash!
+        self.selectLandmark(l)
         if (!self.isAnimating) {
             self.animate()
         }
@@ -2334,6 +2519,8 @@ gtadb.Map = function() {
                 }
                 self.setUserSettings()
                 self.renderMap()
+            } else if (e.key == "v") {
+                self.setGameVersion(self.v == 5 ? 6 : 5) 
             } else if (e.key == ".") {
                 self.aboutDialog.open()
                 self.focus = "dialog"
@@ -2659,7 +2846,7 @@ gtadb.Map = function() {
                     self.itemIgPhoto.style.width = width + "px"
                     self.itemIgPhoto.style.height = height + "px"
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
+                    img.src = `photos/5/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
@@ -2672,7 +2859,7 @@ gtadb.Map = function() {
             } else {
                 if (landmark.igPhotoRatio) {
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
+                    img.src = `photos/5/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
                     const width = 248
                     const height = width / landmark.igPhotoRatio
                     self.editItemIgPhoto.set({height: height, image: img, removeButton: true})
@@ -2723,7 +2910,7 @@ gtadb.Map = function() {
                     self.itemIrlPhoto.style.width = width + "px"
                     self.itemIrlPhoto.style.height = height + "px"
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
+                    img.src = `photos/5/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
@@ -2736,7 +2923,7 @@ gtadb.Map = function() {
             } else {
                 if (landmark.irlPhotoRatio) {
                     let img = document.createElement("img")
-                    img.src = `photos/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
+                    img.src = `photos/5/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     const width = 248
                     const height = width / landmark.irlPhotoRatio
                     self.editItemIrlPhoto.set({height: height, image: img, removeButton: true})
@@ -2806,6 +2993,31 @@ gtadb.Map = function() {
     }
 
     // Setters /////////////////////////////////////////////////////////////////////////////////////
+
+    self.setGameVersion = function(gameVersion) {
+        self.v = gameVersion
+        const key = "gta" + self.v
+        console.log("??", self[key].x)
+        ;["x", "y", "z", "l", "find", "filter", "sort", "tileSet"].forEach(function(key) {
+            self[key] = self["gta" + self.v][key]
+        })
+        self.setUserSettings()
+        const url = `data/${self.v}/landmarks.json`
+        self.loadJSON([url]).then(function([landmarks]) {
+            self.parseLandmarks(landmarks)
+            self.updateGameIcon()
+            self.initMarkers()
+            self.renderMarkers()
+            self.initGooglemapsMarkers()
+            self.renderMap()
+            self.renderList()
+            self.selectLandmark(self.l)
+            self.targetX = self.x
+            self.targetY = self.y
+            self.targetZ = self.z
+            self.setHash()
+        })
+    }
 
     self.setMapMode = function(mapMode) {
         self.mapMode = mapMode
@@ -2889,6 +3101,10 @@ gtadb.Map = function() {
         self.userIcon.title = self.sessionId ? self.username : ""
     }
 
+    self.updateGameIcon = function() {
+        self.gameIcon.style.backgroundColor = self.gameColors[self.v]
+        self.gameIcon.innerHTML = {5: "V", 6: "VI"}[self.v]
+    }
     // User ////////////////////////////////////////////////////////////////////////////////////////
 
     self.getUserSettings = function() {
@@ -2899,13 +3115,17 @@ gtadb.Map = function() {
         } else {
             user = self.checkUserSettings(JSON.parse(localStorage.getItem("map.gtadb.org")).user)
         }
-        for (const [key, value] of Object.entries(user)) {
+        Object.entries(user).forEach(function([key ,value]) {
             self[key] = value
-        }
+        })
+        Object.entries(user["gta" + self.v]).forEach(function([key, value]) {
+            self[key] = value
+        })
     }
 
     self.setUserSettings = function() {
-        localStorage.setItem("map.gtadb.org", JSON.stringify({"user": {
+        let key = "gta" + self.v
+        self[key] = {
             x: self.x,
             y: self.y,
             z: self.z,
@@ -2913,38 +3133,59 @@ gtadb.Map = function() {
             find: self.find,
             filter: self.filter,
             sort: self.sort,
+            tileSet: self.tileSet
+        }
+        console.log("SET USER SETTINGS", key, self[key])
+        localStorage.setItem("map.gtadb.org", JSON.stringify({"user": {
+            v: self.v,
+            gta5: self.gta5,
+            gta6: self.gta6,
+            googlemaps: {
+                lat: self.lat,
+                lng: self.lng,
+                zoom: self.zoom,
+                mapType: self.mapType,
+            },
             mapMode: self.mapMode,
-            mapType: self.mapType,
-            lat: self.lat,
-            lng: self.lng,
-            zoom: self.zoom,
             profileColor: self.profileColor,
             sessionId: self.sessionId,
             theme: self.theme,
-            tileSet: self.tileSet,
             tileOverlays: self.tileOverlays,
             username: self.username
         }}))
     }
 
     self.checkUserSettings = function(v) {
+        ;["gta5", "gta6", "googlemaps"].forEach(function(key) {
+            if (!(key in v)) {
+                v[key] = {}
+            }
+        })
         checked = {}
-        checked.x = isNaN(v.x) ? 0 : self.clamp(v.x, self.minX, self.maxX)
-        checked.y = isNaN(v.y) ? 0 : self.clamp(v.y, self.minY, self.maxY)
-        checked.z = isNaN(v.z) ? 0 : self.clamp(v.z, self.minZ, self.maxZ)
-        checked.l = self.landmarksById[v.l] ? v.l : self.defaults.l
-        checked.find = v.find
-        checked.filter = self.filterOptions[v.filter] ? v.filter : self.defaults.filter
-        checked.sort = self.sortOptions[v.sort] ? v.sort : self.defaults.sort
+        checked.v = self.vs.includes(v) ? v.v : self.defaults.v
+        ;["gta5", "gta6"].forEach(function(gta) { // fixme: loop over self.vs
+            let key = gta[gta.length - 1]
+            checked[gta] = {
+                x: isNaN(v[gta].x) ? 0 : self.clamp(v[gta].x, self.minX, self.maxX),
+                y: isNaN(v[gta].y) ? 0 : self.clamp(v[gta].y, self.minY, self.maxY),
+                z: isNaN(v[gta].z) ? 0 : self.clamp(v[gta].z, self.minZ, self.maxZ),
+                l: v[gta].l in self.landmarksData[key] ? v[gta].l : self.defaults[gta].l,
+                find: v[gta].find,
+                filter: self.filterOptions[v[gta].filter] ? v[gta].filter : self.defaults[gta].filter,
+                sort: self.sortOptions[v[gta].sort] ? v[gta].sort : self.defaults[gta].sort,
+                tileSet: self.defaults[gta].tileSets.includes(v[gta].tileSet) ? v[gta].tileSet : self.defaults[gta].tileSet
+            }
+        })
+        checked.googlemaps = {
+            lat: isNaN(v.googlemaps.lat) ? self.defaults.googlemaps.lat : self.clamp(v.googlemaps.lat, -90, 90),
+            lng: isNaN(v.googlemaps.lng) ? self.defaults.googlemaps.lng : self.clamp(v.googlemaps.lng, -180, 180),
+            zoom: isNaN(v.googlemaps.zoom) ? self.defaults.googlemaps.zoom : self.clamp(parseInt(v.googlemaps.zoom), 0, 24),
+            mapType: self.googlemaps.mapTypes.includes(v.mapType) ? v.googlemaps.mapType : self.defaults.googlemaps.mapType,
+        }
         checked.mapMode = self.mapModes.includes(v.mapMode) ? v.mapMode : self.defaults.mapMode
-        checked.mapType = self.mapTypes.includes(v.mapType) ? v.mapType : self.defaults.mapType
-        checked.lat = isNaN(v.lat) ? self.defaults.lat : self.clamp(v.lat, -90, 90)
-        checked.lng = isNaN(v.lng) ? self.defaults.lng : self.clamp(v.lng, -180, 180)
-        checked.zoom = isNaN(v.zoom) ? self.defaults.zoom : self.clamp(parseInt(v.zoom), 0, 24)
         checked.profileColor = /^[0-9A-Fa-f]{6}$/.test(v.profileColor) ? v.profileColor : self.defaults.profileColor,
         checked.sessionId = v.sessionId || ""
         checked.theme = self.themes.includes(v.theme) ? v.theme : self.defaults.theme
-        checked.tileSet = self.tileSets.includes(v.tileSet) ? v.tileSet : self.defaults.tileSet
         checked.tileOverlays = v.tileOverlays ? 1 : 0
         checked.username = v.username || ""
         return checked
@@ -3036,16 +3277,15 @@ gtadb.Map = function() {
         return self.mapW / (1024 * Math.pow(2, z))
     }
 
-    self.loadJSON = async function(url) {
-        try {
+    self.loadJSON = async function(urls) {
+        const fetchURL = async function(url) {
             const req = await fetch(url, {cache: "no-cache"})
             if (!req.ok) {
                 throw new Error(req.status)
             }
             return await req.json()
-        } catch (error) {
-            throw error
         }
+        return await Promise.all(urls.map(fetchURL))
     }
 
     self.panGooglemaps = function(id) {
@@ -3055,7 +3295,7 @@ gtadb.Map = function() {
         }
     }
 
-    self._debug = function() {
+    that._debug = function() {
         return self
     }
 
