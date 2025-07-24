@@ -619,7 +619,7 @@ gtadb.Map = function() {
     let self = {
         v: null,
         vs: [5, 6],
-        gameColors: {
+        gameColors: { // FIXME: move into class
             4: "rgb(192, 64, 64)",
             5: "rgb(64, 192, 64)",
             6: "rgb(64, 64, 192)"
