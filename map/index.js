@@ -617,16 +617,12 @@ gtadb.Map = function() {
 
     let that = this
     let self = {
-        v: 6,
+        v: null,
         vs: [5, 6],
         gameColors: {
             4: "rgb(192, 64, 64)",
             5: "rgb(64, 192, 64)",
             6: "rgb(64, 64, 192)"
-        },
-        gta: {
-            5: {},
-            6: {}
         },
         mapMode: "gta",
         mapModes: ["gta", "googlemaps"],
@@ -805,10 +801,10 @@ gtadb.Map = function() {
                 sort: "igAddress",
                 tileSet: "satellite",
                 tileSets: [
-                    "atlas",
+                    "satellite",
                     "hybrid",
-                    "roadmap",
-                    "satellite"
+                    "atlas",
+                    "roadmap"
                 ]
             },
             gta6: {
@@ -923,6 +919,7 @@ gtadb.Map = function() {
 
         self.onResize(false)
 
+        self.getUserSettings()
         self.api.getUser().then(function([username, sessionId, profileColor]) {
             if (username) {
                 self.onLogin(username, sessionId, profileColor)
@@ -940,7 +937,6 @@ gtadb.Map = function() {
                 self.vs.map(function(v, i) {
                     self.landmarksData[v] = landmarks[i]
                 })
-                self.getUserSettings()
                 self.setTheme()
                 self.setMapMode(self.mapMode)
                 self.initUI(self.landmarksData[self.v])
@@ -1416,26 +1412,6 @@ gtadb.Map = function() {
 
         // Settings Dialog
 
-        self.appearanceElement = document.createElement("div")
-        self.appearanceElement.style.margin = "8px"
-
-        self.appearanceSelect = document.createElement("select")
-        self.themes.forEach(function(theme) {
-            const element = document.createElement("option")
-            element.value = theme
-            element.textContent = ("Theme: " + theme).toUpperCase()
-            element.selected = theme == self.theme
-            self.appearanceSelect.appendChild(element)
-        })
-        self.appearanceSelect.value = self.theme
-        self.appearanceSelect.addEventListener("change", function() {
-            this.blur()
-            self.theme = this.value
-            self.setUserSettings()
-            self.setTheme()
-        })
-        self.appearanceElement.appendChild(self.appearanceSelect)
-
         self.mapSettingsElement = document.createElement("div")
         self.mapSettingsElement.style.margin = "8px"
 
@@ -1466,6 +1442,9 @@ gtadb.Map = function() {
         self.tileSetVSelect.addEventListener("change", function() {
             this.blur()
             self.gta5.tileSet = this.value
+            if (self.v == 5) { // FIXME: shouldn't be needed
+                self.tileSet = self.gta5.tileSet
+            }
             self.setUserSettings()
             self.renderMap()
         })
@@ -1483,6 +1462,9 @@ gtadb.Map = function() {
         self.tileSetVISelect.addEventListener("change", function() {
             this.blur()
             self.gta6.tileSet = this.value
+            if (self.v == 6) { // FIXME: shouldn't be needed
+                self.tileSet = self.gta6.tileSet
+            }
             self.setUserSettings()
             self.renderMap()
         })
@@ -1534,6 +1516,26 @@ gtadb.Map = function() {
             self.setMapType(this.value)
         })
         self.mapSettingsElement.appendChild(self.mapTypeSelect)
+
+        self.appearanceElement = document.createElement("div")
+        self.appearanceElement.style.margin = "8px"
+
+        self.appearanceSelect = document.createElement("select")
+        self.themes.forEach(function(theme) {
+            const element = document.createElement("option")
+            element.value = theme
+            element.textContent = ("Theme: " + theme).toUpperCase()
+            element.selected = theme == self.theme
+            self.appearanceSelect.appendChild(element)
+        })
+        self.appearanceSelect.value = self.theme
+        self.appearanceSelect.addEventListener("change", function() {
+            this.blur()
+            self.theme = this.value
+            self.setUserSettings()
+            self.setTheme()
+        })
+        self.appearanceElement.appendChild(self.appearanceSelect)
 
         self.createAccountForm = gtadb.Form({
             buttonText: "CREATE ACCOUNT",
@@ -1624,13 +1626,13 @@ gtadb.Map = function() {
         self.settingsPanel = gtadb.Panel({
             height: 512,
             elements: self.sessionId ? {
-                "Appearance": self.appearanceElement,
                 "Map Settings": self.mapSettingsElement,
+                "Appearance": self.appearanceElement,
                 "Change Password": self.changePasswordForm.element,
                 "Logout": self.logoutForm.element,
             } : {
-                "Appearance": self.appearanceElement,
                 "Map Settings": self.mapSettingsElement,
+                "Appearance": self.appearanceElement,
                 "Create Account": self.createAccountForm.element,
                 "Login": self.loginForm.element,
             },
@@ -1902,7 +1904,6 @@ gtadb.Map = function() {
         }).join(",") + (self.l ? "," + self.l : "")
         if (window.location.hash.slice(1) != hash) {
             // history.replaceState(null, "", "#" + hash)
-            console.log("SET HASH", hash)
             window.location.hash = hash
         }
     }
@@ -2043,7 +2044,6 @@ gtadb.Map = function() {
 
     self.selectLandmark = function(id) {
         self.l = id
-        console.log("callsite selectLandmark")
         self.setUserSettings()
         /*
         let element = document.querySelector(".marker.selected")
@@ -2110,7 +2110,6 @@ gtadb.Map = function() {
 
     self.sortLandmarks = function(option) {
         self.sort = option
-        console.log("callsite sortLandmarks")
         self.setUserSettings()
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
@@ -2280,10 +2279,8 @@ gtadb.Map = function() {
         const margin = 64
         const windowRatio = (window.innerWidth - margin) / (window.innerHeight - margin)
         ///const dialogRatio = self.dialogPhoto.naturalWidth / (self.dialogPhoto.naturalHeight + 32)
-        ///console.log("naturalWidth", self.dialogPhoto.naturalWidth)
         const key = self.dialogPhoto.src.includes(",ig.jpg") ? "igPhotoSize" : "irlPhotoSize"
         const dialogRatio = self.landmarksById[self.l][key][0] / (self.landmarksById[self.l][key][1] + 32)
-        ///console.log("DR", dialogRatio, self.dialogPhoto.naturalWidth, self.dialogPhoto.width)
         let dialogWidth, dialogHeight
         if (dialogRatio >= windowRatio) {
             dialogWidth = window.innerWidth - margin
@@ -2320,7 +2317,6 @@ gtadb.Map = function() {
     self.findAndFilterLandmarks = function(find, filter) {
         self.find = find.toLowerCase()
         self.filter = filter
-        console.log("callsite findAndFilterLandmarks")
         self.setUserSettings()
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
             return landmark.findString.includes(self.find) && (
@@ -2509,16 +2505,18 @@ gtadb.Map = function() {
                 self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
             } else if (e.key == "G") {
                 self.setMapType(self.mapType == "satellite" ? "hybrid" : "satellite")
-            } else if ("tT".includes(e.key)) {
-                if (e.key == "t") {
-                    self.tileSet = self.tileSet == self.tileSets[0] ? self.tileSets[1] : self.tileSets[0]
-                    self.tileSetSelect.value = self.tileSet
-                } else {
-                    self.tileOverlays = 1 - self.tileOverlays
-                    self.tileOverlaysSelect.value = self.tileOverlays
-                }
+            } else if (e.key == "t") {
+                const key = `gta${self.v}`
+                const tileSets = self.defaults[key].tileSets
+                self.tileSet = tileSets[(tileSets.indexOf(self.tileSet) + 1) % tileSets.length]
                 self.setUserSettings()
                 self.renderMap()
+            } else if (e.key == "T") {
+                self.tileOverlays = 1 - self.tileOverlays
+                self.setUserSettings()
+                if (self.v == 6) {
+                    self.renderMap()
+                }
             } else if (e.key == "v") {
                 self.setGameVersion(self.v == 5 ? 6 : 5) 
             } else if (e.key == ".") {
@@ -2997,7 +2995,6 @@ gtadb.Map = function() {
     self.setGameVersion = function(gameVersion) {
         self.v = gameVersion
         const key = "gta" + self.v
-        console.log("??", self[key].x)
         ;["x", "y", "z", "l", "find", "filter", "sort", "tileSet"].forEach(function(key) {
             self[key] = self["gta" + self.v][key]
         })
@@ -3124,7 +3121,7 @@ gtadb.Map = function() {
     }
 
     self.setUserSettings = function() {
-        let key = "gta" + self.v
+        const key = `gta${self.v}` 
         self[key] = {
             x: self.x,
             y: self.y,
@@ -3135,7 +3132,6 @@ gtadb.Map = function() {
             sort: self.sort,
             tileSet: self.tileSet
         }
-        console.log("SET USER SETTINGS", key, self[key])
         localStorage.setItem("map.gtadb.org", JSON.stringify({"user": {
             v: self.v,
             gta5: self.gta5,
@@ -3153,6 +3149,14 @@ gtadb.Map = function() {
             tileOverlays: self.tileOverlays,
             username: self.username
         }}))
+        self.canvas.className = self.tileSet.split(",")[0]
+        if (self.mapModeSelect) {
+            self.mapModeSelect.value = self.mapMode
+            self.mapTypeSelect.value = self.googlemaps.mapType
+            self.tileSetVSelect.value = self.gta5.tileSet
+            self.tileSetVISelect.value = self.gta6.tileSet
+            self.tileOverlaysSelect.value = self.tileOverlays
+        }
     }
 
     self.checkUserSettings = function(v) {
@@ -3162,14 +3166,14 @@ gtadb.Map = function() {
             }
         })
         checked = {}
-        checked.v = self.vs.includes(v) ? v.v : self.defaults.v
+        checked.v = self.vs.includes(v.v) ? v.v : self.defaults.v
         ;["gta5", "gta6"].forEach(function(gta) { // fixme: loop over self.vs
             let key = gta[gta.length - 1]
             checked[gta] = {
                 x: isNaN(v[gta].x) ? 0 : self.clamp(v[gta].x, self.minX, self.maxX),
                 y: isNaN(v[gta].y) ? 0 : self.clamp(v[gta].y, self.minY, self.maxY),
                 z: isNaN(v[gta].z) ? 0 : self.clamp(v[gta].z, self.minZ, self.maxZ),
-                l: v[gta].l in self.landmarksData[key] ? v[gta].l : self.defaults[gta].l,
+                l: v.l, // FIXME: v[gta].l in self.landmarksData[key] ? v[gta].l : self.defaults[gta].l,
                 find: v[gta].find,
                 filter: self.filterOptions[v[gta].filter] ? v[gta].filter : self.defaults[gta].filter,
                 sort: self.sortOptions[v[gta].sort] ? v[gta].sort : self.defaults[gta].sort,
