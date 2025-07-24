@@ -74,7 +74,7 @@ body.light #dialogLayer.clicked {
 
 body.dark,
 body.dark a {
-    color: rgb(255, 255, 255);
+    color: rgb(224, 224, 224);
 }
 body.dark p a {
     color: rgb(128, 192, 255);
@@ -86,7 +86,7 @@ body.dark input[type="text"]::placeholder {
     color: rgb(128, 128, 128)
 }
 body.dark .bar {
-    border-color: rgba(255, 255, 255, 0.125);
+    border-color: rgba(224, 224, 224, 0.125);
 }
 body.dark .dialog .bar,
 body.dark .dialog .content,
@@ -103,10 +103,10 @@ body.dark .input input[type="text"],
 body.dark .input input[type="password"],
 body.dark .input textarea,
 body.datk .input .upload {
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(224, 224, 224, 0.25);
 }
 body.dark .input .upload {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(224, 224, 224, 0.25);
 }
 body.dark .input .upload.hover {
     background-color: rgba(0, 64, 128, 0.25);
@@ -125,10 +125,10 @@ body.dark #listBody > .item.selected {
 }
 body.dark #itemBody > div.photo,
 body.dark #dialogLayer {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(224, 224, 224, 0.25);
 }
 body.dark #dialogLayer.clicked {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(224, 224, 224, 0.5);
 }
 
 
