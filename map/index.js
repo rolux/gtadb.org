@@ -2479,9 +2479,9 @@ gtadb.Map = function() {
         }
         ;[self.targetX, self.targetY, self.targetZ] = values
         self.l = l
+        self.findAndFilterLandmarks(self.find, self.filter)
         if (self.l != self.previousL) { // FIXME: ugly
             self.previousL = self.l
-            self.findAndFilterLandmarks(self.find, self.filter)
             self.selectLandmark(l)
         }
         if (!self.isAnimating) {
