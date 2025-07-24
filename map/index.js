@@ -783,6 +783,7 @@ gtadb.Map = function() {
             id: "id",
             edited: "last edited"
         },
+        ui: true,
         themes: ["light", "dark"],
         markers: {},
         focus: "map",
@@ -982,6 +983,15 @@ gtadb.Map = function() {
         }).forEach(function(landmark) {
             self.addMarker(landmark)
         })
+
+        self.uiIcon = document.createElement("div")
+        self.uiIcon.classList.add("icon")
+        self.uiIcon.id = "uiIcon"
+        self.uiIcon.innerHTML = "UI"
+        self.uiIcon.addEventListener("click", function() {
+            self.toggleUI()
+        })
+        self.element.appendChild(self.uiIcon)
 
         self.listPanel = document.createElement("div")
         self.listPanel.className = "mapPanel"
@@ -1380,6 +1390,7 @@ gtadb.Map = function() {
             <tr><td>⇧ G</td><td>Toggle labels</td></tr>
             <tr><td>T</td><td>Switch tile set</td></tr>
             <tr><td>⇧ T</td><td>Toggle overlays</td></tr>
+            <tr><td>H</td><td>Toggle UI</td></tr>
             <tr><td>ESC</td><td>Exit StreetView</td></tr>
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -2517,6 +2528,8 @@ gtadb.Map = function() {
             } else if (e.key == "G") {
                 const mapTypes = self.defaults.googlemaps.mapTypes
                 self.setMapType(mapTypes[(mapTypes.indexOf(self.googlemaps.mapType) + 1) % mapTypes.length])
+            } else if (e.key == "h") {
+                self.toggleUI()
             } else if (e.key == "t") {
                 const key = `gta${self.v}`
                 const tileSets = self.defaults[key].tileSets
@@ -2960,8 +2973,9 @@ gtadb.Map = function() {
             //self.itemStatus.innerHTML = `STATUS: ${landmark.irlStatus}`
             self.itemStatusElement.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited[0])
             //self.editItemPanel.style.display = "none"
-            self.itemPanel.style.display = "block"
-
+            if (self.ui) {
+                self.itemPanel.style.display = "block"
+            }
         } else {
             self.itemPanel.style.display = "none"
             //self.editItemPanel.style.display = "none"
@@ -3065,6 +3079,17 @@ gtadb.Map = function() {
     self.setTheme = function() {
         document.body.classList.remove(self.theme == "light" ? "dark" : "light")
         document.body.classList.add(self.theme)
+    }
+
+    self.toggleUI = function() {
+        self.ui = !self.ui
+        if (!self.ui) {
+            self.focus = "map"
+        }
+        if (self.l) {
+            self.itemPanel.style.display = self.ui ? "block" : "none"
+        }
+        document.body.classList[self.ui ? "remove" : "add"]("hidden")
     }
 
     // Updates /////////////////////////////////////////////////////////////////////////////////////

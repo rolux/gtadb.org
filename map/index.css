@@ -143,6 +143,12 @@ a {
 a:hover {
     text-decoration: underline;
 }
+body.hidden .mapPanel {
+    display: none;
+}
+body.hidden #uiIcon {
+    display: block;
+}
 
 canvas.satellite {
     background-color: rgb(20, 61, 107);
@@ -472,11 +478,20 @@ textarea:focus {
     font-weight: bold;
     font-size: 12px;
     height: 14px;
+    padding: 3px;
     text-align: center;
 }
 .icon:not(#siteIcon) {
     text-transform: uppercase;
     width: 14px;
+}
+#uiIcon {
+    background-color: rgb(128, 128, 128);
+    display: none;
+    left: 8px;
+    position: absolute;
+    top: 8px;
+    z-index: 1000;
 }
 #siteIcon{
     margin: 2px 2px;
@@ -489,15 +504,12 @@ body:not(.googlemaps) #googlemapsIcon {
     background-color: rgb(192, 192, 192)
 }
 #gameIcon {
-    padding: 3px;
     margin: 2px 4px;
 }
 #googlemapsIcon {
-    padding: 3px 3px 3px 3px;
     margin: 2px 4px;
 }
 #userIcon {
-    padding: 3px 3px 3px 3px;
     margin: 2px 4px;
 }
 #findBar {
