@@ -988,6 +988,7 @@ gtadb.Map = function() {
         self.uiIcon.classList.add("icon")
         self.uiIcon.id = "uiIcon"
         self.uiIcon.innerHTML = "UI"
+        self.uiIcon.title = "H"
         self.uiIcon.addEventListener("click", function() {
             self.toggleUI()
         })
