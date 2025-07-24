@@ -3,6 +3,12 @@
         <title>GTADB - Grand Theft Auto Database</title>
         <link rel="icon" href="index.png">
         <style>
+            @font-face {
+                font-family: 'Menlo';
+                src: url('fonts/Menlo-Regular.ttf') format('truetype');
+                font-weight: normal;
+                font-style: normal;
+            }
             a {
                 color: rgb(128, 192, 255);
                 text-decoration: none
@@ -12,7 +18,12 @@
             }
             body {
                 align-items: center;
-                background-color: black;
+                background-blend-mode: multiply;
+                background-color: rgba(0, 0, 0, 0.5);
+                background-image: url(images/LosSantosElevationMapDetail.png);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
                 display: flex;
                 flex-direction: column;
                 font-family: sans-serif;
@@ -20,33 +31,123 @@
                 justify-content: center;
                 margin: 0;
             }
+            div {
+                color: white;
+                font-size: 1em;
+            }
             img {
                 height: auto;
                 max-width: 100%;
+                -webkit-user-drag: none;
             }
             p {
                 color: white;
                 font-size: 1rem;
-                margin-bottom: 0.5rem;
-                margin-top: 0.5rem;
+                margin-bottom: 0.5em;
+                margin-top: 0.5em;
                 text-align: center;
             }
-            .copyright {
-                font-size: 0.75rem;
-                margin-bottom: 0.5rem;
-                margin-top: 2rem;
-            }
             .title {
-                font-size: 1.28rem;
-                margin-bottom: 2rem;
-                margin-top: 0.5rem;
+                font-family: Menlo;
+                font-size: 12.8px;
+                margin-top: -14px;
+                margin-bottom: 24px;
+                padding-left: 52px;
             }
-        </style>
+            .item {
+                align-items: center;
+                border-radius: 8px;
+                cursor: pointer;
+                display: flex;
+                font-size: 13px;
+                height: 64px;
+                justify-content: left;
+                margin: 8px;
+                padding: 8px;
+                text-align: left;
+                width: 256px;
+            }
+            .item:hover {
+                background-color: rgba(255, 255, 255, 0.1)
+            }
+            .item img {
+                height: 64px;
+                margin: 8px;
+                width: 64px;
+            }
+            .item div {
+                color: rgb(255, 192, 128);
+                font-weight: bold;
+                margin-left: 8px;
+            }
+            .copyright {
+                font-size: 10px;
+                margin-bottom: 0.5em;
+                margin-top: 2em;
+            }
+            #box {
+                background: rgba(0, 0, 0, 0.75);
+                border-radius: 12px;
+                padding: 32px;
+                position: relative;
+                text-align: center;
+            }
+            /*
+            :root {
+                --imgs: 4;
+                --ratio: 3.5555556;
+            }
+            #background {
+                animation: scroll 240s linear infinite;
+                display: flex;
+                filter: brightness(0.5);
+                height: 100vh;
+                left: 0;
+                overflow: hidden;
+                position: fixed;
+                top: 0;
+                width: auto;
+                z-index: -1;
+            }
+            #background img {
+                flex-shrink: 0;
+                height: 100vh;
+                object-fit: cover;
+                width: calc(100vh * var(--ratio));
+            }
+            @keyframes scroll {
+                from {
+                    transform: translateX(0);
+                }
+                to {
+                    transform: translateX(calc(-1 * var(--imgs) * 100vh * var(--ratio)));
+                }
+            }
+            */
+    </style>
     </head>
     <body>
-        <img src="gtadb.png" alt="GTADB">
-        <p class="title">Grand Theft Auto Database</p>
-        <p><a href="https://map.gtadb.org">GTA 6 Landmarks Map</a></p>
-        <p class="copyright">No Copyright ( ) 2025 GTADB. Public Domain.</p>
+        <!--<div id="background">
+            <img src="images/Vice Beach.png"/>
+            <img src="images/Beach.png"/>
+            <img src="images/Venetian Islands.png"/>
+            <img src="images/Rooftop Party.png"/>
+            <img src="images/Vice Beach.png"/>
+        </div>-->
+        <div id="box">
+            <img src="gtadb.png" alt="GTADB">
+            <div class="title">Grand Theft Auto Database</div>
+            <div class="item" id="V"><img src="images/gta5.png" class="icon"/><div>GTA V Landmarks Map</div></div>
+            <div class="item" id="VI"><img src="images/gta6.png" class="icon"><div>GTA VI Landmarks Map</div></div>
+            <p class="copyright">No Copyright ( ) 2025 GTADB.ORG. No rights reserved.</p>
+        </div>
     </body>
+    <script>
+        document.addEventListener("click", function(e) {
+            const item = event.target.closest('.item')
+            if (item) {
+                window.location.href = "https://map.gtadb.org/#" + item.id
+            }
+        })
+    </script>
 </html>
