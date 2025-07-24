@@ -2317,8 +2317,10 @@ gtadb.Map = function() {
             title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "rlAddress"]
         })
         const index = selected == "ig" ? 1 : 2
+        self.dialogPhoto.addEventListener("load", function() {
+            self.resizePhotoDialog()
+        })
         self.dialogPhoto.src = `photos/${self.v}/${self.l},${selected}.jpg?v=${landmark.edited[index]}`
-        self.resizePhotoDialog()
     }
 
     self.resizePhotoDialog = function() {
