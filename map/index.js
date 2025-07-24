@@ -1386,13 +1386,17 @@ gtadb.Map = function() {
             <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
-            <tr><td>G</td><td>Switch map mode</td></tr>
-            <tr><td>⇧ G</td><td>Switch map type (Google Maps)</td></tr>
             <tr><td>T</td><td>Switch tile set (GTA)</td></tr>
             <tr><td>⇧ T</td><td>Toggle overlays (GTA VI)</td></tr>
-            <tr><td>H</td><td>Toggle UI</td></tr>
+            <tr><td>G</td><td>Switch map mode</td></tr>
+            <tr><td>⇧ G</td><td>Switch map type (Google Maps)</td></tr>
             <tr><td>ESC</td><td>Exit StreetView</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>F</td><td>Find landmarks</td></tr>
+            <tr><td>↑ ↓</td><td>Select previous / next landmark</td></tr>
+            <tr><td>← →</td><td>Select first / last landmark</td></tr>
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
+            <tr><td>H</td><td>Toggle UI</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>.</td><td>Open About dialog</td></tr>
             <tr><td>,</td><td>Open Settings dialog</td></tr>
@@ -2524,7 +2528,13 @@ gtadb.Map = function() {
 
     self.onKeydown = function(e) {
 
+        if (e.altKey || e.ctrlKey || e.metaKey) {
+            return
+        }
         const activeElement = document.activeElement
+        if (activeElement.matches("input, textarea") && e.key == "Escape") {
+            activeElement.blur()
+        }
         if (activeElement.matches("[contenteditable]") && e.key == "Enter") {
             activeElement.blur()
         }
@@ -2532,7 +2542,8 @@ gtadb.Map = function() {
             return
         }
 
-        if (self.focus != "dialog" && !e.metaKey) {
+
+        if (self.focus != "dialog") {
             if (e.key == "a") {
                 if (self.sessionId && self.mapMode == "gta") {
                     self.addLandmark()
@@ -2546,6 +2557,11 @@ gtadb.Map = function() {
                 if (self.sessionId && self.mapMode == "gta" && self.l) {
                     self.removeLandmark(self.l)
                 }
+            } else if (e.key == "f") {
+                setTimeout(function() {
+                   self.findElement.focus()
+                    self.findElement.select()
+                })
             } else if (e.key == "g") {
                 self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
             } else if (e.key == "G") {
@@ -2581,11 +2597,11 @@ gtadb.Map = function() {
 
         if (self.focus == "map") {
 
-            if ("0123456".includes(e.key) && !e.metaKey) {
+            if ("0123456".includes(e.key)) {
                 self.setTarget(self.targetX, self.targetY, parseInt(e.key))
             } else if ([
                 "-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"
-            ].includes(e.key) && !e.metaKey) {
+            ].includes(e.key)) {
                 if (self.keydownTimeout) {
                     clearTimeout(self.keydownTimeout)
                     self.keydownTimeout = null
@@ -2679,7 +2695,7 @@ gtadb.Map = function() {
                 }
             } 
 
-            if ("0123456tT".includes(e.key) && !e.metaKey) {
+            if ("0123456fghftTv".includes(e.key)) {
                 self.dialogLayer.blink()
             }
 
