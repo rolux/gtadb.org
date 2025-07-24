@@ -18,7 +18,6 @@ class APIError(Exception):
     def __init__(self, message):
         self.message = message
 
-# FIXME: this is somewhat duplicated
 class LM(IntEnum):
     IG_ADDRESS = 0
     IG_COORDINATES = 1
@@ -31,18 +30,15 @@ class LM(IntEnum):
     LAST_EDITED = 8
 
 LANDMARK_KEYS = [
-    "ig_address", "ig_coordinates", "ig_photo",
-    "rl_address", "rl_coordinates", "rl_photo",
-    "tags"
+    key.lower() for key in list(LM.__members__)
+    if key not in ("COLOR", "LAST_EDITED")
 ]
 
 
 
-def add_user(username, password):
-    users = read_json(USERS_FILE)
-    profile_color = get_color(username)
-    users[username] = {"password_hash": get_hash(password), "profile_color": profile_color}
-    write_json(USERS_FILE, users)
+def get_user(session_id):
+    sessions = read_json(SESSIONS_FILE)
+    return sessions.get(session_id, {}).get("user")
 
 def validate_invite_code(invite_code):
     invites = read_json(INVITES_FILE)
@@ -60,11 +56,11 @@ def remove_invite(invite_code):
     }
     write_json(INVITES_FILE, invites)
 
-def change_password(username, new_password):
+def add_user(username, password):
     users = read_json(USERS_FILE)
-    users[username]["password_hash"] = get_hash(new_password)
+    profile_color = get_color(username)
+    users[username] = {"password_hash": get_hash(password), "profile_color": profile_color}
     write_json(USERS_FILE, users)
-
 
 def create_session(username):
     sessions = read_json(SESSIONS_FILE)
@@ -73,15 +69,43 @@ def create_session(username):
     write_json(SESSIONS_FILE, sessions)
     return session_id
 
-def get_user(session_id):
-    sessions = read_json(SESSIONS_FILE)
-    return sessions.get(session_id, {}).get("user")
-
 def remove_session(session_id):
     sessions = read_json(SESSIONS_FILE)
     sessions.pop(session_id, None)
     write_json(SESSIONS_FILE, sessions)
 
+def change_password(username, new_password):
+    users = read_json(USERS_FILE)
+    users[username]["password_hash"] = get_hash(new_password)
+    write_json(USERS_FILE, users)
+
+
+
+def get_hash(string):
+    salt = os.urandom(16)
+    hash = hashlib.pbkdf2_hmac("sha256", string.encode(), salt, 100_000)
+    return base64.b64encode(salt + hash).decode()
+
+def test_against_hash(string, stored_hash):
+    decoded = base64.b64decode(stored_hash)
+    salt, stored_hash = decoded[:16], decoded[16:]
+    test_hash = hashlib.pbkdf2_hmac("sha256", string.encode(), salt, 100_000)
+    return hmac.compare_digest(stored_hash, test_hash)
+
+
+
+def get_landmarks_since(game, since):
+    if since is None:
+        landmarks = read_json(LANDMARKS_FILE[game])
+        return landmarks
+    since = float(since)
+    with open(LOG_FILE[game]) as f:
+        landmarks = {}
+        for line in f:
+            timestamp, user, action, landmark_id, data = json.loads(line)
+            if timestamp >= since:
+                landmarks[landmark_id] = data
+    return landmarks
 
 def add_landmark(game, ig_coordinates, username):
     landmarks = read_json(LANDMARKS_FILE[game])
@@ -106,10 +130,10 @@ def edit_landmark(game, landmark_id, key, value, file, username):
         if not file:
             landmarks[landmark_id][index] = []
             source = key.split("_")[0]
-            remove_photo(f"{PHOTOS_DIR}/{landmark_id},{source}.jpg")
+            remove_photo(f"{PHOTOS_DIR}/{game}/{landmark_id},{source}.jpg")
         else:
             source = key.split("_")[0]
-            filename = f"{PHOTOS_DIR}/{landmark_id},{source}.jpg"
+            filename = f"{PHOTOS_DIR}/{game}/{landmark_id},{source}.jpg"
             image = Image.open(file.stream).convert("RGB")
             image.save(filename)
             value = image.size
@@ -131,16 +155,6 @@ def edit_landmark(game, landmark_id, key, value, file, username):
     write_landmarks(game, landmarks)
     return landmarks[landmark_id]
 
-def remove_landmark(game, landmark_id, username):
-    landmarks = read_json(LANDMARKS_FILE[game])
-    if landmark_id not in landmarks:
-        raise APIError("Unknown landmark ID")
-    del landmarks[landmark_id]
-    write_log(game, [time.time(), username, "remove_landmark", landmark_id, None, None])
-    write_landmarks(game, landmarks)
-    for source in ("ig", "rl"):
-        remove_photo(f"{PHOTOS_DIR}/{landmark_id},{source}.jpg")
-
 def check_landmark_data(key, value):
     if key == "ig_address":
         value = re.sub("\n", " ", value)
@@ -158,6 +172,16 @@ def check_landmark_data(key, value):
     if key == "tags":
         return sorted(list(set(tag.lower() for tag in value)))
 
+def remove_landmark(game, landmark_id, username):
+    landmarks = read_json(LANDMARKS_FILE[game])
+    if landmark_id not in landmarks:
+        raise APIError("Unknown landmark ID")
+    del landmarks[landmark_id]
+    write_log(game, [time.time(), username, "remove_landmark", landmark_id, None, None])
+    write_landmarks(game, landmarks)
+    for source in ("ig", "rl"):
+        remove_photo(f"{PHOTOS_DIR}/{landmark_id},{source}.jpg")
+
 def remove_photo(filename):
     if os.path.exists(filename):
         filename_new = filename.replace(
@@ -165,58 +189,9 @@ def remove_photo(filename):
         ).replace(
             ".jpg", f",{int(time.time())}.jpg"
         )
+        os.makedirs(os.path.dirname(filename_new), exist_ok=True)
         os.replace(filename, filename_new)
 
-
-
-def get_landmarks_since(game, since):
-    since = float(since)
-    with open(LOG_FILE[game]) as f:
-        landmarks = {}
-        for line in f:
-            timestamp, user, action, landmark_id, data = json.loads(line)
-            if timestamp >= since:
-                landmarks[landmark_id] = data
-    return landmarks
-
-def get_coordinates(address):
-    if address and address not in geodata:
-        result = gmaps.geocode(address)
-        geodata[address] = result
-        write_json(GEODATA_FILE, geodata)
-    if not geodata[address]:
-        return []
-    location = geodata[address][0]["geometry"]["location"]
-    return location["lat"], location["lng"]
-
-def get_color(name):
-    sha1 = hashlib.sha1(name.encode("utf-8")).hexdigest()[-6:]
-    rgb = tuple(int(int(sha1[i * 2:i * 2 + 2], 16) * 0.75) for i in range(3))
-    return "".join(f"{v:02x}" for v in rgb)
-
-def get_landmark_color(address):
-    name = "???" if address in ("", "?") else address.split(", ")[0]
-    for _ in range(3):
-        name = re.sub(" \\([A-Z0-9\\?]+\\)$", "", name)
-        if name[-1] != ")":
-            break
-    return get_color(name)
-
-def get_profile_color(username):
-    users = read_json(USERS_FILE)
-    return users[username]["profile_color"] if username in users else get_color("???")
-
-
-def get_hash(string):
-    salt = os.urandom(16)
-    hash = hashlib.pbkdf2_hmac("sha256", string.encode(), salt, 100_000)
-    return base64.b64encode(salt + hash).decode()
-
-def test_against_hash(string, stored_hash):
-    decoded = base64.b64decode(stored_hash)
-    salt, stored_hash = decoded[:16], decoded[16:]
-    test_hash = hashlib.pbkdf2_hmac("sha256", string.encode(), salt, 100_000)
-    return hmac.compare_digest(stored_hash, test_hash)
 
 
 def read_json(filename):
@@ -248,7 +223,34 @@ def write_log(game, item):
 
 
 
-app = Flask(__name__)
+def get_coordinates(address):
+    if address and address not in geodata:
+        result = gmaps.geocode(address)
+        geodata[address] = result
+        write_json(GEODATA_FILE, geodata)
+    if not geodata[address]:
+        return []
+    location = geodata[address][0]["geometry"]["location"]
+    return location["lat"], location["lng"]
+
+def get_color(name):
+    sha1 = hashlib.sha1(name.encode("utf-8")).hexdigest()[-6:]
+    rgb = tuple(int(int(sha1[i * 2:i * 2 + 2], 16) * 0.75) for i in range(3))
+    return "".join(f"{v:02x}" for v in rgb)
+
+def get_landmark_color(address):
+    name = "???" if address in ("", "?") else address.split(", ")[0]
+    for _ in range(3):
+        name = re.sub(" \\([A-Z0-9\\?]+\\)$", "", name)
+        if name[-1] != ")":
+            break
+    return get_color(name)
+
+def get_profile_color(username):
+    users = read_json(USERS_FILE)
+    return users[username]["profile_color"] if username in users else get_color("???")
+
+
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_DIR = f"{ROOT_DIR}/data"
@@ -271,15 +273,9 @@ SESSIONS_FILE = f"{DATA_DIR}/sessions.json"
 USERS_FILE = f"{DATA_DIR}/users.json"
 
 config = read_json(CONFIG_FILE)
-geodata = read_json(GEODATA_FILE)
-invites = read_json(INVITES_FILE)
-landmarks = {
-    5: read_json(LANDMARKS_FILE[5]),
-    6: read_json(LANDMARKS_FILE[6])
-}
-sessions = read_json(SESSIONS_FILE)
-users = read_json(USERS_FILE)
 gmaps = googlemaps.Client(key=config["GOOGLE_MAPS_API_KEY"])
+
+app = Flask(__name__)
 
 
 
@@ -402,8 +398,6 @@ def api():
         return {"status": "ok"}
 
     if action == "get_landmarks":
-        if since is None or not os.path.exists(LOG_FILE[game]):
-            return {"status": "ok", "landmarks": landmarks[game]}
         landmarks = get_landmarks_since(game, since)
         return {"status": "ok", "landmarks": landmarks}
 
@@ -439,12 +433,8 @@ def api():
 
 if __name__ == "__main__":
 
-    os.makedirs(DATA_DIR, exist_ok=True)
-    os.makedirs(PHOTOS_DIR, exist_ok=True)
-
-    INDEX_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-    # TODO: Disable these routes in production (handled by caddy)
+    # Run the api with caddy + gunicorn.
+    # This is just a fallback.
 
     @app.route("/data/<path:filename>")
     def serve_data(filename):
@@ -462,6 +452,6 @@ if __name__ == "__main__":
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve_static(path):
-        return send_from_directory(INDEX_DIR, path or "index.html")
+        return send_from_directory(ROOT_DIR, path or "index.html")
 
     app.run(host="0.0.0.0", port=8080, debug=False)
