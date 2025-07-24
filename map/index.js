@@ -1937,8 +1937,7 @@ gtadb.Map = function() {
     // Landmarks ///////////////////////////////////////////////////////////////////////////////////
 
     self.addLandmark = function() {
-        const igCoordinates = [Math.round(self.x), Math.round(self.y)]
-        self.api.addLandmark(self.v, igCoordinates).then(function(ret) {
+        self.api.addLandmark(self.v, [self.x, self.y]).then(function(ret) {
             if (ret.status == "ok") {
                 self.clearFindAndFilter()
                 let landmark = self.parseLandmark(ret.id, ret.data)
@@ -2684,8 +2683,8 @@ gtadb.Map = function() {
                     marker.style.top  = (markerY + dy) + 'px'
                     const mppx = self.getMppx()
                     coordinates = [
-                        Math.round(startCoordinates[0] + dx * mppx),
-                        Math.round(startCoordinates[1] - dy * mppx)
+                        startCoordinates[0] + dx * mppx,
+                        startCoordinates[1] - dy * mppx
                     ]
                     // make sure we can zoom while dragging
                     self.landmarksById[id].igCoordinates = coordinates
@@ -2726,6 +2725,7 @@ gtadb.Map = function() {
                 const x = originalX + mppx * (clientX - self.canvas.width / 2)
                 const y = originalY - mppx * (clientY - self.canvas.height / 2)
                 self.setTarget(x, y, originalZ)
+                // FIXME: change this to right-click only
                 navigator.clipboard.writeText(Math.round(x) + "," + Math.round(y))
             } else if (self.isDragging) {
                 self.isDragging = false
@@ -2844,10 +2844,7 @@ gtadb.Map = function() {
                 button.id = "editIgCoordinatesButton"
                 button.innerHTML = landmark.igCoordinates ? "REMOVE" : "ADD"
                 button.addEventListener("click", function() {
-                    self.editLandmark("ig_coordinates", landmark.igCoordinates ? [] : [
-                        Math.round(self.x),
-                        Math.round(self.y)
-                    ])
+                    self.editLandmark("ig_coordinates", landmark.igCoordinates ? [] : [self.x, self.y])
                 })
                 self.itemIgCoordinates.appendChild(button)
             }
@@ -3247,7 +3244,7 @@ gtadb.Map = function() {
 
     self.formatCoordinates = function(key, coordinates) {
         return coordinates ? coordinates.map(function(value) {
-            return value.toFixed(key == "ig" ? 0 : 7)
+            return value.toFixed(key == "ig" ? 3 : 7)
         }).join(",") : "?"
     }
 
