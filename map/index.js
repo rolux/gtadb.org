@@ -1387,9 +1387,9 @@ gtadb.Map = function() {
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
             <tr><td>G</td><td>Switch map mode</td></tr>
-            <tr><td>⇧ G</td><td>Toggle labels</td></tr>
-            <tr><td>T</td><td>Switch tile set</td></tr>
-            <tr><td>⇧ T</td><td>Toggle overlays</td></tr>
+            <tr><td>⇧ G</td><td>Switch map type (Google Maps)</td></tr>
+            <tr><td>T</td><td>Switch tile set (GTA)</td></tr>
+            <tr><td>⇧ T</td><td>Toggle overlays (GTA VI)</td></tr>
             <tr><td>H</td><td>Toggle UI</td></tr>
             <tr><td>ESC</td><td>Exit StreetView</td></tr>
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
