@@ -735,7 +735,6 @@ gtadb.Map = function() {
         y: null,
         z: null,
         l: null,
-        landmarks: [],
         targetX: 0,
         targetY: 0,
         targetZ: 0,
@@ -1817,9 +1816,7 @@ gtadb.Map = function() {
         self.renderMap()
         if (!immediate) {
             if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dz) > 0.01) {
-                requestAnimationFrame(function() {
-                    self.animate()
-                })
+                self.animate()
             } else {
                 self.x = self.targetX
                 self.y = self.targetY
@@ -1858,67 +1855,72 @@ gtadb.Map = function() {
 
     self.renderMap = function() {
 
-        const zInt = Math.ceil(self.z)
-        const mapSize = self.tileSize * Math.pow(2, self.z)
-        const mppx = mapSize / self.mapW
-        const cX = (self.x + self.zeroX) * mppx
-        const cY = (self.zeroY - self.y) * mppx
-        const offsetX = self.canvas.width / 2 - cX;
-        const offsetY = self.canvas.height / 2 - cY;
-        const tileSize = self.tileSize * Math.pow(2, self.z - zInt);
+        requestAnimationFrame(function() {
 
-        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self["gta" + self.v].tileSet][zInt]
+            const zInt = Math.ceil(self.z)
+            const mapSize = self.tileSize * Math.pow(2, self.z)
+            const mppx = mapSize / self.mapW
+            const cX = (self.x + self.zeroX) * mppx
+            const cY = (self.zeroY - self.y) * mppx
+            const offsetX = self.canvas.width / 2 - cX;
+            const offsetY = self.canvas.height / 2 - cY;
+            const tileSize = self.tileSize * Math.pow(2, self.z - zInt);
 
-        const minTx = Math.floor(-offsetX / tileSize)
-        const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)
-        const minTy = Math.floor(-offsetY / tileSize)
-        const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
+            const [[x0, y0], [x1, y1]] = self.tileSetRanges[self["gta" + self.v].tileSet][zInt]
 
-        const overlays = {5: 0, 6: self.tileOverlays}[self.v]
-        for (let y = minTy; y <= maxTy; y++) {
-            for (let x = minTx; x <= maxTx; x++) {
-                if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
-                    const img = self.tiles[self.v][self.tileSet][overlays][zInt][y][x]
-                    if (!img.src) {
-                        (function(originalX, originalY, originalZ) {
-                            img.addEventListener("load", function() {
-                                if (
-                                    originalX.toFixed(3) == self.x &&
-                                    originalY.toFixed(3) == self.y &&
-                                    originalZ.toFixed(3) == self.z
-                                ) {
-                                    self.context.drawImage(
-                                        img,
-                                        offsetX + x * tileSize,
-                                        offsetY + y * tileSize,
-                                        tileSize,
-                                        tileSize
-                                    )
-                                }
-                            })
-                        })(self.x, self.y, self.z)
-                        const tilePath = self.tilePaths[self.v][self.tileSet][overlays][zInt][y][x]
-                        img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`;
+            const minTx = Math.floor(-offsetX / tileSize)
+            const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)
+            const minTy = Math.floor(-offsetY / tileSize)
+            const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
+
+            const overlays = {5: 0, 6: self.tileOverlays}[self.v]
+
+            for (let y = minTy; y <= maxTy; y++) {
+                for (let x = minTx; x <= maxTx; x++) {
+                    if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
+                        const img = self.tiles[self.v][self.tileSet][overlays][zInt][y][x]
+                        if (!img.src) {
+                            (function(originalX, originalY, originalZ) {
+                                img.addEventListener("load", function() {
+                                    if (
+                                        originalX.toFixed(3) == self.x &&
+                                        originalY.toFixed(3) == self.y &&
+                                        originalZ.toFixed(3) == self.z
+                                    ) {
+                                        self.context.drawImage(
+                                            img,
+                                            offsetX + x * tileSize,
+                                            offsetY + y * tileSize,
+                                            tileSize,
+                                            tileSize
+                                        )
+                                    }
+                                })
+                            })(self.x, self.y, self.z)
+                            const tilePath = self.tilePaths[self.v][self.tileSet][overlays][zInt][y][x]
+                            img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`;
+                        } else {
+                            self.context.drawImage(
+                                img,
+                                offsetX + x * tileSize,
+                                offsetY + y * tileSize,
+                                tileSize,
+                                tileSize
+                            )
+                        }
                     } else {
-                        self.context.drawImage(
-                            img,
+                        self.context.clearRect(
                             offsetX + x * tileSize,
                             offsetY + y * tileSize,
                             tileSize,
                             tileSize
                         )
                     }
-                } else {
-                    self.context.clearRect(
-                        offsetX + x * tileSize,
-                        offsetY + y * tileSize,
-                        tileSize,
-                        tileSize
-                    )
                 }
             }
-        }
-        self.renderMarkers()
+            self.renderMarkers()
+
+        })
 
     }
 
@@ -2765,8 +2767,6 @@ gtadb.Map = function() {
     self.onResize = function(render=true) {
         self.canvas.width = window.innerWidth
         self.canvas.height = window.innerHeight
-        self.canvas.style.width = window.innerWidth + "px"
-        self.canvas.style.height = window.innerHeight + "px"
         if (render) {
             self.renderMap()
         }
