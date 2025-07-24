@@ -354,6 +354,9 @@ textarea:focus {
     user-select: none;
     width: 240px;
 }
+.panel div:last-child {
+    overflow-y: auto;
+}
 
 
 
