@@ -1030,7 +1030,7 @@ gtadb.Map = function() {
         self.gameIcon = document.createElement("div")
         self.gameIcon.classList.add("icon")
         self.gameIcon.id = "gameIcon"
-        self.gameIcon.innerHTML = "VI"
+        self.gameIcon.innerHTML = self.v == 5 ? "V" : "VI"
         self.gameIcon.title = "V"
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
         self.gameIcon.addEventListener("click", function() {
@@ -1173,7 +1173,7 @@ gtadb.Map = function() {
             self.sortLandmarks(this.value)
             self.renderList()
             if (self.l) {
-                self.setLandmark(self.l)
+                self.selectLandmark(self.l)
             }
         })
         self.sortBar = gtadb.Bar({
@@ -3186,6 +3186,7 @@ gtadb.Map = function() {
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
         self.gameIcon.innerHTML = {5: "V", 6: "VI"}[self.v]
     }
+
     // User ////////////////////////////////////////////////////////////////////////////////////////
 
     self.getUserSettings = function() {
