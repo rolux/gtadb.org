@@ -40,6 +40,10 @@ def get_user(session_id):
     sessions = read_json(SESSIONS_FILE)
     return sessions.get(session_id, {}).get("user")
 
+def user_exists(username)
+    users = read_json(USERS_FILE)
+    return username in users
+
 def validate_user(username, password):
     users = read_json(USERS_FILE)
     user = users.get(username)
@@ -340,7 +344,7 @@ def api():
             return {"status": "error", "message": "Invalid invite code"}
         if not username or not re.match("^[\\w-]+$", username):
             return {"status": "error", "message": "Invalid username"}
-        if username in users:
+        if user_exists(username):
             return {"status": "error", "message": "Username already exists"}
         if not password or not repeat_password:
             return {"status": "error", "message": "Missing password"}
