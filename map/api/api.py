@@ -40,6 +40,11 @@ def get_user(session_id):
     sessions = read_json(SESSIONS_FILE)
     return sessions.get(session_id, {}).get("user")
 
+def validate_user(username, password):
+    users = read_json(USERS_FILE)
+    user = users.get(username)
+    return user and test_against_hash(password, user["password_hash"])
+
 def validate_invite_code(invite_code):
     invites = read_json(INVITES_FILE)
     return any(
@@ -361,9 +366,7 @@ def api():
         return response
 
     if action == "login":
-        if not users.get(username):
-            return {"status": "error", "message": "Invalid credentials"}
-        if not test_against_hash(password, users[username]["password_hash"]):
+        if not validate_user(username, password):
             return {"status": "error", "message": "Invalid credentials"}
         session_id = create_session(username)
         profile_color = get_profile_color(username)
