@@ -578,7 +578,7 @@ body:not(.googlemaps) #googlemapsIcon {
     top: 0;
     width: 232px;
 }
-#listBody > .item .irl {
+#listBody > .item .rl {
     bottom: 0;
     font-size: 9px;
     height: 11px;
@@ -649,7 +649,7 @@ body:not(.googlemaps) #googlemapsIcon {
 }
 #editIgCoordinatesButton,
 #removeIgPhotoButton,
-#removeIrlPhotoButton {
+#removeRlPhotoButton {
     cursor: pointer;
     margin-left: 8px;
 }
@@ -721,7 +721,7 @@ itemBody > div > div.coordinates > a,
     top: 32px;
     width: 240px;
 }
-#editItemIgPhoto, #editItemIrlPhoto {
+#editItemIgPhoto, #editItemRlPhoto {
     margin-left: -4px;
 }
 

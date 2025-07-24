@@ -761,12 +761,12 @@ gtadb.Map = function() {
             "igLatLngUnknown": "IG latlng unknown",
             "igWithPhoto": "with IG photo",
             "igWithoutPhoto": "without IG photo",
-            "irlLandmarkConfirmed": "IRL landmark confirmed",
-            "irlLandmarkUnconfirmed": "IRL landmark unconfirmed",
-            "irlLandmarkUnknown": "IRL landmark unknown",
-            "irlLatLngMissing": "IRL latlng missing",
-            "irlWithPhoto": "with IRL photo",
-            "irlWithoutPhoto": "without IRL photo",
+            "rlLandmarkConfirmed": "RL landmark confirmed",
+            "rlLandmarkUnconfirmed": "RL landmark unconfirmed",
+            "rlLandmarkUnknown": "RL landmark unknown",
+            "rlLatLngMissing": "RL latlng missing",
+            "rlWithPhoto": "with RL photo",
+            "rlWithoutPhoto": "without RL photo",
             "mapIncluded": "included on the map",
             "mapNotIncluded": "not included on the map"
         },
@@ -775,9 +775,9 @@ gtadb.Map = function() {
             igAddress: "in-game address",
             igLatitude: "in-game latitude",
             igLongitude: "in-game longitude",
-            irlAddress: "real-life address",
-            irlLatitude: "real-life latitude",
-            irlLongitude: "real-life longitude",
+            rlAddress: "real-life address",
+            rlLatitude: "real-life latitude",
+            rlLongitude: "real-life longitude",
             tags: "tags",
             id: "id",
             edited: "last edited"
@@ -1296,20 +1296,20 @@ gtadb.Map = function() {
         self.editItemIgPhoto.element.classList.add("auth")
         self.itemBody.appendChild(self.editItemIgPhoto.element)
 
-        self.itemIrlAddress = document.createElement("div")
-        self.itemIrlAddress.id = "itemIrlAddress"
-        self.itemIrlAddress.className = "address"
-        self.itemBody.appendChild(self.itemIrlAddress)
+        self.itemRlAddress = document.createElement("div")
+        self.itemRlAddress.id = "itemRlAddress"
+        self.itemRlAddress.className = "address"
+        self.itemBody.appendChild(self.itemRlAddress)
 
-        self.itemIrlCoordinates = document.createElement("div")
-        self.itemIrlCoordinates.className = "coordinates"
-        self.itemBody.appendChild(self.itemIrlCoordinates)
+        self.itemRlCoordinates = document.createElement("div")
+        self.itemRlCoordinates.className = "coordinates"
+        self.itemBody.appendChild(self.itemRlCoordinates)
 
-        self.itemIrlPhoto = document.createElement("div")
-        self.itemIrlPhoto.className = "photo"
-        self.itemBody.appendChild(self.itemIrlPhoto)
+        self.itemRlPhoto = document.createElement("div")
+        self.itemRlPhoto.className = "photo"
+        self.itemBody.appendChild(self.itemRlPhoto)
 
-        self.editItemIrlPhoto = gtadb.Input({
+        self.editItemRlPhoto = gtadb.Input({
             change: function(value) {
                 self.editLandmark("rl_photo", value)
             },
@@ -1318,9 +1318,9 @@ gtadb.Map = function() {
             value: "",
             width: 248
         })
-        self.editItemIrlPhoto.element.id = "editItemIrlPhoto"
-        self.editItemIrlPhoto.element.classList.add("auth")
-        self.itemBody.appendChild(self.editItemIrlPhoto.element)
+        self.editItemRlPhoto.element.id = "editItemRlPhoto"
+        self.editItemRlPhoto.element.classList.add("auth")
+        self.itemBody.appendChild(self.editItemRlPhoto.element)
 
         self.itemTags = document.createElement("div")
         self.itemTags.id = "itemTags"
@@ -1764,7 +1764,7 @@ gtadb.Map = function() {
                 }
                 self.googlemapsMarkers = {}
                 self.landmarks.forEach(function(landmark) {
-                    if (landmark.irlCoordinates) {
+                    if (landmark.rlCoordinates) {
                         self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
                     }
                 })
@@ -1780,8 +1780,8 @@ gtadb.Map = function() {
                     map: self.googleMap,
                     content: customMarker,
                     position: {
-                        lat: landmark.irlCoordinates[0],
-                        lng: landmark.irlCoordinates[1]
+                        lat: landmark.rlCoordinates[0],
+                        lng: landmark.rlCoordinates[1]
                     },
                     title: landmark.title,
                     gmpClickable: true,
@@ -2063,19 +2063,19 @@ gtadb.Map = function() {
             "igCoordinates": item[1].length ? item[1] : null,
             "igPhotoSize": item[2].length ? item[2] : null,
             "igPhotoRatio": item[2].length ? [item[2][0] / item[2][1]] : 0,
-            "irlAddress": item[3].replace(/(?<=.)\?$/, ""),
-            "irlAddressSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, "")),
-            "irlCoordinates": item[4].length ? item[4] : null,
-            "irlStatus": item[3] == "?" ? "unknown" : item[6].includes("unconfirmed") ? "unconfirmed" : "confirmed",
-            "irlPhotoSize": item[5].length ? item[5] : null,
-            "irlPhotoRatio": item[5].length ? [item[5][0] / item[5][1]] : 0,
+            "rlAddress": item[3].replace(/(?<=.)\?$/, ""),
+            "rlAddressSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, "")),
+            "rlCoordinates": item[4].length ? item[4] : null,
+            "rlStatus": item[3] == "?" ? "unknown" : item[6].includes("unconfirmed") ? "unconfirmed" : "confirmed",
+            "rlPhotoSize": item[5].length ? item[5] : null,
+            "rlPhotoRatio": item[5].length ? [item[5][0] / item[5][1]] : 0,
             "tags": item[6],
             "color": item[7],
             "edited": item[8],
             "findString": id + "\n" + item[0].toLowerCase() + "\n" + item[3].toLowerCase() + "\n" + item[6].join("\n")
         }
         landmark.igNameAndAddress = self.getLandmarkNameAndAddress(landmark.igAddress)
-        landmark.irlNameAndAddress = self.getLandmarkNameAndAddress(landmark.irlAddress)
+        landmark.rlNameAndAddress = self.getLandmarkNameAndAddress(landmark.rlAddress)
         landmark.title = self.getLandmarkTitle(landmark)
         return landmark
     }
@@ -2163,17 +2163,17 @@ gtadb.Map = function() {
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.sort == "igAddress") {
-                    return v.igAddressSortString + "\n" + v.irlAddressSortString
+                    return v.igAddressSortString + "\n" + v.rlAddressSortString
                 } else if (self.sort == "igLatitude") {
                     return v.igCoordinates ? -v.igCoordinates[1] : 1e6
                 } else if (self.sort == "igLongitude") {
                     return v.igCoordinates ? v.igCoordinates[0] : 1e6
-                } else if (self.sort == "irlAddress") {
-                    return v.irlAddressSortString + "\n" + v.igAddressSortString
-                } else if (self.sort == "irlLatitude") {
-                    return v.irlCoordinates ? -v.irlCoordinates[0] : 1e6
-                } else if (self.sort == "irlLongitude") {
-                    return v.irlCoordinates ? v.irlCoordinates[1] : 1e6
+                } else if (self.sort == "rlAddress") {
+                    return v.rlAddressSortString + "\n" + v.igAddressSortString
+                } else if (self.sort == "rlLatitude") {
+                    return v.rlCoordinates ? -v.rlCoordinates[0] : 1e6
+                } else if (self.sort == "rlLongitude") {
+                    return v.rlCoordinates ? v.rlCoordinates[1] : 1e6
                 } else if (self.sort == "tags") {
                     return [v.tags.join(", ")].concat(v.igAddress.split(", ").reverse()).join(", ")
                 } else if (self.sort == "id") {
@@ -2244,7 +2244,7 @@ gtadb.Map = function() {
     }
 
     self.addGooglemapsMarker = function(landmark) {
-        if (!self.googlemapsMarkers[landmark.id] && landmark.irlCoordinates) {
+        if (!self.googlemapsMarkers[landmark.id] && landmark.rlCoordinates) {
             self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
         }
     }
@@ -2263,11 +2263,11 @@ gtadb.Map = function() {
     }
 
     self.updateGooglemapsMarker = function(landmark) {
-        if (landmark.irlCoordinates) {
+        if (landmark.rlCoordinates) {
             if (self.googlemapsMarkers[landmark.id]) {
                 self.googlemapsMarkers[landmark.id].position = {
-                    lat: landmark.irlCoordinates[0],
-                    lng: landmark.irlCoordinates[1]
+                    lat: landmark.rlCoordinates[0],
+                    lng: landmark.rlCoordinates[1]
                 }
                 self.googlemapsMarkers[landmark.id].title = landmark.title
             } else {
@@ -2304,7 +2304,7 @@ gtadb.Map = function() {
         self.dialogPhoto.id = "dialogPhoto"
         self.photoDialog.set({
             content: self.dialogPhoto,
-            title: selected == "ig" ? landmark.igAddress : landmark.irlAddress
+            title: selected == "ig" ? landmark.igAddress : landmark.rlAddress
         })
         self.resizePhotoDialog()
         self.photoDialog.open()
@@ -2314,7 +2314,7 @@ gtadb.Map = function() {
     self.switchPhoto = function() {
         const selected = self.dialogPhoto.src.includes(",ig.jpg") ? "rl" : "ig"
         self.photoDialog.set({
-            title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "irlAddress"]
+            title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "rlAddress"]
         })
         const index = selected == "ig" ? 1 : 2
         self.dialogPhoto.src = `photos/${self.v}/${self.l},${selected}.jpg?v=${landmark.edited[index]}`
@@ -2328,7 +2328,7 @@ gtadb.Map = function() {
         const margin = 64
         const windowRatio = (window.innerWidth - margin) / (window.innerHeight - margin)
         ///const dialogRatio = self.dialogPhoto.naturalWidth / (self.dialogPhoto.naturalHeight + 32)
-        const key = self.dialogPhoto.src.includes(",ig.jpg") ? "igPhotoSize" : "irlPhotoSize"
+        const key = self.dialogPhoto.src.includes(",ig.jpg") ? "igPhotoSize" : "rlPhotoSize"
         const dialogRatio = self.landmarksById[self.l][key][0] / (self.landmarksById[self.l][key][1] + 32)
         let dialogWidth, dialogHeight
         if (dialogRatio >= windowRatio) {
@@ -2378,12 +2378,12 @@ gtadb.Map = function() {
                 self.filter == "igLatLngUnknown" && landmark.igCoordinates === null ||
                 self.filter == "igWithPhoto" && landmark.igPhotoRatio ||
                 self.filter == "igWithoutPhoto" && !landmark.igPhotoRatio ||
-                self.filter == "irlLandmarkConfirmed" && landmark.irlStatus == "confirmed" ||
-                self.filter == "irlLandmarkUnconfirmed" && landmark.irlStatus == "unconfirmed" ||
-                self.filter == "irlLandmarkUnknown" && landmark.irlStatus == "unknown" ||
-                self.filter == "irlLatLngMissing" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates === null ||
-                self.filter == "irlWithPhoto" && landmark.irlPhotoRatio ||
-                self.filter == "irlWithoutPhoto" && !landmark.irlPhotoRatio ||
+                self.filter == "rlLandmarkConfirmed" && landmark.rlStatus == "confirmed" ||
+                self.filter == "rlLandmarkUnconfirmed" && landmark.rlStatus == "unconfirmed" ||
+                self.filter == "rlLandmarkUnknown" && landmark.rlStatus == "unknown" ||
+                self.filter == "rlLatLngMissing" && landmark.rlAddress[0] != "?" && landmark.rlCoordinates === null ||
+                self.filter == "rlWithPhoto" && landmark.rlPhotoRatio ||
+                self.filter == "rlWithoutPhoto" && !landmark.rlPhotoRatio ||
                 self.filter == "mapIncluded" && parseInt(landmark.id.slice(1)) <= 344 ||
                 self.filter == "mapNotIncluded" && parseInt(landmark.id.slice(1)) > 344
             )
@@ -2410,7 +2410,7 @@ gtadb.Map = function() {
     self.onBlur = function(e) {
         const key = {
             "itemIgAddress": "ig_address",
-            "itemIrlAddress": "rl_address",
+            "itemRlAddress": "rl_address",
             "itemTags": "tags"
         }[this.id]
         let value = this.innerText.trim()
@@ -2937,23 +2937,23 @@ gtadb.Map = function() {
             self.itemIgPhoto.style.display = !self.editing ? "block" : "none"
             self.editItemIgPhoto.element.style.display = !self.editing ? "none" : "block"
 
-            self.itemIrlAddress.innerHTML = landmark.irlAddress
+            self.itemRlAddress.innerHTML = landmark.rlAddress
             if (!self.editing) {
-                self.itemIrlAddress.removeAttribute("contenteditable")
-                self.itemIrlAddress.removeEventListener("paste", self.onPaste)
-                self.itemIrlAddress.removeEventListener("blur", self.onBlur)
+                self.itemRlAddress.removeAttribute("contenteditable")
+                self.itemRlAddress.removeEventListener("paste", self.onPaste)
+                self.itemRlAddress.removeEventListener("blur", self.onBlur)
             } else {
-                self.itemIrlAddress.contentEditable = "true"
-                self.itemIrlAddress.addEventListener("paste", self.onPaste)
-                self.itemIrlAddress.addEventListener("blur", self.onBlur)
+                self.itemRlAddress.contentEditable = "true"
+                self.itemRlAddress.addEventListener("paste", self.onPaste)
+                self.itemRlAddress.addEventListener("blur", self.onBlur)
             } 
 
-            self.itemIrlCoordinates.innerHTML = ""
-            self.itemIrlCoordinatesLink = document.createElement("span")
-            self.itemIrlCoordinatesLink.innerHTML = self.formatCoordinates("irl", landmark.irlCoordinates)
-            if (landmark.irlCoordinates) {
-                self.itemIrlCoordinatesLink.classList.add("link")
-                self.itemIrlCoordinatesLink.addEventListener("mousedown", function() {
+            self.itemRlCoordinates.innerHTML = ""
+            self.itemRlCoordinatesLink = document.createElement("span")
+            self.itemRlCoordinatesLink.innerHTML = self.formatCoordinates("rl", landmark.rlCoordinates)
+            if (landmark.rlCoordinates) {
+                self.itemRlCoordinatesLink.classList.add("link")
+                self.itemRlCoordinatesLink.addEventListener("mousedown", function() {
                     if (self.mapMode == "gta") {
                         self.setMapMode("googlemaps")
                     }
@@ -2965,15 +2965,15 @@ gtadb.Map = function() {
                     self.panGooglemaps(landmark.id)
                 }) 
             }
-            self.itemIrlCoordinates.appendChild(self.itemIrlCoordinatesLink)
+            self.itemRlCoordinates.appendChild(self.itemRlCoordinatesLink)
 
             if (!self.editing) {
-                self.itemIrlPhoto.innerHTML = ""
-                if (landmark.irlPhotoRatio) {
+                self.itemRlPhoto.innerHTML = ""
+                if (landmark.rlPhotoRatio) {
                     const width = 248
-                    const height = width / landmark.irlPhotoRatio
-                    self.itemIrlPhoto.style.width = width + "px"
-                    self.itemIrlPhoto.style.height = height + "px"
+                    const height = width / landmark.rlPhotoRatio
+                    self.itemRlPhoto.style.width = width + "px"
+                    self.itemRlPhoto.style.height = height + "px"
                     let img = document.createElement("img")
                     img.src = `photos/${self.v}/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     img.style.width = width + "px"
@@ -2981,23 +2981,23 @@ gtadb.Map = function() {
                     img.addEventListener("click", function() {
                         self.openPhotoDialog(landmark, "rl")
                     })
-                    self.itemIrlPhoto.appendChild(img)
+                    self.itemRlPhoto.appendChild(img)
                 } else {
-                    self.itemIrlPhoto.style.height = "139.5px"
+                    self.itemRlPhoto.style.height = "139.5px"
                 }
             } else {
-                if (landmark.irlPhotoRatio) {
+                if (landmark.rlPhotoRatio) {
                     let img = document.createElement("img")
                     img.src = `photos/${self.v}/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     const width = 248
-                    const height = width / landmark.irlPhotoRatio
-                    self.editItemIrlPhoto.set({height: height, image: img, removeButton: true})
+                    const height = width / landmark.rlPhotoRatio
+                    self.editItemRlPhoto.set({height: height, image: img, removeButton: true})
                 } else {
-                    self.editItemIrlPhoto.set({height: 139.5, image: null, removeButton: false})
+                    self.editItemRlPhoto.set({height: 139.5, image: null, removeButton: false})
                 }
             }
-            self.itemIrlPhoto.style.display = !self.editing ? "block" : "none"
-            self.editItemIrlPhoto.element.style.display = !self.editing ? "none" : "block"
+            self.itemRlPhoto.style.display = !self.editing ? "block" : "none"
+            self.editItemRlPhoto.element.style.display = !self.editing ? "none" : "block"
 
             if (!self.editing) {
                 self.itemTags.innerHTML = "TAGS: " + (
@@ -3013,7 +3013,7 @@ gtadb.Map = function() {
                 self.itemTags.addEventListener("blur", self.onBlur)
             } 
 
-            //self.itemStatus.innerHTML = `STATUS: ${landmark.irlStatus}`
+            //self.itemStatus.innerHTML = `STATUS: ${landmark.rlStatus}`
             self.itemStatusElement.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited[0])
             //self.editItemPanel.style.display = "none"
             if (self.ui) {
@@ -3038,16 +3038,16 @@ gtadb.Map = function() {
             const igElement = document.createElement("div")
             igElement.className = "ig"
             igElement.innerHTML = self.sort.includes("Address") ? landmark.igAddress
-                    : landmark.igAddress + " &nbsp;|&nbsp; " + landmark.irlAddress
+                    : landmark.igAddress + " &nbsp;|&nbsp; " + landmark.rlAddress
             itemElement.appendChild(igElement)
-            const irlElement = document.createElement("div")
-            irlElement.className = "irl"
-            irlElement.innerHTML = self.sort.includes("Address") ? landmark.irlAddress
+            const rlElement = document.createElement("div")
+            rlElement.className = "rl"
+            rlElement.innerHTML = self.sort.includes("Address") ? landmark.rlAddress
                     : self.sort.includes("igL") ? self.formatCoordinates("ig", landmark.igCoordinates)
-                    : self.sort.includes("irlL") ? self.formatCoordinates("irl", landmark.irlCoordinates)
+                    : self.sort.includes("rlL") ? self.formatCoordinates("rl", landmark.rlCoordinates)
                     : self.sort == "tags" ? landmark.tags.join(", ").toUpperCase()
                     : self.formatDate(landmark.edited[0])
-            itemElement.appendChild(irlElement)
+            itemElement.appendChild(rlElement)
             self.listBody.appendChild(itemElement)
         })
     }
@@ -3353,7 +3353,7 @@ gtadb.Map = function() {
     }
 
     self.getLandmarkTitle = function(landmark) {
-        return landmark.igAddress.split(", ")[0] + "\n" + landmark.irlAddress.split(", ")[0]
+        return landmark.igAddress.split(", ")[0] + "\n" + landmark.rlAddress.split(", ")[0]
     }
 
     self.getMppx = function(z=self.z) {
@@ -3372,8 +3372,8 @@ gtadb.Map = function() {
     }
 
     self.panGooglemaps = function(id) {
-        if (self.landmarksById[id].irlCoordinates) {
-            const [lat, lng] = self.landmarksById[id].irlCoordinates
+        if (self.landmarksById[id].rlCoordinates) {
+            const [lat, lng] = self.landmarksById[id].rlCoordinates
             self.googleMap.panTo({lat: lat, lng: lng})
         }
     }
