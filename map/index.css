@@ -453,25 +453,41 @@ textarea:focus {
 #titleElement > div {
     float: left;
 }
-#siteIcon{
+.icon {
     border-radius: 4px;
     color: rgb(255, 255, 255);
-    font-size: 12px;
     font-weight: bold;
+    font-size: 12px;
     height: 14px;
+    text-align: center;
+}
+.icon:not(#siteIcon) {
+    text-transform: uppercase;
+    width: 14px;
+}
+#siteIcon{
     margin: 2px 2px;
     padding: 3px 6px;
 }
-#userIcon {
-    border-radius: 4px;
-    color: rgb(255, 255, 255);
-    font-size: 12px;
-    font-weight: bold;
-    height: 14px;
-    padding: 3px 0 3px 5px;
+body.googlemaps #googlemapsIcon {
+    background-color: rgb(64, 64, 64)
+}
+body:not(.googlemaps) #googlemapsIcon {
+    background-color: rgb(192, 192, 192)
+}
+#gameIcon {
+    cursor: pointer;
+    padding: 3px;
     margin: 2px 4px;
-    text-transform: uppercase;
-    width: 14px;
+}
+#googlemapsIcon {
+    cursor: pointer;
+    padding: 3px 3px 3px 3px;
+    margin: 2px 4px;
+}
+#userIcon {
+    padding: 3px 3px 3px 3px;
+    margin: 2px 4px;
 }
 #findBar {
     left: 0;
