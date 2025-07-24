@@ -353,6 +353,7 @@ def api():
         remove_invite(invite_code)
         add_user(username, password)
         session_id = create_session(username)
+        profile_color = get_profile_color(user)
         response = make_response({
             "status": "ok",
             "username": username,
