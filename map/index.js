@@ -826,7 +826,7 @@ gtadb.Map = function() {
                 lng: -81,
                 zoom: 8,
                 mapType: "satellite",
-                mapTypes: ["satellite", "hybrid"],
+                mapTypes: ["satellite", "hybrid", "terrain", "roadmap"],
             },
             mapMode: "gta",
             profileColor: "3f7703",
@@ -2509,7 +2509,8 @@ gtadb.Map = function() {
             } else if (e.key == "g") {
                 self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
             } else if (e.key == "G") {
-                self.setMapType(self.mapType == "satellite" ? "hybrid" : "satellite")
+                const mapTypes = self.defaults.googlemaps.mapTypes
+                self.setMapType(mapTypes[(mapTypes.indexOf(self.googlemaps.mapType) + 1) % mapTypes.length])
             } else if (e.key == "t") {
                 const key = `gta${self.v}`
                 const tileSets = self.defaults[key].tileSets
@@ -3048,9 +3049,12 @@ gtadb.Map = function() {
     }
 
     self.setMapType = function(mapType) {
-        self.mapType = mapType
+        self.googlemaps.mapType = mapType
         self.setUserSettings()
-        self.googleMap.setOptions({mapTypeId: self.mapType})
+        console.log("??", self.googlemaps.mapType.toUpperCase())
+        self.googleMap.setOptions({
+            mapTypeId: google.maps.MapTypeId[self.googlemaps.mapType.toUpperCase()]
+        })
     }
 
     self.setTheme = function() {
@@ -3141,12 +3145,7 @@ gtadb.Map = function() {
             v: self.v,
             gta5: self.gta5,
             gta6: self.gta6,
-            googlemaps: {
-                lat: self.lat,
-                lng: self.lng,
-                zoom: self.zoom,
-                mapType: self.mapType,
-            },
+            googlemaps: self.googlemaps,
             mapMode: self.mapMode,
             profileColor: self.profileColor,
             sessionId: self.sessionId,
