@@ -2499,11 +2499,6 @@ gtadb.Map = function() {
             return
         }
 
-        if (e.key === "Escape" && self.mapMode == "googlemaps" && self.googleMap.getStreetView().getVisible()) {
-            self.googleMap.getStreetView().setVisible(false)
-            return
-        }
-
         if (self.focus != "dialog" && !e.metaKey) {
             if (e.key == "a") {
                 if (self.sessionId && self.mapMode == "gta") {
@@ -2543,6 +2538,9 @@ gtadb.Map = function() {
             } else if (e.key == ",") {
                 self.settingsDialog.open()
                 self.focus = "dialog"
+            } else if (e.key == "Escape" && self.mapMode == "googlemaps" && self.googleMap.getStreetView().getVisible()) {
+                self.googleMap.getStreetView().setVisible(false)
+                return
             }
         }
 
