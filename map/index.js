@@ -1374,9 +1374,12 @@ gtadb.Map = function() {
         self.landmarkDataElement.style.margin = "8px"
         self.landmarkDataElement.innerHTML = `<p>You are welcome
             to use the landmark data for your own purposes.</p>
-            <p>The latest version can always be found here:</p>
-            <p><a href="https://map.gtadb.org/data/landmarks.json"
-            target="_blank">https://map.gtadb.org/data/landmarks.json</a>
+            <p>The latest versions can always be found here:</p>
+            <p><a href="https://map.gtadb.org/data/5/landmarks.json"
+            target="_blank">https://map.gtadb.org/data/5/landmarks.json</a>
+            </p>
+            <p><a href="https://map.gtadb.org/data/6/landmarks.json"
+            target="_blank">https://map.gtadb.org/data/6/landmarks.json</a>
             </p>`
 
         self.keyboardShortcutsElement = document.createElement("div")
