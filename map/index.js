@@ -2824,7 +2824,7 @@ gtadb.Map = function() {
 
             self.itemIgCoordinates.innerHTML = ""
             self.itemIgCoordinatesLink = document.createElement("span")
-            self.itemIgCoordinatesLink.innerHTML = landmark.igCoordinates ? landmark.igCoordinates.join(",") : "?"
+            self.itemIgCoordinatesLink.innerHTML = self.formatCoordinates("ig", landmark.igCoordinates)
             if (landmark.igCoordinates) {
                 self.itemIgCoordinatesLink.classList.add("link")
                 self.itemIgCoordinatesLink.addEventListener("mousedown", function() {
@@ -2897,9 +2897,7 @@ gtadb.Map = function() {
 
             self.itemIrlCoordinates.innerHTML = ""
             self.itemIrlCoordinatesLink = document.createElement("span")
-            self.itemIrlCoordinatesLink.innerHTML = landmark.irlCoordinates ? landmark.irlCoordinates.map(function(value) {
-                return value.toFixed(7)
-            }).join(",") : "?"
+            self.itemIrlCoordinatesLink.innerHTML = self.formatCoordinates("irl", landmark.irlCoordinates)
             if (landmark.irlCoordinates) {
                 self.itemIrlCoordinatesLink.classList.add("link")
                 self.itemIrlCoordinatesLink.addEventListener("mousedown", function() {
