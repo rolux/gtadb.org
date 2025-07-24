@@ -638,7 +638,7 @@ gtadb.Map = function() {
         zeroY: 16384,
         tileSize: 1024,
         tileSetRanges: {
-            "atlas": {
+            "satellite": {
                 0: [[ 0,  0], [ 0,  0]],
                 1: [[ 0,  0], [ 1,  1]],
                 2: [[ 1,  0], [ 2,  2]],
@@ -656,7 +656,7 @@ gtadb.Map = function() {
                 5: [[10,  7], [22, 19]],
                 6: [[20, 15], [45, 39]]
             },
-            "roadmap": {
+            "terrain": {
                 0: [[ 0,  0], [ 0,  0]],
                 1: [[ 0,  0], [ 1,  1]],
                 2: [[ 1,  0], [ 2,  2]],
@@ -665,7 +665,7 @@ gtadb.Map = function() {
                 5: [[10,  7], [22, 19]],
                 6: [[20, 15], [45, 39]]
             },
-            "satellite": {
+            "roadmap": {
                 0: [[ 0,  0], [ 0,  0]],
                 1: [[ 0,  0], [ 1,  1]],
                 2: [[ 1,  0], [ 2,  2]],
@@ -803,7 +803,7 @@ gtadb.Map = function() {
                 tileSets: [
                     "satellite",
                     "hybrid",
-                    "atlas",
+                    "terrain",
                     "roadmap"
                 ]
             },
@@ -826,7 +826,12 @@ gtadb.Map = function() {
                 lng: -81,
                 zoom: 8,
                 mapType: "satellite",
-                mapTypes: ["satellite", "hybrid", "terrain", "roadmap"],
+                mapTypes: [
+                    "satellite",
+                    "hybrid",
+                    "terrain",
+                    "roadmap"
+                ],
             },
             mapMode: "gta",
             profileColor: "3f7703",
