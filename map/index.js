@@ -2897,7 +2897,7 @@ gtadb.Map = function() {
                     self.itemIgPhoto.style.width = width + "px"
                     self.itemIgPhoto.style.height = height + "px"
                     let img = document.createElement("img")
-                    img.src = `photos/5/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
+                    img.src = `photos/${self.v}/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
@@ -2959,7 +2959,7 @@ gtadb.Map = function() {
                     self.itemIrlPhoto.style.width = width + "px"
                     self.itemIrlPhoto.style.height = height + "px"
                     let img = document.createElement("img")
-                    img.src = `photos/5/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
+                    img.src = `photos/${self.v}/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
