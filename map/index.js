@@ -1610,7 +1610,7 @@ gtadb.Map = function() {
                 })
             },
             inputs: {
-                "username": ["USERNAME", "username", self.username],
+                "username": ["USERNAME", "text", self.username],
                 "oldPassword": ["OLD PASSWORD", "password", ""],
                 "newPassword": ["NEW PASSWORD", "password", ""],
                 "repeatNewPassword": ["REPEAT NEW PASSWORD", "password", ""]                
@@ -1650,7 +1650,7 @@ gtadb.Map = function() {
                 })
             },
             inputs: {
-                "username": ["USERNAME", "username", self.username],
+                "username": ["USERNAME", "text", self.username],
             },
             width: 496,
             _readonly: ["username"]
