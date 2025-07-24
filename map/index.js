@@ -1406,7 +1406,9 @@ gtadb.Map = function() {
 
         self.editingGuidelinesElement = document.createElement("div")
         self.editingGuidelinesElement.style.margin = "8px"
-        self.editingGuidelinesElement.innerHTML = `<p>Coming soon...</p>
+        self.editingGuidelinesElement.innerHTML = `<p>Accounts are
+            invite-only. If you can think of anyone who would be a
+            great contributor, please get in touch on the Discord.</p>
             <p>For now, the site in test mode, so expect your edits to
             get rolled back. If you're already doing work that needs to
             be preserved, please get in touch.</p>`
@@ -1423,8 +1425,17 @@ gtadb.Map = function() {
             width: 768
         })
 
+        self.switchToSettingsButton = gtadb.Button({
+            "click": function() {
+                self.aboutDialog.close()
+                self.settingsDialog.open()
+            },
+            "text": "SETTINGS",
+            "tooltip": ","
+        })
+
         self.aboutDialog = gtadb.Dialog({
-            buttons: [],
+            buttons: [self.switchToSettingsButton],
             content: self.aboutPanel.element,
             height: 544,
             layer: self.dialogLayer,
@@ -1662,8 +1673,17 @@ gtadb.Map = function() {
             width: 768
         })
 
+        self.switchToAboutButton = gtadb.Button({
+            "click": function() {
+                self.settingsDialog.close()
+                self.aboutDialog.open()
+            },
+            "text": "ABOUT",
+            "tooltip": "."
+        })
+
         self.settingsDialog = gtadb.Dialog({
-            buttons: [],
+            buttons: [self.switchToAboutButton],
             content: self.settingsPanel.element,
             height: 544,
             layer: self.dialogLayer,
@@ -2635,12 +2655,18 @@ gtadb.Map = function() {
         } else if (self.focus == "dialog") {
 
             if (document.getElementById("aboutDialog")) {
-               if (e.key == "Escape") {
+                if (e.key == ",") {
+                    self.aboutDialog.close()
+                    self.settingsDialog.open()
+                } else if (e.key == "Escape") {
                     self.aboutDialog.close()
                     self.focus = "list"
                 }
             } else if (document.getElementById("settingsDialog")) {
-               if (e.key == "Escape") {
+                if (e.key == ".") {
+                    self.settingsDialog.close()
+                    self.aboutDialog.open()
+                } else if (e.key == "Escape") {
                     self.settingsDialog.close()
                     self.focus = "list"
                 }
