@@ -2386,29 +2386,14 @@ gtadb.Map = function() {
         } else {
             v = {5: "V", 6: "VI"}[self.defaults.v]
         }
-        let last = values[values.length - 1]
-        if (isNaN(last)) {
-            if (self.landmarksById[last]) {
-                l = last
-                if (self.landmarksById[last].igCoordinates) {
-                    lx = self.landmarksById[last].igCoordinates[0]
-                    ly = self.landmarksById[last].igCoordinates[1]
-                    lz = 5
-                } else {
-                    lx = self.x
-                    ly = self.y
-                    lz = self.z
-                }
-            } else {
-                last = last.toLowerCase()
-                const landmarks = self.landmarks.filter(function(landmark) {
-                    return landmark.findString.includes(last)
-                })
-                if (landmarks.length == 1) {
-                    l = landmarks[0].id
-                    if (landmarks[0].igCoordinates) {
-                        lx = landmarks[0].igCoordinates[0]
-                        ly = landmarks[0].igCoordinates[1]
+        if (values.length) {
+            let last = values[values.length - 1]
+            if (isNaN(last)) {
+                if (self.landmarksById[last]) {
+                    l = last
+                    if (self.landmarksById[last].igCoordinates) {
+                        lx = self.landmarksById[last].igCoordinates[0]
+                        ly = self.landmarksById[last].igCoordinates[1]
                         lz = 5
                     } else {
                         lx = self.x
@@ -2416,14 +2401,31 @@ gtadb.Map = function() {
                         lz = self.z
                     }
                 } else {
-                    f = last
-                    if (f != self.find) {
-                        // last part of hash is find query
-                        self.findElement.value = f
-                        self.clearFindButton.element.style.display = "block"
-                        self.filterElement.value = "all"
-                        self.clearFilterButton.element.style.display = "none"
-                        self.findAndFilterLandmarks(last, "all") // this calls setLandmark, which calls setHash
+                    last = last.toLowerCase()
+                    const landmarks = self.landmarks.filter(function(landmark) {
+                        return landmark.findString.includes(last)
+                    })
+                    if (landmarks.length == 1) {
+                        l = landmarks[0].id
+                        if (landmarks[0].igCoordinates) {
+                            lx = landmarks[0].igCoordinates[0]
+                            ly = landmarks[0].igCoordinates[1]
+                            lz = 5
+                        } else {
+                            lx = self.x
+                            ly = self.y
+                            lz = self.z
+                        }
+                    } else {
+                        f = last
+                        if (f != self.find) {
+                            // last part of hash is find query
+                            self.findElement.value = f
+                            self.clearFindButton.element.style.display = "block"
+                            self.filterElement.value = "all"
+                            self.clearFilterButton.element.style.display = "none"
+                            self.findAndFilterLandmarks(last, "all") // this calls setLandmark, which calls setHash
+                        }
                     }
                 }
             }
