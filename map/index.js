@@ -2384,8 +2384,8 @@ gtadb.Map = function() {
                 self.filter == "irlLatLngMissing" && landmark.irlAddress[0] != "?" && landmark.irlCoordinates === null ||
                 self.filter == "irlWithPhoto" && landmark.irlPhotoRatio ||
                 self.filter == "irlWithoutPhoto" && !landmark.irlPhotoRatio ||
-                self.filter == "mapIncluded" && landmark.id[0] == "b" ||
-                self.filter == "mapNotIncluded" && landmark.id[0] == "x"
+                self.filter == "mapIncluded" && parseInt(landmark.id.slice(1)) <= 344 ||
+                self.filter == "mapNotIncluded" && parseInt(landmark.id.slice(1)) > 344
             )
         })
         // FIXME: duplicated
