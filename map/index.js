@@ -2296,7 +2296,7 @@ gtadb.Map = function() {
     self.openPhotoDialog = function(landmark, selected) {
         self.dialogPhoto = document.createElement("img")
         const index = selected == "ig" ? 1 : 2
-        self.dialogPhoto.src = `photos/5/${landmark.id},${selected}.jpg?v=${landmark.edited[index]}`
+        self.dialogPhoto.src = `photos/${self.v}/${landmark.id},${selected}.jpg?v=${landmark.edited[index]}`
         self.dialogPhoto.id = "dialogPhoto"
         self.photoDialog.set({
             content: self.dialogPhoto,
@@ -2313,7 +2313,7 @@ gtadb.Map = function() {
             title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "irlAddress"]
         })
         const index = selected == "ig" ? 1 : 2
-        self.dialogPhoto.src = `photos/5/${self.l},${selected}.jpg?v=${landmark.edited[index]}`
+        self.dialogPhoto.src = `photos/${self.v}/${self.l},${selected}.jpg?v=${landmark.edited[index]}`
         self.resizePhotoDialog()
     }
 
@@ -2910,7 +2910,7 @@ gtadb.Map = function() {
             } else {
                 if (landmark.igPhotoRatio) {
                     let img = document.createElement("img")
-                    img.src = `photos/5/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
+                    img.src = `photos/${self.v}/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
                     const width = 248
                     const height = width / landmark.igPhotoRatio
                     self.editItemIgPhoto.set({height: height, image: img, removeButton: true})
@@ -2972,7 +2972,7 @@ gtadb.Map = function() {
             } else {
                 if (landmark.irlPhotoRatio) {
                     let img = document.createElement("img")
-                    img.src = `photos/5/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
+                    img.src = `photos/${self.v}/${landmark.id},rl.jpg?v=${landmark.edited[2]}`
                     const width = 248
                     const height = width / landmark.irlPhotoRatio
                     self.editItemIrlPhoto.set({height: height, image: img, removeButton: true})
