@@ -2863,13 +2863,10 @@ gtadb.Map = function() {
                 text: self.editing ? "DONE" : "EDIT",
                 title: self.editing ? "": "E"
             })
-            self.itemBody.classList[self.editing ? "add" : "remove"]("editing")
 
-            self.itemId.innerHTML = ""
-            let link = document.createElement("a")
-            link.href = "#" + landmark.id
-            link.innerHTML = landmark.id.toUpperCase()
-            self.itemId.appendChild(link)
+            self.itemId.innerHTML = landmark.id
+
+            self.itemBody.classList[self.editing ? "add" : "remove"]("editing")
             self.itemBody.style.borderRightColor = "#" + landmark.color
 
             self.itemIgAddress.innerHTML = landmark.igAddress

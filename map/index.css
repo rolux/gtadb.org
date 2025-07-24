@@ -590,18 +590,18 @@ body:not(.googlemaps) #googlemapsIcon {
     bottom: 0;
     left: 0;
 }
-#itemPanel, #editItemPanel {
+#itemPanel {
     display: none;
     font-size: 13px;
     right: 0
 }
-#itemBar, #editItemBar {
+#itemBar {
     right: 0;
     top: 0
 }
-#itemId, #editItemId {
+#itemId {
     font-size: 13px;
-    margin: -1px 0;
+    margin: 4px 6px;
 }
 #itemBody {
     border-right: 8px solid transparent;
