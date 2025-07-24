@@ -40,7 +40,7 @@ def get_user(session_id):
     sessions = read_json(SESSIONS_FILE)
     return sessions.get(session_id, {}).get("user")
 
-def user_exists(username)
+def user_exists(username):
     users = read_json(USERS_FILE)
     return username in users
 
