@@ -2458,9 +2458,8 @@ gtadb.Map = function() {
                         lz = self.z
                     }
                 } else {
-                    last = last.toLowerCase()
                     const landmarks = self.landmarks.filter(function(landmark) {
-                        return landmark.findString.includes(last)
+                        return landmark.findString.includes(last.toLowerCase())
                     })
                     if (landmarks.length == 1) {
                         l = landmarks[0].id
@@ -2474,10 +2473,10 @@ gtadb.Map = function() {
                             lz = self.z
                         }
                     } else {
-                        f = last
-                        if (f != self.find) {
+                        if (last != self.find && !/^L\d+$/.test(last)) {
                             // last part of hash is find query
-                            self.findElement.value = f
+                            f = last
+                            self.findElement.value = last
                             self.clearFindButton.element.style.display = "block"
                             self.filterElement.value = "all"
                             self.clearFilterButton.element.style.display = "none"
