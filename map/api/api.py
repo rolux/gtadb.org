@@ -122,9 +122,9 @@ def add_landmark(game, ig_coordinates, username):
     landmark_id = f"x{int(last_id[1:]) + 1}"
     timestamp = time.time()
     landmarks[landmark_id] = [
-        "?", ig_coordinates, [],
-        "?", [], [],
-        [], get_landmark_color("?"), [timestamp, 0, 0]
+        "", ig_coordinates, [],
+        "", [], [],
+        [], get_landmark_color(""), [timestamp, 0, 0]
     ]
     write_log(game, [timestamp, username, "add_landmark", landmark_id, None, None])
     write_log(game, [timestamp, username, "edit_landmark", landmark_id, "ig_coordinates", ig_coordinates])
@@ -173,14 +173,16 @@ def edit_landmark(game, landmark_id, key, value, file, username):
 def check_landmark_data(key, value):
     if key == "ig_address":
         value = re.sub("\n", " ", value)
-        value = re.sub("  ", " ", value.strip())
+        value = re.sub("  ", " ", value)
+        value = value.strip()
         return value
     if key == "ig_coordinates":
         # TODO
         return value
     if key == "rl_address":
         value = re.sub("\n", " ", value)
-        value = re.sub("  ", " ", value.strip())
+        value = re.sub("  ", " ", value)
+        value = value.strip()
         value = re.sub(", United States$", ", USA", value)
         return value
     if key == "tags":
