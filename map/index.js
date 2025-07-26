@@ -2310,7 +2310,7 @@ gtadb.Map = function() {
         self.dialogPhoto.id = "dialogPhoto"
         self.photoDialog.set({
             content: self.dialogPhoto,
-            title: selected == "ig" ? landmark.igAddress : landmark.rlAddress
+            title: selected == "ig" ? (landmark.igAddress || "?") : (landmark.rlAddress || "?")
         })
         self.resizePhotoDialog()
         self.photoDialog.open()
@@ -3358,7 +3358,7 @@ gtadb.Map = function() {
     }
 
     self.getLandmarkTitle = function(landmark) {
-        return landmark.igAddress.split(", ")[0] + "\n" + landmark.rlAddress.split(", ")[0]
+        return (landmark.igAddress.split(", ")[0] || "?") + "\n" + (landmark.rlAddress.split(", ")[0] || "?")
     }
 
     self.getMppx = function(z=self.z) {
