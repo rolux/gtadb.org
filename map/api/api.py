@@ -275,8 +275,8 @@ LANDMARKS_FILE = {
     6: f"{DATA_DIR}/6/landmarks.json"
 }
 LOG_FILE = {
-    5: f"{DATA_DIR}/5/edit_log.jsonl",
-    6: f"{DATA_DIR}/6/edit_log.jsonl"
+    5: f"{DATA_DIR}/5/landmarks_log.jsonl",
+    6: f"{DATA_DIR}/6/landmarks_log.jsonl"
 }
 SESSIONS_FILE = f"{DATA_DIR}/sessions.json"
 USERS_FILE = f"{DATA_DIR}/users.json"
