@@ -398,6 +398,9 @@ textarea:focus {
     width: 11px;
     z-index: 101;
 }
+body.editing .marker.selected {
+    border: 2.5px solid rgb(192, 224, 255);
+}
 .marker.dragging {
     border: 2px solid rgb(128, 128,128);
 }
