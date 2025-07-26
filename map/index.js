@@ -1245,8 +1245,7 @@ gtadb.Map = function() {
 
         self.editItemButton = gtadb.Button({
             click: function() {
-                self.editing = true
-                self.renderItem()
+                self.startEditing()
             },
             text: "EDIT",
             tooltip: "E"
@@ -1993,8 +1992,7 @@ gtadb.Map = function() {
                 self.renderMarkers()
                 self.renderList()
                 self.renderStatus()
-                self.editing = true
-                self.renderItem()
+                self.startEditing()
             } else {
                 console.log(ret)
             }
@@ -2148,8 +2146,7 @@ gtadb.Map = function() {
 
     self.setLandmark = function(id, pan) {
         if (id != self.l && self.editing) {
-            self.editing = false
-            self.renderItem()
+            self.stopEditing()
         }
         self.l = id
         if (pan) {
@@ -2557,8 +2554,7 @@ gtadb.Map = function() {
                 }
             } else if (e.key == "e") {
                 if (self.sessionId && self.mapMode == "gta" && self.l) {
-                    self.editing = !self.editing
-                    self.renderItem()
+                    self.editing ? self.stopEditing() : self.startEditing()
                 }
             } else if (e.key == "Delete") {
                 if (self.sessionId && self.mapMode == "gta" && self.l) {
@@ -2856,11 +2852,9 @@ gtadb.Map = function() {
 
             self.editItemButton.set({
                 click: self.editing ? function() {
-                    self.editing = false
-                    self.renderItem()
+                    self.stopEditing()
                 } : function() {
-                    self.editing = true
-                    self.renderItem()
+                    self.startEditing()
                 },
                 text: self.editing ? "DONE" : "EDIT",
                 title: self.editing ? "": "E"
@@ -3107,8 +3101,7 @@ gtadb.Map = function() {
             self.markersLayer.style.display = "none"
             self.googlemapsLayer.style.display = "block"
             if (self.editing) {
-                self.editing = false
-                self.renderItem()
+                self.stopEditing()
             }
         }
         self.updateRemoveItemButton()
@@ -3126,6 +3119,18 @@ gtadb.Map = function() {
     self.setTheme = function() {
         document.body.classList.remove(self.theme == "light" ? "dark" : "light")
         document.body.classList.add(self.theme)
+    }
+
+    self.startEditing = function() {
+        self.editing = true
+        document.body.classList.add("editing")
+        self.renderItem()
+    }
+
+    self.stopEditing = function() {
+        self.editing = false
+        document.body.classList.remove("editing")
+        self.renderItem()
     }
 
     self.toggleUI = function() {
@@ -3294,8 +3299,7 @@ gtadb.Map = function() {
         self.updateSettingsPanel()
         self.updateUserIcon()
         if (self.editing) {
-            self.editing = false
-            self.renderItem()
+            self.stopEditing()
         }
     }
 
