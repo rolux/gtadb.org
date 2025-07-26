@@ -84,6 +84,9 @@ gtadb.API = function(options) {
         })
     }
     self.sendRequest = function(data) {
+        if ("game" in data) {
+            data.game = data.game.toString()
+        }
         const isFile = data.value instanceof File
         if (isFile) {
             const form = new FormData()

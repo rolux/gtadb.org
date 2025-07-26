@@ -280,12 +280,12 @@ CONFIG_FILE = f"{DATA_DIR}/config.json"
 GEODATA_FILE = f"{DATA_DIR}/geodata.json"
 INVITES_FILE = f"{DATA_DIR}/invites.json"
 LANDMARKS_FILE = {
-    5: f"{DATA_DIR}/5/landmarks.json",
-    6: f"{DATA_DIR}/6/landmarks.json"
+    "5": f"{DATA_DIR}/5/landmarks.json",
+    "6": f"{DATA_DIR}/6/landmarks.json"
 }
 LOG_FILE = {
-    5: f"{DATA_DIR}/5/landmarks_log.jsonl",
-    6: f"{DATA_DIR}/6/landmarks_log.jsonl"
+    "5": f"{DATA_DIR}/5/landmarks_log.jsonl",
+    "6": f"{DATA_DIR}/6/landmarks_log.jsonl"
 }
 SESSIONS_FILE = f"{DATA_DIR}/sessions.json"
 USERS_FILE = f"{DATA_DIR}/users.json"
@@ -339,7 +339,7 @@ def api():
 
     if action in (
         "get_landmarks", "add_landmark", "edit_landmark", "remove_landmark"
-    ) and game not in (5, 6):
+    ) and game not in ("5", "6"):
         return {"status": "error", "message": "unknown game version"}
 
     if action == "get_user":
