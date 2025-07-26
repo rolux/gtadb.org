@@ -184,6 +184,7 @@ def check_landmark_data(key, value):
         value = re.sub("  ", " ", value)
         value = value.strip()
         value = re.sub(", United States$", ", USA", value)
+        value = re.sub(", États-Unis", ", USA", value)
         return value
     if key == "tags":
         return sorted(list(set(tag.lower() for tag in value)))
