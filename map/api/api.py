@@ -126,7 +126,8 @@ def add_landmark(game, ig_coordinates, username):
         "?", [], [],
         [], get_landmark_color("?"), [timestamp, 0, 0]
     ]
-    write_log(game, [timestamp, username, "add_landmark", landmark_id, "ig_coordinates", ig_coordinates])
+    write_log(game, [timestamp, username, "add_landmark", landmark_id, None, None])
+    write_log(game, [timestamp, username, "edit_landmark", landmark_id, "ig_coordinates", ig_coordinates])
     write_landmarks(game, landmarks)
     return landmark_id, landmarks[landmark_id]
 
