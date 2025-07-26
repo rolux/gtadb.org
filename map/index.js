@@ -2066,12 +2066,12 @@ gtadb.Map = function() {
             "idSortString": self.getIdSortString(id),
             "igAddress": item[0],
             "igAddressSortString": self.getAddressSortString(item[0]),
-            "igCoordinates": item[1].length ? item[1] : null,
+            "igCoordinates": item[1] && item[1].length ? item[1] : null, // FIXME: item[1] should never be null
             "igPhotoSize": item[2].length ? item[2] : null,
             "igPhotoRatio": item[2].length ? [item[2][0] / item[2][1]] : 0,
             "rlAddress": item[3].replace(/(?<=.)\?$/, ""),
             "rlAddressSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, "")),
-            "rlCoordinates": item[4].length ? item[4] : null,
+            "rlCoordinates": item[4] && item[4].length ? item[4] : null, // FIXME: item[4] should never be null
             "rlStatus": item[3] == "?" ? "unknown" : item[6].includes("unconfirmed") ? "unconfirmed" : "confirmed",
             "rlPhotoSize": item[5].length ? item[5] : null,
             "rlPhotoRatio": item[5].length ? [item[5][0] / item[5][1]] : 0,
