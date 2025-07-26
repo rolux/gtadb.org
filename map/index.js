@@ -3342,7 +3342,7 @@ gtadb.Map = function() {
     }
 
     self.getIdSortString = function(id) {
-        return id[0] + "0".repeat(10 - id.length) + id.slice(1)
+        return "0".repeat(10 - id.length) + id.slice(1)
     }
 
     self.getLandmarkNameAndAddress = function(address) {
