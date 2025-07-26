@@ -297,12 +297,6 @@ gtadb.DialogLayer = function() {
     that.hide = function() {
         that.element.style.display = "none"
     }
-    that.blink = function() {
-        that.element.classList.add("clicked")
-        setTimeout(function() {
-            that.element.classList.remove("clicked")
-        }, 150)
-    }
     return that
 }
 
@@ -2701,7 +2695,7 @@ gtadb.Map = function() {
             } 
 
             if ("0123456fghftTv".includes(e.key)) {
-                self.dialogLayer.blink()
+                self.dialogLayer.element.classList.add("clicked")
             }
 
         }
@@ -2713,6 +2707,7 @@ gtadb.Map = function() {
         if (activeElement.tagName == "INPUT") {
             return
         }
+        self.dialogLayer.element.classList.remove("clicked")
         if (self.keydownTimeout) {
             clearTimeout(self.keydownTimeout)
             self.keydownTimeout = null
