@@ -1356,8 +1356,8 @@ gtadb.Map = function() {
         self.aboutThisMapElement = document.createElement("div")
         self.aboutThisMapElement.style.margin = "8px"
         self.aboutThisMapElement.innerHTML = `<p><b>map.gtadb.org</b>
-            is an interactive map of Grand Theft Auto VI that includes
-            all landmarks that have been identified so far.</p>
+            is an interactive map of Grand Theft Auto V and VI that
+            includes all landmarks that have been identified so far.</p>
             <p>The goal is to find the real-life equivalent of every
             single in-game building. This is going to be a collaborative
             effort, way beyond the release of the game.</p>
@@ -1421,9 +1421,7 @@ gtadb.Map = function() {
         self.editingGuidelinesElement.innerHTML = `<p>Accounts are
             invite-only. If you can think of anyone who would be a
             great contributor, please get in touch on the Discord.</p>
-            <p>For now, the site in test mode, so expect your edits to
-            get rolled back. If you're already doing work that needs to
-            be preserved, please get in touch.</p>`
+            <p>Detailed editing guidelines coming soon...</p>`
 
         self.aboutPanel = gtadb.Panel({
             height: 512,
