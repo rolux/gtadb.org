@@ -236,7 +236,7 @@ def write_landmarks(game, landmarks):
 
 def write_log(game, item):
     with open(LOG_FILE[game], "a") as f:
-        f.write(json.dumps(item) + "\n")
+        f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
 
 
