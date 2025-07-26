@@ -917,7 +917,7 @@ gtadb.Map = function() {
 
         })
 
-        self.markersLayer.addEventListener("click", self.onClick)
+        self.markersLayer.addEventListener("click", self.onClick) // FIXME: doesn't exist
         window.addEventListener("hashchange", self.onHashchange)
         document.addEventListener("keydown", self.onKeydown)
         document.addEventListener("keyup", self.onKeyup)
@@ -1000,16 +1000,19 @@ gtadb.Map = function() {
         self.listPanel.className = "mapPanel"
         self.listPanel.id = "listPanel"
         self.listPanel.addEventListener("mousedown", function(e) {
-            self.focus = "list"
-            if (e.target.parentElement.classList.contains("item")) {
-                const id = e.target.parentElement.id.replace("item_", "")
-                if (e.metaKey && e.target.parentElement.classList.contains("selected")) {
-                    self.setLandmark(null)
-                } else {
-                    self.setLandmark(id, true)
-                    self.panGooglemaps(id)
+            setTimeout(function() { // allow for blur
+                self.focus = "list"
+                const element = e.target.closest(".item")
+                if (element) {
+                    const id = element.id.replace("item_", "")
+                    if (e.metaKey && element.classList.contains("selected")) {
+                        self.setLandmark(null)
+                    } else {
+                        self.setLandmark(id, true)
+                        self.panGooglemaps(id)
+                    }
                 }
-            }
+            })
         })
         self.element.appendChild(self.listPanel)
 
@@ -1287,7 +1290,7 @@ gtadb.Map = function() {
 
         self.editItemIgPhoto = gtadb.Input({
             change: function(value) {
-                self.editLandmark("ig_photo", value)
+                self.editLandmark(self.l, "ig_photo", value)
             },
             height: 139.5,
             type: "file",
@@ -1313,7 +1316,7 @@ gtadb.Map = function() {
 
         self.editItemRlPhoto = gtadb.Input({
             change: function(value) {
-                self.editLandmark("rl_photo", value)
+                self.editLandmark(self.l, "rl_photo", value)
             },
             height: 139.5,
             type: "file",
@@ -1999,8 +2002,7 @@ gtadb.Map = function() {
         })
     }
 
-    self.editLandmark = function(key, value) {
-        const id = self.l
+    self.editLandmark = function(id, key, value) {
         self.api.editLandmark(self.v, id, key, value).then(function(ret) {
             if (ret.status == "ok") {
                 let landmark = self.parseLandmark(id, ret.data)
@@ -2238,8 +2240,10 @@ gtadb.Map = function() {
                 self.markers[landmark.id].title = landmark.title
             } else {
                 self.addMarker(landmark)
+                if (landmark.id == self.l) {
+                    self.markers[landmark.id].classList.add("selected")
+                }
             }
-            self.markers[landmark.id].classList.add("selected")
         } else if (self.markers[landmark.id]) {
             self.removeMarker(landmark.id)
         }
@@ -2417,15 +2421,15 @@ gtadb.Map = function() {
             "itemIgAddress": "ig_address",
             "itemRlAddress": "rl_address",
             "itemTags": "tags"
-        }[this.id]
-        let value = this.innerText.trim()
+        }[e.target.id]
+        let value = e.target.innerText.trim()
         if (key == "tags") {
             value = value.replace(/^TAGS:/, "")
             value = value.split(",").map(function(tag) {
                 return tag.trim().replace(" ", "").toLowerCase()
             })
         }
-        self.editLandmark(key, value)
+        self.editLandmark(e.target.dataset.landmarkId, key, value)
     }
 
     self.onHashchange = function() {
@@ -2718,15 +2722,18 @@ gtadb.Map = function() {
     }
 
     self.onMousedown = function(e) {
-        e.preventDefault()
         self.focus = "map"
         if (e.target.classList.contains("marker")) {
             const id = e.target.id.replace("marker_", "")
             const isSelected = e.target.classList.contains("selected")
             if (isSelected && e.metaKey) {
-                self.setLandmark(null)
+                setTimeout(function() { // allow for blur
+                    self.setLandmark(null)
+                })
             } else if (!isSelected) {
-                self.setLandmark(id)
+                setTimeout(function() { // allow for blur
+                    self.setLandmark(id)
+                })
             } else if (isSelected && self.editing) {
                 e.stopPropagation()
                 self.isDraggingMarker = true
@@ -2755,7 +2762,7 @@ gtadb.Map = function() {
                     self.isDraggingMarker = false
                     document.removeEventListener("mousemove", onMousemove)
                     document.removeEventListener("mouseup", onMouseup)
-                    self.editLandmark("ig_coordinates", coordinates)
+                    self.editLandmark(self.l, "ig_coordinates", coordinates)
                 }
                 document.addEventListener("mousemove", onMousemove)
                 document.addEventListener("mouseup", onMouseup)
@@ -2866,6 +2873,7 @@ gtadb.Map = function() {
             self.itemBody.style.borderRightColor = "#" + landmark.color
 
             self.itemIgAddress.innerHTML = landmark.igAddress || "?"
+            self.itemIgAddress.dataset.landmarkId = self.l
             if (!self.editing) {
                 self.itemIgAddress.removeAttribute("contenteditable")
                 self.itemIgAddress.removeEventListener("paste", self.onPaste)
@@ -2898,7 +2906,7 @@ gtadb.Map = function() {
                 button.id = "editIgCoordinatesButton"
                 button.innerHTML = landmark.igCoordinates ? "REMOVE" : "ADD"
                 button.addEventListener("click", function() {
-                    self.editLandmark("ig_coordinates", landmark.igCoordinates ? [] : [self.x, self.y])
+                    self.editLandmark(self.l, "ig_coordinates", landmark.igCoordinates ? [] : [self.x, self.y])
                 })
                 self.itemIgCoordinates.appendChild(button)
             }
@@ -2936,6 +2944,7 @@ gtadb.Map = function() {
             self.editItemIgPhoto.element.style.display = !self.editing ? "none" : "block"
 
             self.itemRlAddress.innerHTML = landmark.rlAddress || "?"
+            self.itemRlAddress.dataset.landmarkId = self.l
             if (!self.editing) {
                 self.itemRlAddress.removeAttribute("contenteditable")
                 self.itemRlAddress.removeEventListener("paste", self.onPaste)
@@ -2997,6 +3006,7 @@ gtadb.Map = function() {
             self.itemRlPhoto.style.display = !self.editing ? "block" : "none"
             self.editItemRlPhoto.element.style.display = !self.editing ? "none" : "block"
 
+            self.itemTags.dataset.landmarkId = self.l
             if (!self.editing) {
                 self.itemTags.innerHTML = "TAGS: " + (
                     landmark.tags.length ? landmark.tags.join(", ") : "none"
@@ -3110,7 +3120,6 @@ gtadb.Map = function() {
     self.setMapType = function(mapType) {
         self.googlemaps.mapType = mapType
         self.setUserSettings()
-        console.log("??", self.googlemaps.mapType.toUpperCase())
         self.googleMap.setOptions({
             mapTypeId: google.maps.MapTypeId[self.googlemaps.mapType.toUpperCase()]
         })
