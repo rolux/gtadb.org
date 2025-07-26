@@ -142,10 +142,15 @@ def edit_landmark(game, landmark_id, key, value, file, username):
             source = key.split("_")[0]
             remove_photo(f"{PHOTOS_DIR}/{game}/{landmark_id},{source}.jpg")
         else:
+
             source = key.split("_")[0]
             filename = f"{PHOTOS_DIR}/{game}/{landmark_id},{source}.jpg"
-            image = Image.open(file.stream).convert("RGB")
-            image.save(filename)
+            if file.filename.split(".")[-1].lower() in ("jpg", "jpeg"):
+                file.save(filename)
+                image = Image.open(filename)
+            else:
+                image = Image.open(file.stream).convert("RGB")
+                image.save(filename)
             value = image.size
             landmarks[landmark_id][index] = value
     else:
