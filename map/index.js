@@ -2732,7 +2732,7 @@ gtadb.Map = function() {
                 self.isDraggingMarker = true
                 let marker = e.target.closest(".marker");
                 const startCoordinates = self.landmarksById[id].igCoordinates
-                let coordinates
+                let coordinates = startCoordinates
                 let startX = e.clientX 
                 let startY = e.clientY
                 let markerX = parseInt(marker.style.left)
