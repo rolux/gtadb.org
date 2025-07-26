@@ -151,8 +151,10 @@ def edit_landmark(game, landmark_id, key, value, file, username):
         value = check_landmark_data(key, value)
         landmarks[landmark_id][index] = value
         if key == "rl_address":
-            landmarks[landmark_id][LM.RL_COORDINATES] = get_coordinates(value)
-            landmarks[landmark_id][LM.COLOR] = get_landmark_color(value)
+            rl_coordinates = get_coordinates(value)
+            color = get_landmark_color(value)
+            landmarks[landmark_id][LM.RL_COORDINATES] = rl_coordinates
+            landmarks[landmark_id][LM.COLOR] = color
     last_edited = landmarks[landmark_id][LM.LAST_EDITED]
     timestamp = time.time()
     landmarks[landmark_id][LM.LAST_EDITED] = [
@@ -161,6 +163,9 @@ def edit_landmark(game, landmark_id, key, value, file, username):
         int(timestamp) if key == "rl_photo" else last_edited[2]
     ]
     write_log(game, [timestamp, username, "edit_landmark", landmark_id, key, value])
+    if key == "rl_address":
+        write_log(game, [timestamp, username, "edit_landmark", landmark_id, "rl_coordinates", rl_coordinates])
+        write_log(game, [timestamp, username, "edit_landmark", landmark_id, "color", color])
     write_landmarks(game, landmarks)
     return landmarks[landmark_id]
 
