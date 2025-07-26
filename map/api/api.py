@@ -175,8 +175,7 @@ def check_landmark_data(key, value):
     if key == "rl_address":
         value = re.sub("\n", " ", value)
         value = re.sub("  ", " ", value.strip())
-        value = re.sub(", United States$", "", value)
-        value = re.sub(", USA$", "", value)
+        value = re.sub(", United States$", ", USA", value)
         return value
     if key == "tags":
         return sorted(list(set(tag.lower() for tag in value)))
