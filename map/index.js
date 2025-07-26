@@ -2869,7 +2869,7 @@ gtadb.Map = function() {
             self.itemBody.classList[self.editing ? "add" : "remove"]("editing")
             self.itemBody.style.borderRightColor = "#" + landmark.color
 
-            self.itemIgAddress.innerHTML = landmark.igAddress
+            self.itemIgAddress.innerHTML = landmark.igAddress || "?"
             if (!self.editing) {
                 self.itemIgAddress.removeAttribute("contenteditable")
                 self.itemIgAddress.removeEventListener("paste", self.onPaste)
@@ -2939,7 +2939,7 @@ gtadb.Map = function() {
             self.itemIgPhoto.style.display = !self.editing ? "block" : "none"
             self.editItemIgPhoto.element.style.display = !self.editing ? "none" : "block"
 
-            self.itemRlAddress.innerHTML = landmark.rlAddress
+            self.itemRlAddress.innerHTML = landmark.rlAddress || "?"
             if (!self.editing) {
                 self.itemRlAddress.removeAttribute("contenteditable")
                 self.itemRlAddress.removeEventListener("paste", self.onPaste)
