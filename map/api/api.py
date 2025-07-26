@@ -142,7 +142,6 @@ def edit_landmark(game, landmark_id, key, value, file, username):
             source = key.split("_")[0]
             remove_photo(f"{PHOTOS_DIR}/{game}/{landmark_id},{source}.jpg")
         else:
-
             source = key.split("_")[0]
             filename = f"{PHOTOS_DIR}/{game}/{landmark_id},{source}.jpg"
             if file.filename.split(".")[-1].lower() in ("jpg", "jpeg"):
