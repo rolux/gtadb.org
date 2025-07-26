@@ -2791,7 +2791,7 @@ gtadb.Map = function() {
                 const y = originalY - mppx * (clientY - self.canvas.height / 2)
                 self.setTarget(x, y, originalZ)
                 // FIXME: change this to right-click only
-                navigator.clipboard.writeText(Math.round(x) + "," + Math.round(y))
+                // navigator.clipboard.writeText(Math.round(x) + "," + Math.round(y))
             } else if (self.isDragging) {
                 self.isDragging = false
                 self.element.classList.remove("dragging")
