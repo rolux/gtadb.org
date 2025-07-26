@@ -241,8 +241,10 @@ def write_log(game, item):
 
 
 def get_coordinates(address):
+    if not address:
+        return []
     geodata = read_json(GEODATA_FILE)
-    if address and address not in geodata:
+    if address not in geodata:
         result = gmaps.geocode(address)
         geodata[address] = result
         write_json(GEODATA_FILE, geodata)
