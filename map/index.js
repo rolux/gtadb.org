@@ -3035,12 +3035,12 @@ gtadb.Map = function() {
             itemElement.style.borderLeftColor = "#" + landmark.color
             const igElement = document.createElement("div")
             igElement.className = "ig"
-            igElement.innerHTML = self.sort.includes("Address") ? landmark.igAddress
-                    : landmark.igAddress + " &nbsp;|&nbsp; " + landmark.rlAddress
+            igElement.innerHTML = self.sort.includes("Address") ? (landmark.igAddress || "?")
+                    : landmark.igAddress + " &nbsp;|&nbsp; " + (landmark.rlAddress || "?")
             itemElement.appendChild(igElement)
             const rlElement = document.createElement("div")
             rlElement.className = "rl"
-            rlElement.innerHTML = self.sort.includes("Address") ? landmark.rlAddress
+            rlElement.innerHTML = self.sort.includes("Address") ? (landmark.rlAddress || "?")
                     : self.sort.includes("igL") ? self.formatCoordinates("ig", landmark.igCoordinates)
                     : self.sort.includes("rlL") ? self.formatCoordinates("rl", landmark.rlCoordinates)
                     : self.sort == "tags" ? landmark.tags.join(", ").toUpperCase()
