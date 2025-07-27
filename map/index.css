@@ -620,12 +620,12 @@ body:not(.googlemaps) #googlemapsIcon {
     font-size: 11px;
     margin: 4px;
 }
-#itemBody > div > div.coordinates > a,
-#itemBody > div.coordinates > span.link {
+#itemBody a,
+#itemBody span.link {
     cursor: pointer;
 }
-#itemBody > div.coordinates > a:hover,
-#itemBody > div.coordinates > span.link:hover {
+#itemBody a:hover,
+#itemBody span.link:hover {
     text-decoration: underline
 }
 #itemBody > div {
