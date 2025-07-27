@@ -3002,9 +3002,27 @@ gtadb.Map = function() {
 
             self.itemTags.dataset.landmarkId = self.l
             if (!self.editing) {
-                self.itemTags.innerHTML = "TAGS: " + (
-                    landmark.tags.length ? landmark.tags.join(", ") : "none"
-                )
+                if (landmark.tags.length) {
+                    self.itemTags.innerHTML = "TAGS: "
+                    landmark.tags.forEach(function(tag, i) {
+                        let span = document.createElement("span")
+                        span.classList.add("link")
+                        span.innerHTML = tag
+                        span.addEventListener("click", function() {
+                            self.findElement.value = tag.toUpperCase()
+                            self.findElement.dispatchEvent(new Event("input", {bubbles: true}))
+                            self.findElement.dispatchEvent(new Event("change", {bubbles: true}))
+                        })
+                        self.itemTags.appendChild(span)
+                        if (i < landmark.tags.length - 1) {
+                            span = document.createElement("span")
+                            span.innerHTML = ", "
+                            self.itemTags.appendChild(span)
+                        }
+                    })
+                } else {
+                    self.itemTags.innerHTML = "TAGS: NONE"
+                }
                 self.itemTags.removeAttribute("contenteditable")
                 self.itemTags.removeEventListener("paste", self.onPaste)
                 self.itemTags.removeEventListener("blur", self.onBlur)
