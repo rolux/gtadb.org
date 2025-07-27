@@ -502,7 +502,8 @@ gtadb.Input = function(options) {
             }
         }
         if ("value" in options) {
-            self.input.value = options.value
+            self.options.value = options.value
+            self.input.value = self.options.value
         }
         if ("width" in options) {
             self.options.width = options.width
@@ -2930,7 +2931,7 @@ gtadb.Map = function() {
                     const height = width / landmark.igPhotoRatio
                     self.editItemIgPhoto.set({height: height, image: img, removeButton: true})
                 } else {
-                    self.editItemIgPhoto.set({height: 139.5, image: null, removeButton: false})
+                    self.editItemIgPhoto.set({height: 139.5, image: null, removeButton: false, value: ""})
                 }
             }
             self.itemIgPhoto.style.display = !self.editing ? "block" : "none"
@@ -2993,7 +2994,7 @@ gtadb.Map = function() {
                     const height = width / landmark.rlPhotoRatio
                     self.editItemRlPhoto.set({height: height, image: img, removeButton: true})
                 } else {
-                    self.editItemRlPhoto.set({height: 139.5, image: null, removeButton: false})
+                    self.editItemRlPhoto.set({height: 139.5, image: null, removeButton: false, value=""})
                 }
             }
             self.itemRlPhoto.style.display = !self.editing ? "block" : "none"
