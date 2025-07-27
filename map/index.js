@@ -780,6 +780,20 @@ gtadb.Map = function() {
             id: "id",
             edited: "last edited"
         },
+        landmarkTypes: [
+            "agriculture",
+            "entertainment",
+            "government",
+            "hotel",
+            "industrial",
+            "landmark",
+            "natural",
+            "office",
+            "public",
+            "residential",
+            "retail",
+            "transportation"
+        ],
         ui: true,
         themes: ["light", "dark"],
         markers: {},
