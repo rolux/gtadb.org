@@ -2994,7 +2994,7 @@ gtadb.Map = function() {
                     const height = width / landmark.rlPhotoRatio
                     self.editItemRlPhoto.set({height: height, image: img, removeButton: true})
                 } else {
-                    self.editItemRlPhoto.set({height: 139.5, image: null, removeButton: false, value=""})
+                    self.editItemRlPhoto.set({height: 139.5, image: null, removeButton: false, value: ""})
                 }
             }
             self.itemRlPhoto.style.display = !self.editing ? "block" : "none"
