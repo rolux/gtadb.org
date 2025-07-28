@@ -474,15 +474,12 @@ gtadb.Input = function(options) {
             }
         }
         if ("image" in options) {
-            if (!options.image && self.options.image) {
-                self.options.image.remove()
-            }
             self.options.image = options.image
+            self.upload.innerHTML = ""
             if (self.options.image) {
                 // FIXME: use 100%
                 self.options.image.style.width = self.upload.style.width
                 self.options.image.style.height = self.upload.style.height
-                self.upload.innerHTML = ""
                 self.upload.appendChild(self.options.image)
             }
         }
