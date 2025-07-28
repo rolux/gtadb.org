@@ -1419,7 +1419,8 @@ gtadb.Map = function() {
             <tr><td>⇧ G</td><td>Switch map type (Google Maps)</td></tr>
             <tr><td>ESC</td><td>Exit StreetView</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-            <tr><td>F</td><td>Find landmarks</td></tr>
+            <tr><td>F</td><td>Find</td></tr>
+            <tr><td>⇧ F</td><td>Clear find</td></tr>
             <tr><td>↑ ↓</td><td>Select previous / next landmark</td></tr>
             <tr><td>← →</td><td>Select first / last landmark</td></tr>
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
@@ -2585,10 +2586,13 @@ gtadb.Map = function() {
                     self.removeLandmark(self.l)
                 }
             } else if (e.key == "f") {
-                setTimeout(function() {
-                   self.findElement.focus()
-                    self.findElement.select()
-                })
+                e.preventDefault()
+                self.findElement.focus()
+                self.findElement.select()
+            } else if (e.key == "F") {
+                if (self.find) {
+                    self.clearFindButton.element.dispatchEvent(new Event("mousedown", {bubbles: true}))
+                }
             } else if (e.key == "g") {
                 self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
             } else if (e.key == "G") {
