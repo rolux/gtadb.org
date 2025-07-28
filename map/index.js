@@ -2298,6 +2298,7 @@ gtadb.Map = function() {
                     lng: landmark.rlCoordinates[1]
                 }
                 self.googlemapsMarkers[landmark.id].title = landmark.title
+                self.googlemapsMarkers[landmark.id].style.backgroundColor = "#" + landmark.color
             } else {
                 self.addGooglemapsMarker(landmark)
             }
