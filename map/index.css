@@ -629,6 +629,7 @@ body:not(.googlemaps) #googlemapsIcon {
     border-right: 8px solid transparent;
     bottom: 32px;
     left: 0;
+    overflow-x: hidden;
     overflow-y: scroll;
     padding: 4px;
     position: absolute;
