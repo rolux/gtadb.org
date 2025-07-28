@@ -2498,12 +2498,12 @@ gtadb.Map = function() {
                     } else {
                         if (last != self.find && !/^L\d+$/.test(last)) {
                             // last part of hash is find query
-                            f = last
-                            self.findElement.value = last
+                            f = last.replace("%20", " ")
+                            self.findElement.value = f
                             self.clearFindButton.element.style.display = "block"
                             self.filterElement.value = "all"
                             self.clearFilterButton.element.style.display = "none"
-                            self.findAndFilterLandmarks(last, "all") // this calls setLandmark, which calls setHash
+                            self.findAndFilterLandmarks(f, "all") // this calls setLandmark, which calls setHash
                         }
                     }
                 }
