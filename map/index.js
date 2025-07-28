@@ -2498,7 +2498,7 @@ gtadb.Map = function() {
                     } else {
                         if (last != self.find && !/^L\d+$/.test(last)) {
                             // last part of hash is find query
-                            f = last.replace("%20", " ")
+                            f = decodeURIComponent(last.replace(/\+/g, " "))
                             self.findElement.value = f
                             self.clearFindButton.element.style.display = "block"
                             self.filterElement.value = "all"
