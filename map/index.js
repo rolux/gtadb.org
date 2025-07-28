@@ -1005,6 +1005,16 @@ gtadb.Map = function() {
         })
         self.element.appendChild(self.uiIcon)
 
+        self.streetviewIcon = document.createElement("div")
+        self.streetviewIcon.classList.add("icon")
+        self.streetviewIcon.id = "streetviewIcon"
+        self.streetviewIcon.innerHTML = "X"
+        self.streetviewIcon.title = "ESC"
+        self.streetviewIcon.addEventListener("click", function() {
+            self.googleMap.getStreetView().setVisible(false)
+        })
+        self.element.appendChild(self.streetviewIcon)
+
         self.listPanel = document.createElement("div")
         self.listPanel.className = "mapPanel"
         self.listPanel.id = "listPanel"
@@ -1771,6 +1781,9 @@ gtadb.Map = function() {
             streetView.setOptions({
                 disableDefaultUI: true,
                 enableCloseButton: false,
+            })
+            streetView.addListener("visible_changed", function() {
+                document.body.classList[streetView.getVisible() ? "add" : "remove"]("streetview")
             })
 
             self.initGooglemapsMarkers = function() {

@@ -133,22 +133,32 @@ body.dark #dialogLayer.clicked {
 
 
 
-body:not(.auth) .auth,
-body.googlemaps .auth:not(#userIcon) {
-    display: none;
-}
 a {
     text-decoration: none;
 }
 a:hover {
     text-decoration: underline;
 }
-body.hidden .mapPanel {
+
+body:not(.auth) .auth,
+body.googlemaps .auth:not(#userIcon) {
+    display: none;
+}
+body.streetview #streetviewIcon {
+    display: block;
+}
+body:not(.streetview) #streetviewIcon {
+    display: none
+}
+body.hidden .mapPanel,
+body.hidden #streetviewIcon {
     display: none;
 }
 body.hidden #uiIcon {
     display: block;
 }
+
+
 
 canvas.satellite {
     background-color: rgb(20, 61, 107);
@@ -486,6 +496,7 @@ body.editing .marker.selected {
     height: 14px;
     padding: 3px;
     text-align: center;
+    user-select: none;
 }
 .icon:not(#siteIcon) {
     text-transform: uppercase;
@@ -497,6 +508,14 @@ body.editing .marker.selected {
     left: 8px;
     position: absolute;
     top: 8px;
+    z-index: 1000;
+}
+#streetviewIcon {
+    background-color: rgb(128, 128, 128);
+    display: none;
+    left: 262px;
+    position: absolute;
+    top: 6px;
     z-index: 1000;
 }
 #siteIcon{
