@@ -1477,7 +1477,7 @@ gtadb.Map = function() {
             <p class="title">Tags</p>
             <p>Tags can be anything. Add UNCONFIRMED if the real-life match is speculative.
             Tags can also be used for a taxonomy of landmark types. A good set of types
-            might be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK,
+            may be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK,
             NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION. But
             this is not set in stone.</p>`
 
