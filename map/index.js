@@ -3095,6 +3095,7 @@ gtadb.Map = function() {
                     : self.sort.includes("igL") ? self.formatCoordinates("ig", landmark.igCoordinates)
                     : self.sort.includes("rlL") ? self.formatCoordinates("rl", landmark.rlCoordinates)
                     : self.sort == "tags" ? landmark.tags.join(", ").toUpperCase()
+                    : self.sort == "id" ? landmark.id
                     : self.formatDate(landmark.edited[0])
             itemElement.appendChild(rlElement)
             self.listBody.appendChild(itemElement)
