@@ -1475,11 +1475,11 @@ gtadb.Map = function() {
             <p>Again, these are not needed for now. Later on, the goal is to add matching
             in-game and real-life photos that best convey the similarities.</p>
             <p class="title">Tags</p>
-            <p>Tags can be anything. Add "UNCONFIRMED" if the real-life match is
-            speculative. Tags can also be used for a taxonomy of landmark types. A good set
-            of types might be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INDUSTRIAL,
-            LANDMARK, NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL,
-            TRANSPORTATION. But this is not set in stone.</p>`
+            <p>Tags can be anything. Add UNCONFIRMED if the real-life match is speculative.
+            Tags can also be used for a taxonomy of landmark types. A good set of types
+            might be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK,
+            NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION. But
+            this is not set in stone.</p>`
 
         self.aboutPanel = gtadb.Panel({
             height: 512,
