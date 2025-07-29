@@ -196,7 +196,13 @@ input[type="text"]:focus {
 p {
     font-size: 13px;
     line-height: 18px;
-    padding: 4px;
+    margin-block-end: 0;
+    margin-block-start: 0;
+    padding: 8px;
+}
+p.title {
+    font-weight: bold;
+    padding-bottom: 0;
 }
 select {
     all: unset;
