@@ -1375,8 +1375,8 @@ gtadb.Map = function() {
             is an interactive map of Grand Theft Auto V and VI that
             includes all landmarks that have been identified so far.</p>
             <p>The goal is to find the real-life equivalent of every
-            single in-game building. This is going to be a collaborative
-            effort, way beyond the release of the game.</p>
+            single in-game building in GTA VI. This is going to be a
+            collaborative effort, way beyond the release of the game.</p>
             <p>Huge thanks to all contributors, on the GTA VI Mapping
             Discord and elsewhere!</p>`
 
