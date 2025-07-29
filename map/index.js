@@ -1435,10 +1435,51 @@ gtadb.Map = function() {
 
         self.editingGuidelinesElement = document.createElement("div")
         self.editingGuidelinesElement.style.margin = "8px"
-        self.editingGuidelinesElement.innerHTML = `<p>Accounts are
-            invite-only. If you can think of anyone who would be a
-            great contributor, please get in touch on the Discord.</p>
-            <p>Detailed editing guidelines coming soon...</p>`
+        self.editingGuidelinesElement.innerHTML = `<p class="title">Who can edit the landmarks?</p>
+            <p>Accounts are invite-only. If you can think of anyone who would be a great
+            contributor, please get in touch on the Discord.</p>
+            <p class="title">What qualifies as a landmark?</p>
+            <p>In principle, everything that is based on something in real life, including
+            natural features. If a landmark contains other landmarks, it doesn't have to be
+            added. For example, rather than adding "Key Lento", add buildings on Key Lento.
+            Beaches or parks with landmarks may be an exception.</p>
+            <p class="title">IDs</p>
+            <p>IDs are assigned sequentially and are not supposed to mean anything. Deleting
+            landmarks will create holes in the sequence of IDs (unless it's the most
+            recently added landmark), so delete sparingly. IDs are meant to be tied to the
+            in-game landmark – so if a marker is associated with the wrong landmark, don't
+            edit the address, but move the marker to the correct location.</p>
+            <p class="title">In-game addresses</p>
+            <p>The standard format is "Name, Street Address, City". If there is no name, it
+            can be left out. If the landmark is not in a specific city or town, use the
+            county name instead. If we don't even know the county, use "Leonida". But don't
+            add unnecessary county or state names, like "..., Vice City, Vice-Dale County,
+            Leondia".</p>
+            <p class="title">In-game coordinates</p>
+            <p>For now, they can be approximate, based on the most accurate map. Once there
+            is an official map, markers can be moved to their precise in-game location.</p>
+            <p class="title">In-game photos</p>
+            <p>For now, they are not needed, other than for disambiguation purposes. In
+            cases where we have no information for the landmark, it's a good idea to add a
+            photo to make it obvious what the marker is referring to.</p>
+            <p class="title">Real-life addresses</p>
+            <p>The standard format is "Name, Street Address, FL 12345, USA". If there is no
+            name, it can be left out. Generally, the address should be chosen so that Google
+            Maps can translate it to the correct coordinates. In some cases, Plus Codes
+            (like in "Sombrero Key Light, JVHQ+5M, Marathon, FL, USA") are the best choice.
+            </p>
+            <p class="title">Real-life coordinates</p>
+            <p>Currently, these are based on the real-life address and cannot be edited.
+            This may change in the future.</p>
+            <p class="title">Real-life photos</p>
+            <p>Again, these are not needed for now. Later on, the goal is to add matching
+            in-game and real-life photos that best convey the similarities.</p>
+            <p class="title">Tags</p>
+            <p>Tags can be anything. Add "UNCONFIRMED" if the real-life match is
+            speculative. Tags can also be used for a taxonomy of landmark types. A good set
+            of types might be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INDUSTRIAL,
+            LANDMARK, NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL,
+            TRANSPORTATION. But this is not set in stone.</p>`
 
         self.aboutPanel = gtadb.Panel({
             height: 512,
