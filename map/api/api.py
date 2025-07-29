@@ -121,13 +121,15 @@ def add_landmark(game, ig_coordinates, username):
     last_id = list(landmarks.keys())[-1]
     landmark_id = f"L{int(last_id[1:]) + 1}"
     timestamp = time.time()
+    color = get_landmark_color("", "")
     landmarks[landmark_id] = [
         "", ig_coordinates, [],
         "", [], [],
-        [], get_landmark_color(""), [timestamp, 0, 0]
+        [], color, [timestamp, 0, 0]
     ]
     write_log(game, [timestamp, username, "add_landmark", landmark_id, None, None])
     write_log(game, [timestamp, username, "edit_landmark", landmark_id, "ig_coordinates", ig_coordinates])
+    write_log(game, [timestamp, username, "edit_landmark", landmark_id, "color", color])
     write_landmarks(game, landmarks)
     return landmark_id, landmarks[landmark_id]
 
@@ -157,8 +159,12 @@ def edit_landmark(game, landmark_id, key, value, file, username):
         landmarks[landmark_id][index] = value
         if key == "rl_address":
             rl_coordinates = get_coordinates(value)
-            color = get_landmark_color(value)
             landmarks[landmark_id][LM.RL_COORDINATES] = rl_coordinates
+        if key in ("ig_address", "rl_address"):
+            color = get_landmark_color(
+                landmarks[landmark_id][LM.IG_ADDRESS],
+                landmarks[landmark_id][LM.RL_ADDRESS]
+            )
             landmarks[landmark_id][LM.COLOR] = color
     last_edited = landmarks[landmark_id][LM.LAST_EDITED]
     timestamp = time.time()
@@ -170,6 +176,7 @@ def edit_landmark(game, landmark_id, key, value, file, username):
     write_log(game, [timestamp, username, "edit_landmark", landmark_id, key, value])
     if key == "rl_address":
         write_log(game, [timestamp, username, "edit_landmark", landmark_id, "rl_coordinates", rl_coordinates])
+    if key in ("ig_address", "rl_address"):
         write_log(game, [timestamp, username, "edit_landmark", landmark_id, "color", color])
     write_landmarks(game, landmarks)
     return landmarks[landmark_id]
@@ -262,11 +269,11 @@ def get_color(name):
     rgb = tuple(int(int(sha1[i * 2:i * 2 + 2], 16) * 0.75) for i in range(3))
     return "".join(f"{v:02x}" for v in rgb)
 
-def get_landmark_color(address):
-    name = "???" if address in ("", "?") else address.split(", ")[0]
+def get_landmark_color(ig_address, rl_address):
+    name = (rl_address or ig_address).split(", ")[0]
     for _ in range(3):
         name = re.sub(" \\([A-Z0-9\\?]+\\)$", "", name)
-        if name[-1] != ")":
+        if not name.endswith(")"):
             break
     return get_color(name)
 
