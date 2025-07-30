@@ -3162,6 +3162,7 @@ gtadb.Map = function() {
         const url = `data/${self.v}/landmarks.json`
         self.loadJSON([url]).then(function([landmarks]) {
             self.parseLandmarks(landmarks)
+            document.title = "GTA " + {5: "V", 6: "VI"}[self.v] + " Landmarks Map"
             self.updateGameIcon()
             self.initMarkers()
             self.renderMarkers()
