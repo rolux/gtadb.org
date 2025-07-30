@@ -211,14 +211,15 @@ def remove_landmark(game, landmark_id, username):
         remove_photo(f"{PHOTOS_DIR}/{landmark_id},{source}.jpg")
 
 def remove_photo(filename):
-    if os.path.exists(filename):
-        filename_new = filename.replace(
-            f"{PHOTOS_DIR}/", f"{TRASH_DIR}/"
-        ).replace(
-            ".jpg", f",{int(time.time())}.jpg"
-        )
-        os.makedirs(os.path.dirname(filename_new), exist_ok=True)
-        os.replace(filename, filename_new)
+    if not os.path.exists(filename):
+        return
+    filename_new = filename.replace(
+        f"{PHOTOS_DIR}/", f"{TRASH_DIR}/"
+    ).replace(
+        ".jpg", f",{int(time.time())}.jpg"
+    )
+    os.makedirs(os.path.dirname(filename_new), exist_ok=True)
+    os.replace(filename, filename_new)
 
 
 
