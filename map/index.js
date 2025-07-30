@@ -2487,6 +2487,8 @@ gtadb.Map = function() {
             value = value.replace(/^TAGS:/, "")
             value = value.split(",").map(function(tag) {
                 return tag.trim().replace(" ", "").toLowerCase()
+            }).filter(function(tag) {
+                return !!tag
             })
         }
         self.editLandmark(e.target.dataset.landmarkId, key, value)
@@ -3103,16 +3105,15 @@ gtadb.Map = function() {
                 self.itemTags.addEventListener("blur", self.onBlur)
             } 
 
-            //self.itemStatus.innerHTML = `STATUS: ${landmark.rlStatus}`
             self.itemStatusElement.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited[0])
-            //self.editItemPanel.style.display = "none"
             if (self.ui) {
                 self.itemPanel.style.display = "block"
             }
+
         } else {
             self.itemPanel.style.display = "none"
-            //self.editItemPanel.style.display = "none"
         }
+
     }
 
     self.renderList = function() {
