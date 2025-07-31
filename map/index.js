@@ -1461,12 +1461,16 @@ gtadb.Map = function() {
             <p class="title">In-game photos</p>
             <p>For now, they are not needed, other than for disambiguation purposes. In
             cases where we have no information for the landmark, it's a good idea to add a
-            photo to make it obvious what the marker is referring to.</p>
+            photo to make it obvious what the marker is referring to. If you're adding a
+            screenshot from 2022, please add a 2022 tag to make sure the image is not
+            visible to the general public.</p>
             <p class="title">Real-life addresses</p>
             <p>The standard format is "Name, Street Address, FL 12345, USA". If there is no
             name, it can be left out. Generally, the address should be chosen so that Google
             Maps can translate it to the correct coordinates. In some cases, Plus Codes
             (like in "Sombrero Key Light, JVHQ+5M, Marathon, FL, USA") are the best choice.
+            If the name of a landmark has changed since the scouting period (2015-2016),
+            then the original name from that period should be used.
             </p>
             <p class="title">Real-life coordinates</p>
             <p>Currently, these are based on the real-life address and cannot be edited.
@@ -1475,7 +1479,10 @@ gtadb.Map = function() {
             <p>Again, these are not needed for now. Later on, the goal is to add matching
             in-game and real-life photos that best convey the similarities.</p>
             <p class="title">Tags</p>
-            <p>Tags can be anything. Add UNCONFIRMED if the real-life match is speculative.
+            <p>Tags can be anything. Common tags are DEMOLISHED (for landmarks that no longer
+            exist in real life), EVENTS (for places we only know of by way of the 2022 events
+            list), REUSED (for duplicated building assets) and UNCONFIRMED (for speculative
+            real-life matches).
             Tags can also be used for a taxonomy of landmark types. A good set of types
             may be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK,
             NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION. But
