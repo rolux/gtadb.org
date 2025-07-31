@@ -2984,6 +2984,7 @@ gtadb.Map = function() {
                     self.itemIgPhoto.style.height = height + "px"
                     let img = document.createElement("img")
                     img.src = `photos/${self.v}/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
+                    img.classList[landmark.tags.includes("2022") ? "add" : "remove"]("auth")
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
