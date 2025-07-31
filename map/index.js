@@ -2139,8 +2139,6 @@ gtadb.Map = function() {
             "edited": item[8],
             "findString": id + "\n" + item[0].toLowerCase() + "\n" + item[3].toLowerCase() + "\n" + item[6].join("\n")
         }
-        landmark.igNameAndAddress = self.getLandmarkNameAndAddress(landmark.igAddress)
-        landmark.rlNameAndAddress = self.getLandmarkNameAndAddress(landmark.rlAddress)
         landmark.title = self.getLandmarkTitle(landmark)
         return landmark
     }
@@ -3438,25 +3436,20 @@ gtadb.Map = function() {
             }
             parts[p] = words.join(" ")
         })
-        return parts.reverse().join("\n") // newline since we want "Ambrosia" before "Ambrosia County"
+        // newline since we want "Ambrosia" before "Ambrosia County"
+        return parts.reverse().join("\n")
     }
 
     self.getIdSortString = function(id) {
         return "0".repeat(10 - id.length) + id.slice(1)
     }
 
-    self.getLandmarkNameAndAddress = function(address) {
-        const parts = address.split(", ")
-        /*
-        if ("0123456789".includes(address[0])) {
-            return [parts[0], address]
-        }
-        */
-        return [parts[0], parts.slice(1).join(", ")]
-    }
-
     self.getLandmarkTitle = function(landmark) {
-        return (landmark.igAddress.split(", ")[0] || "?") + "\n" + (landmark.rlAddress.split(", ")[0] || "?")
+        return (
+            landmark.igAddress.split(", ")[0] || "?"
+        ) + "\n" + (
+            landmark.rlAddress.split(", ")[0] || "?"
+        )
     }
 
     self.getMppx = function(z=self.z) {
