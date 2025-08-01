@@ -3390,6 +3390,10 @@ gtadb.Map = function() {
         self.setUserSettings()
         self.updateSettingsPanel()
         self.updateUserIcon()
+        // FIXME: shouln't be necessary
+        if (self.l) {
+            self.removeItemButton.element.style.display = "block"
+        }
     }
 
     self.onLogout = function() {
@@ -3401,6 +3405,8 @@ gtadb.Map = function() {
         if (self.editing) {
             self.stopEditing()
         }
+        // FIXME: shouln't be necessary
+        self.removeItemButton.element.style.display = "none"
     }
 
     // Utilities ///////////////////////////////////////////////////////////////////////////////////
