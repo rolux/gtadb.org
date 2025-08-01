@@ -2379,16 +2379,21 @@ gtadb.Map = function() {
             title: selected == "ig" ? (landmark.igAddress || "?") : (landmark.rlAddress || "?")
         })
         self.resizePhotoDialog()
+        self.switchPhotoButton.element.style.display = self.hasBothPhotos(landmark) ? "block" : "none"
         self.photoDialog.open()
         self.focus = "dialog"
     }
 
     self.switchPhoto = function() {
+        const landmark = self.landmarksById[self.l]
+        if (!self.hasBothPhotos(landmark)) {
+            return
+        }
         const selected = self.dialogPhoto.src.includes(",ig.jpg") ? "rl" : "ig"
         const index = selected == "ig" ? 1 : 2
         self.dialogPhoto.addEventListener("load", function() {
             self.photoDialog.set({
-                title: self.landmarksById[self.l][selected == "ig" ? "igAddress" : "rlAddress"]
+                title: landmark[selected == "ig" ? "igAddress" : "rlAddress"]
             })
             self.resizePhotoDialog()
         })
@@ -2424,6 +2429,12 @@ gtadb.Map = function() {
         self.dialogLayer.element.style.display = "none"
         self.photoDialog.style.display = "none"
         self.focus = "list"
+    }
+
+    self.hasBothPhotos = function(landmark) {
+        return landmark.igPhotoSize && landmark.rlPhotoSize && (
+            self.sessionId || !landmark.tags.includes("2022")
+        )
     }
 
     // Find & Filter ///////////////////////////////////////////////////////////////////////////////
