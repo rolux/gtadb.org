@@ -1413,10 +1413,10 @@ gtadb.Map = function() {
             <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
-            <tr><td>T</td><td>Switch tile set (GTA)</td></tr>
+            <tr><td>V</td><td>Switch game version (GTA V / GTA VI)</td></tr>
+            <tr><td>G</td><td>Switch map mode (GTA / Google Maps)</td></tr>
+            <tr><td>T</td><td>Switch tile set (GTA) or map type (Google Maps)</td></tr>
             <tr><td>⇧ T</td><td>Toggle overlays (GTA VI)</td></tr>
-            <tr><td>G</td><td>Switch map mode</td></tr>
-            <tr><td>⇧ G</td><td>Switch map type (Google Maps)</td></tr>
             <tr><td>ESC</td><td>Exit StreetView</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>F</td><td>Find</td></tr>
@@ -2655,17 +2655,20 @@ gtadb.Map = function() {
                 }
             } else if (e.key == "g") {
                 self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
-            } else if (e.key == "G") {
-                const mapTypes = self.defaults.googlemaps.mapTypes
-                self.setMapType(mapTypes[(mapTypes.indexOf(self.googlemaps.mapType) + 1) % mapTypes.length])
             } else if (e.key == "h") {
                 self.toggleUI()
             } else if (e.key == "t") {
-                const key = `gta${self.v}`
-                const tileSets = self.defaults[key].tileSets
-                self.tileSet = tileSets[(tileSets.indexOf(self.tileSet) + 1) % tileSets.length]
-                self.setUserSettings()
-                self.renderMap()
+                if (self.mapMode == "gta") {
+                    const key = `gta${self.v}`
+                    const tileSets = self.defaults[key].tileSets
+                    // FIXME: there should be a `setTileSet` function
+                    self.tileSet = tileSets[(tileSets.indexOf(self.tileSet) + 1) % tileSets.length]
+                    self.setUserSettings()
+                    self.renderMap()
+                } else {
+                    const mapTypes = self.defaults.googlemaps.mapTypes
+                    self.setMapType(mapTypes[(mapTypes.indexOf(self.googlemaps.mapType) + 1) % mapTypes.length])
+                }
             } else if (e.key == "T") {
                 self.tileOverlays = 1 - self.tileOverlays
                 self.setUserSettings()
