@@ -1374,9 +1374,9 @@ gtadb.Map = function() {
         self.aboutThisMapElement.innerHTML = `<p><b>map.gtadb.org</b>
             is an interactive map of Grand Theft Auto V and VI that
             includes all landmarks that have been identified so far.</p>
-            <p>The goal is to find the real-life equivalent of every
-            single in-game building in GTA VI. This is going to be a
-            collaborative effort, way beyond the release of the game.</p>
+            <p>Our current goal is to find the real-life equivalent of
+            every single in-game building in GTA VI. This is going to be
+            a collaborative effort, way beyond the release of the game.</p>
             <p>Huge thanks to all contributors, on the GTA VI Mapping
             Discord and elsewhere!</p>`
 
@@ -1388,8 +1388,9 @@ gtadb.Map = function() {
             <p>You can get the source code on GitHub. That's also the
             best place to request features or report bugs.</p>
             <p><a href="https://github.com/rolux/gtadb.org"
-            target="_blank">https://github.com/rolux/gtadb.org</a>
-            </p>`
+            target="_blank">https://github.com/rolux/gtadb.org</a></p>
+            <p>Please note that this is a desktop app, intentionally.
+            It is not supposed to work on mobile.<p>`
 
         self.landmarkDataElement = document.createElement("div")
         self.landmarkDataElement.style.margin = "8px"
