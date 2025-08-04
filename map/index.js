@@ -1041,6 +1041,7 @@ gtadb.Map = function() {
         self.siteIcon.classList.add("icon")
         self.siteIcon.id = "siteIcon"
         self.siteIcon.innerHTML = "gtadb"
+        self.siteIcon.title = "GTADB.ORG"
         self.siteIcon.style.backgroundColor = "rgb(" + [0, 1, 2].map(function() {
             return Math.floor(Math.random() * 192)
         }).join(", ") + ")"
@@ -1074,7 +1075,7 @@ gtadb.Map = function() {
         self.userIcon.classList.add("icon")
         self.userIcon.classList.add("auth")
         self.userIcon.id = "userIcon"
-        self.userIcon.title = self.username
+        self.userIcon.title = `USER: ${self.username}`
         self.userIcon.style.backgroundColor = "#" + self.profileColor
         self.userIcon.addEventListener("click", function() {
             self.settingsPanel.set({selected: 3})
@@ -3299,7 +3300,7 @@ gtadb.Map = function() {
         }
         self.userIcon.style.backgroundColor = "#" + self.profileColor
         self.userIcon.innerHTML = self.username[0]
-        self.userIcon.title = self.sessionId ? self.username : ""
+        self.userIcon.title = self.sessionId ? `USER: ${self.username}` : ""
     }
 
     self.updateGameIcon = function() {
