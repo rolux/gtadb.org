@@ -807,5 +807,9 @@ itemBody > div > div.coordinates > a,
 
 div[contenteditable="true"] {
     all: unset;
-    outline: 1px dashed rgb(64, 128, 192)
+    outline: 1px dashed rgb(128, 128, 128)
+}
+div[contenteditable="true"]:focus {
+    all: unset;
+    outline: 1px dashed rgb(0, 128, 255)
 }
