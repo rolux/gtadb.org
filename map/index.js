@@ -1134,7 +1134,8 @@ gtadb.Map = function() {
                 self.findAndFilterLandmarks("", self.filter)
                 self.clearFindButton.element.style.display = "none"
             },
-            text: "CLEAR"
+            text: "CLEAR",
+            tooltip: "⇧ F"
         })
         self.clearFindButton.element.style.display = self.find ? "block" : "none"
 
