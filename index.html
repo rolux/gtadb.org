@@ -29,6 +29,14 @@
                 justify-content: center;
                 margin: 0;
             }
+            body::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: inherit;
+                filter: brightness(0.75) sepia(0.75);
+                z-index: -1;
+            }
             div {
                 color: white;
                 font-size: 1em;
