@@ -1487,7 +1487,7 @@ gtadb.Map = function() {
             list), REUSED (for duplicated building assets) and UNCONFIRMED (for speculative
             real-life matches).
             Tags can also be used for a taxonomy of landmark types. A good set of types
-            may be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INFRATSTRUCTURE, INDUSTRIAL,
+            may be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INFRASTRUCTURE, INDUSTRIAL,
             LANDMARK, NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION.
             But this is not set in stone.</p>`
 
