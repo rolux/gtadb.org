@@ -779,17 +779,21 @@ gtadb.Map = function() {
         },
         landmarkTypes: [
             "agriculture",
-            "entertainment",
             "government",
             "hotel",
             "industrial",
             "landmark",
+            "leisure",
+            "mixed",
             "natural",
             "office",
+            "other",
             "public",
+            "restaurant",
             "residential",
             "retail",
-            "transportation"
+            "transportation",
+            "utilities"
         ],
         ui: true,
         themes: ["light", "dark"],
@@ -1487,9 +1491,9 @@ gtadb.Map = function() {
             list), REUSED (for duplicated building assets) and UNCONFIRMED (for speculative
             real-life matches).
             Tags can also be used for a taxonomy of landmark types. A good set of types
-            may be AGRICULTURE, ENTERTAINMENT, GOVERNMENT, HOTEL, INFRASTRUCTURE, INDUSTRIAL,
-            LANDMARK, NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION.
-            But this is not set in stone.</p>`
+            may be AGRICULTURE, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK, LEISURE, MIXED,
+            NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION,
+            UTILITIES, OTHER. But this is not set in stone.</p>`
 
         self.aboutPanel = gtadb.Panel({
             height: 512,
@@ -2269,6 +2273,16 @@ gtadb.Map = function() {
             self.markers[landmark.id] = document.createElement("div")
             self.markers[landmark.id].id = "marker_" + landmark.id
             self.markers[landmark.id].className = "marker"
+            /*
+            landmark.tags.forEach(function(tag) {
+                if (tag == "entertainment") {
+                    tag = "leisure"
+                }
+                if (self.landmarkTypes.includes(tag)) {
+                    self.markers[landmark.id].classList.add(tag)
+                }
+            })
+            */
             self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
             self.markers[landmark.id].title = landmark.title
             self.markersLayer.appendChild(self.markers[landmark.id])

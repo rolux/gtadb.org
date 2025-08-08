@@ -420,44 +420,54 @@ body.editing .marker.selected {
 .marker.dragging {
     border: 2px solid rgb(128, 128,128);
 }
+
 .marker.agriculture {
-    background-color: rgb(192, 192, 0);
-}
-.marker.commercial {
-    background-color: rgb(0, 0, 255);
-}
-.marker.entertainment {
-    background-color: rgb(255, 128, 0);
+    background-color: rgb(128, 128, 0);
 }
 .marker.government {
-    background-color: rgb(255, 0, 0);
+    background-color: rgb(224, 0, 0);
 }
 .marker.hotel {
-    background-color: rgb(0, 255, 255);
-}
-.marker.infrastructure {
-    background-color: rgb(128, 128, 128);
+    background-color: rgb(96, 224, 160);
 }
 .marker.industrial {
-    background-color: rgb(255, 255, 0);
+    background-color: rgb(192, 192, 0);
 }
-.marker.monument {
+.marker.landmark {
+    background-color: rgb(128, 0, 128);
+}
+.marker.leisure {
+    background-color: rgb(224, 0, 224);
+}
+.marker.mixed {
     background-color: rgb(128, 0, 0);
 }
+.marker.office {
+    background-color: rgb(0, 224, 224);
+}
 .marker.other {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(224, 224, 224);
 }
 .marker.public {
-    background-color: rgb(255, 0, 255);
+    background-color: rgb(224, 112, 0);
 }
-.marker.nature {
-    background-color: rgb(0, 128, 0);
+.marker.natural {
+    background-color: rgb(0, 112, 0);
+}
+.marker.retail {
+    background-color: rgb(0, 0, 192);
+}
+.marker.restaurant {
+    background-color: rgb(160, 224, 96);
 }
 .marker.residential {
-    background-color: rgb(0, 255, 0);
+    background-color: rgb(0, 192, 0);
 }
-.marker.transport {
-    background-color: rgb(192, 192, 192);
+.marker.transportation {
+    background-color: rgb(128, 128, 128);
+}
+.marker.utilities {
+    background-color: rgb(32, 32, 32);
 }
 
 #googlemapsLayer {
