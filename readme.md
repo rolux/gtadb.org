@@ -1,3 +1,5 @@
+![gtadb.org](index.png)
+
 # gtadb.org
 
 This is the repository for [gtadb.org](https://gtadb.org).
