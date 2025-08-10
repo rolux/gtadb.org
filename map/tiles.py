@@ -1,16 +1,16 @@
-import math
-import os
-from PIL import Image
-
-
 """
-This script creates 7 levels of 256x256 px tiles, from 0 to 6,
+This script creates 7 levels of 1024x1024 px tiles, from 0 to 6,
 centered on (0, 0), so that at level 0, the entire map fits into
 1024x1024 px, and at level 5, the map scale is exactly 1 px/m.
 
 It also allows to render overlays without duplicating any tiles.
 """
 
+import math
+import os
+from PIL import Image
+
+Image.MAX_IMAGE_PIXELS = None
 
 aiwe_scale = 0.68
 aiwe_pixel = (290, 306)
@@ -23,7 +23,7 @@ print(f"{aiwe_zero=}")
 
 maps = [
     ("dupzor", 51, 0.558, (9037, 6693)),
-    ("yanis", 6, 0.558, (9037, 6693)),
+    ("yanis", 7, 1.000, (16341, 12139)),
 ]
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
@@ -34,7 +34,7 @@ overlays = [
 overlays_string  = ",".join([
     f"{name},{version}" for name, version, scale, zero in overlays
 ])
-tile_size = 256
+tile_size = 1024 # 256
 level_bounds = (
     (-16384, -16384),
     (16384, 16384)
