@@ -22,8 +22,8 @@ aiwe_zero = (
 print(f"{aiwe_zero=}")
 
 maps = [
-    ("dupzor", 51, 0.558, (9037, 6693)),
-    ("yanis", 7, 1.000, (16341, 12139)),
+    ("dupzor", 51, 0.558, (9037, 6693), (0, 0, 0)),
+    ("yanis", 7, 1.000, (16341, 12139), (24, 97, 173)),
 ]
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
@@ -43,7 +43,7 @@ max_z = 6
 
 
 def render_tiles(
-    map_name, map_version, map_scale, map_zero,
+    map_name, map_version, map_scale, map_zero, map_color,
     base_map_name=None, base_map_version=None
 ):
 
@@ -99,7 +99,8 @@ def render_tiles(
                         base_filename =  f"tiles/6/{base_map_name},{base_map_version}/{z}/{z},{y},{x}.png"
                     tile_image = Image.open(base_filename).convert("RGBA")
                 else:
-                    tile_image = Image.new("RGBA", (tile_size, tile_size), (0, 0, 0, 255))
+                    rgba = tuple(list(map_color) + [255])
+                    tile_image = Image.new("RGBA", (tile_size, tile_size), rgba)
                 cropped = image.crop(crop)
                 tile_image.paste(cropped, (0, 0), cropped)
                 tile_image = tile_image.convert("RGB")
@@ -126,13 +127,13 @@ def render_tiles(
 
 tile_ranges = {}
 
-for map_name, map_version, map_scale, map_zero in maps:
-    tile_ranges[map_name] = render_tiles(map_name, map_version, map_scale, map_zero)
+for map_name, map_version, map_scale, map_zero, map_color in maps:
+    tile_ranges[map_name] = render_tiles(map_name, map_version, map_scale, map_zero, map_color)
 
 for map_name, map_version, map_scale, map_zero in overlays:
-    for base_map_name, base_map_version, base_map_scale, base_map_zero in maps:
+    for base_map_name, base_map_version, base_map_scale, base_map_zero, base_map_color in maps:
         tile_ranges[map_name] = render_tiles(
-            map_name, map_version, map_scale, map_zero, base_map_name, base_map_version
+            map_name, map_version, map_scale, map_zero, map_color, base_map_name, base_map_version
         )
 
 for path, dirnames, filenames in os.walk("tiles"):
