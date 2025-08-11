@@ -802,7 +802,8 @@ gtadb.Map = function() {
             "michael",
             "amanda",
             "jimmy",
-            "tracey"
+            "tracey",
+            "trevor"
         ],
         markers: {},
         focus: "map",

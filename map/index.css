@@ -151,6 +151,9 @@ body.jimmy {
 body.tracey {
     filter: hue-rotate(90deg);
 }
+body.trevor {
+    filter: blur(2px) brightness(1.25) contrast(1.5) hue-rotate(180deg) saturate(0.5)
+}
 
 
 
