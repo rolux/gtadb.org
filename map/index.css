@@ -161,6 +161,10 @@ body.trevor {
     filter: blur(2px) brightness(1.25) contrast(1.5) hue-rotate(180deg) saturate(0.5);
     transform: rotate(1deg) scaleX(-1.05) scaleY(1.05);
 }
+body.trevor.streetview #googlemapsLayer {
+    filter: blur(4px);
+    transform: rotate(3deg) scaleX(1.15) scaleY(1.15);
+}
 
 
 
