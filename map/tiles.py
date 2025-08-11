@@ -141,6 +141,7 @@ for path, dirnames, filenames in os.walk("tiles"):
             dst_filename = src_filename.replace(".png", ".jpg")
             print(f"encoding {src_filename} as {dst_filename}")
             Image.open(src_filename).save(dst_filename)
+            print(f"removing {src_filename}")
             os.remove(src_filename)
 
 print(f"{tile_ranges=}")
