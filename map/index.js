@@ -796,7 +796,14 @@ gtadb.Map = function() {
             "utilities"
         ],
         ui: true,
-        themes: ["light", "dark"],
+        themes: [
+            "light",
+            "dark",
+            "michael",
+            "amanda",
+            "jimmy",
+            "tracey"
+        ],
         markers: {},
         focus: "map",
         api: gtadb.API("api"),
@@ -3248,7 +3255,12 @@ gtadb.Map = function() {
     }
 
     self.setTheme = function() {
-        document.body.classList.remove(self.theme == "light" ? "dark" : "light")
+        self.themes.forEach(function(theme) {
+            document.body.classList.remove(theme)
+        })
+        if (!self.theme.includes("light", "dark")) {
+            document.body.classList.add("light")
+        }
         document.body.classList.add(self.theme)
     }
 

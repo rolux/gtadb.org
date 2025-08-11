@@ -11,6 +11,9 @@ html, body {
 
 
 
+body.light {
+    filter: none;
+}
 body.light,
 body.light a {
     color: rgb(0, 0, 0);
@@ -72,6 +75,9 @@ body.light #dialogLayer.clicked {
 
 
 
+body.dark {
+    filter: none;
+}
 body.dark,
 body.dark a {
     color: rgb(224, 224, 224);
@@ -129,6 +135,21 @@ body.dark #dialogLayer {
 }
 body.dark #dialogLayer.clicked {
     background-color: rgba(224, 224, 224, 0.5);
+}
+
+
+
+body.michael {
+    filter: brightness(0.75) sepia(1);
+}
+body.amanda {
+    filter: saturate(4);
+}
+body.jimmy {
+    filter: invert(1);
+}
+body.tracey {
+    filter: hue-rotate(90deg);
 }
 
 
