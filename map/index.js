@@ -3450,7 +3450,9 @@ gtadb.Map = function() {
             self.stopEditing()
         }
         // FIXME: shouln't be necessary
-        self.removeItemButton.element.style.display = "none"
+        if (self.removeItemButton) {
+            self.removeItemButton.element.style.display = "none"
+        }
     }
 
     // Utilities ///////////////////////////////////////////////////////////////////////////////////
