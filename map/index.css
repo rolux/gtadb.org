@@ -184,7 +184,7 @@ a:hover {
 }
 
 body:not(.auth) .auth,
-body.googlemaps .auth:not(#userIcon) {
+body.googlemaps .auth:not(img, #userIcon) {
     display: none;
 }
 body.streetview #streetviewIcon {
