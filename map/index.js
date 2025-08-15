@@ -3251,7 +3251,6 @@ gtadb.Map = function() {
             self.googlemapsLayer.style.display = "block"
         }
         self.updateAddItemButton()
-        // self.updateRemoveItemButton()
     }
 
     self.setMapType = function(mapType) {
