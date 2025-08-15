@@ -3020,7 +3020,7 @@ gtadb.Map = function() {
                 })
             }
             self.itemIgCoordinates.appendChild(self.itemIgCoordinatesLink)
-            if (self.editing && self.mapMode == "gta") {
+            if (self.editing && (landmark.igCoordinates || self.mapMode == "gta")) {
                 let button = document.createElement("span")
                 button.id = "editIgCoordinatesButton"
                 button.innerHTML = landmark.igCoordinates ? "REMOVE" : "ADD"
