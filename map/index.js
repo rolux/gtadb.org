@@ -1911,7 +1911,10 @@ gtadb.Map = function() {
         await init()
 
         if (self.mapMode == "googlemaps") {
-            self.setMapMode("googlemaps")
+            // FIXME: shouldn't need timeout
+            setTimeout(function() {
+                self.setMapMode("googlemaps")
+            }, 1000)
         }
 
     }
@@ -2186,18 +2189,6 @@ gtadb.Map = function() {
     self.selectLandmark = function(id) {
         self.l = id
         self.setUserSettings()
-        /*
-        let element = document.querySelector(".marker.selected")
-        if (element) {
-            element.classList.remove("selected")
-        }
-        if (self.l) {
-            let element = document.querySelector("#marker_" + self.l)
-            if (element) {
-                element.classList.add("selected")
-            }
-        }
-        */
         document.querySelectorAll(".marker.selected").forEach(function(element) {
             element.classList.remove("selected")
         })
@@ -3249,6 +3240,17 @@ gtadb.Map = function() {
             self.canvas.style.display = "none"
             self.markersLayer.style.display = "none"
             self.googlemapsLayer.style.display = "block"
+            if (self.l) {
+                self.setLandmark(self.l)
+            }
+            // FIXME: shouldn't be necessary
+            // self.l should be set when googlemaps initializes
+            if (self.l) {
+                const element = document.getElementById(`googlemapsMarker_${self.l}`)
+                if (element) {
+                    element.classList.add("selected")
+                }
+            }
         }
         self.updateAddItemButton()
     }
