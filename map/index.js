@@ -1862,6 +1862,9 @@ gtadb.Map = function() {
             self.renderGooglemapsMarker = function(landmark) {
                 let customMarker = document.createElement("div")
                 customMarker.className = "marker googlemaps"
+                if (self.l == landmark.id) {
+                    customMarker.classList.add("selected")
+                }
                 customMarker.id = "googlemapsMarker_" + landmark.id
                 customMarker.style.backgroundColor = "#" + landmark.color
                 customMarker.style.display = "block"
@@ -2108,6 +2111,9 @@ gtadb.Map = function() {
                 self.renderList()
                 self.renderStatus()
                 self.renderItem()
+                if (self.mapMode == "googlemaps") {
+                    self.panGooglemaps(id)
+                }
             } else {
                 console.log(ret)
             }
@@ -2131,6 +2137,7 @@ gtadb.Map = function() {
                     self.currentLandmarks.splice(index, 1)
                 }
                 self.removeMarker(self.l)
+                self.removeGooglemapsMarker(self.l)
                 self.l = null
                 self.setLandmark(null)
                 self.renderList()
@@ -2660,11 +2667,11 @@ gtadb.Map = function() {
                     self.addLandmark()
                 }
             } else if (e.key == "e") {
-                if (self.sessionId && self.mapMode == "gta" && self.l) {
+                if (self.sessionId && self.l) {
                     self.editing ? self.stopEditing() : self.startEditing()
                 }
             } else if (e.key == "Delete") {
-                if (self.sessionId && self.mapMode == "gta" && self.l) {
+                if (self.sessionId && self.l) {
                     self.removeLandmark(self.l)
                 }
             } else if (e.key == "f") {
@@ -2692,10 +2699,12 @@ gtadb.Map = function() {
                     self.setMapType(mapTypes[(mapTypes.indexOf(self.googlemaps.mapType) + 1) % mapTypes.length])
                 }
             } else if (e.key == "T") {
-                self.tileOverlays = 1 - self.tileOverlays
-                self.setUserSettings()
-                if (self.v == 6) {
-                    self.renderMap()
+                if (self.mapMode == "gta") {
+                    self.tileOverlays = 1 - self.tileOverlays
+                    self.setUserSettings()
+                    if (self.v == 6) {
+                        self.renderMap()
+                    }
                 }
             } else if (e.key == "v") {
                 self.setGameVersion(self.v == 5 ? 6 : 5) 
@@ -3011,7 +3020,7 @@ gtadb.Map = function() {
                 })
             }
             self.itemIgCoordinates.appendChild(self.itemIgCoordinatesLink)
-            if (self.editing) {
+            if (self.editing && self.mapMode == "gta") {
                 let button = document.createElement("span")
                 button.id = "editIgCoordinatesButton"
                 button.innerHTML = landmark.igCoordinates ? "REMOVE" : "ADD"
@@ -3240,11 +3249,9 @@ gtadb.Map = function() {
             self.canvas.style.display = "none"
             self.markersLayer.style.display = "none"
             self.googlemapsLayer.style.display = "block"
-            if (self.editing) {
-                self.stopEditing()
-            }
         }
-        self.updateRemoveItemButton()
+        self.updateAddItemButton()
+        // self.updateRemoveItemButton()
     }
 
     self.setMapType = function(mapType) {
@@ -3290,12 +3297,21 @@ gtadb.Map = function() {
 
     // Updates /////////////////////////////////////////////////////////////////////////////////////
 
+    self.updateAddItemButton = function() {
+        if (!self.addItemButton) {
+            return
+        }
+        self.addItemButton.element.style.display = (
+            self.mapMode == "gta" && self.sessionId
+        ) ? "block" : "none"
+    }
+
     self.updateRemoveItemButton = function() {
         if (!self.removeItemButton) {
             return
         }
         self.removeItemButton.element.style.display = (
-            self.l && self.sessionId && self.mapMode == "gta"
+            self.l && self.sessionId
         ) ? "block" : "none"
     }
 
