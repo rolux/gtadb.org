@@ -183,8 +183,7 @@ a:hover {
     text-decoration: underline;
 }
 
-body:not(.auth) .auth,
-body.googlemaps .auth:not(img, #userIcon) {
+body:not(.auth) .auth {
     display: none;
 }
 body.streetview #streetviewIcon {
@@ -460,7 +459,7 @@ textarea:focus {
     width: 11px;
     z-index: 101;
 }
-body.editing .marker.selected {
+body.editing:not(.googlemaps) .marker.selected {
     border: 2.5px solid rgb(192, 224, 255);
 }
 .marker.dragging {
