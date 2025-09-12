@@ -214,8 +214,11 @@ canvas.atlas {
 canvas.roadmap {
     background-color: rgb(24, 97, 173);
 }
-canvas.yanis {
+canvas.yanis-7 {
     background-color: rgb(24, 97, 173);
+}
+canvas.yanis-8 {
+    background-color: rgb(44, 103, 164);
 }
 input[type="password"],
 input[type="text"] {
