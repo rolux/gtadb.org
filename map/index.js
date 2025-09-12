@@ -3407,7 +3407,7 @@ gtadb.Map = function() {
             tileOverlays: self.tileOverlays,
             username: self.username
         }}))
-        self.canvas.className = self.tileSet.split(",")[0]
+        self.canvas.className = self.tileSet.replace(",", "-")
         if (self.mapModeSelect) {
             self.mapModeSelect.value = self.mapMode
             self.mapTypeSelect.value = self.googlemaps.mapType
