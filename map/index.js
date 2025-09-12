@@ -686,6 +686,15 @@ gtadb.Map = function() {
                 4: [[ 0, 2], [ 9, 11]],
                 5: [[ 0, 4], [19, 23]],
                 6: [[ 0, 8], [39, 47]]
+            },
+            "yanis,8": {
+                0: [[ 0, 0], [ 0,  0]],
+                1: [[ 0, 0], [ 1,  1]],
+                2: [[ 0, 0], [ 2,  2]],
+                3: [[ 0, 1], [ 4,  5]],
+                4: [[ 0, 2], [ 9, 11]],
+                5: [[ 0, 4], [19, 23]],
+                6: [[ 0, 8], [38, 47]]
             }
         },
         tileOverlayRanges: {
@@ -836,10 +845,11 @@ gtadb.Map = function() {
                 find: "",
                 filter: "all",
                 sort: "igAddress",
-                tileSet: "yanis,7",
+                tileSet: "yanis,8",
                 tileSets: [
                     "dupzor,51",
                     "yanis,7",
+                    "yanis,8",
                 ]
             },
             googlemaps: {
