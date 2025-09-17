@@ -1075,7 +1075,7 @@ gtadb.Map = function() {
         self.gameIcon = document.createElement("div")
         self.gameIcon.classList.add("icon")
         self.gameIcon.id = "gameIcon"
-        self.gameIcon.innerHTML = self.v == 5 ? "V" : "VI"
+        self.gameIcon.innerHTML = {4: "IV", 5: "V", 6: "VI"}[self.v]
         self.gameIcon.title = "V"
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
         self.gameIcon.addEventListener("click", function() {
@@ -1553,7 +1553,7 @@ gtadb.Map = function() {
         self.vs.forEach(function(v) {
             const element = document.createElement("option")
             element.value = v
-            element.textContent = "GAME VERSION: GTA " + ({5: "V", 6: "VI"}[v])
+            element.textContent = "GAME VERSION: GTA " + ({4: "IV", 5: "V", 6: "VI"}[v])
             element.selected = v == self.v
             self.gameVersionSelect.appendChild(element)
         })
@@ -2054,7 +2054,7 @@ gtadb.Map = function() {
     }
 
     self.setHash = function() {
-        const hash = {5: "V", 6: "VI"}[self.v] + "," + [self.targetX, self.targetY, self.targetZ].map(function (v) {
+        const hash = {4: "IV", 5: "V", 6: "VI"}[self.v] + "," + [self.targetX, self.targetY, self.targetZ].map(function (v) {
             return v.toFixed(3)
         }).join(",") + (self.l ? "," + self.l : "")
         if (window.location.hash.slice(1) != hash) {
@@ -2549,11 +2549,11 @@ gtadb.Map = function() {
             values[4] = values.slice(4).join(",")
         }
         let v, l, lx, ly, lz, f
-        if (["V", "VI"].includes(values[0])) {
+        if (["IV", "V", "VI"].includes(values[0])) {
             v = values[0]
             values = values.slice(1)
         } else {
-            v = {5: "V", 6: "VI"}[self.defaults.v]
+            v = {4: "IV", 5: "V", 6: "VI"}[self.defaults.v]
         }
         if (values.length) {
             let last = values[values.length - 1]
@@ -2628,7 +2628,7 @@ gtadb.Map = function() {
         //;[self.x, self.y, self.z] = values
         //self.l = l || self.l
         //self.setUserSettings()
-        v = {"V": 5, "VI": 6}[v]
+        v = {"IV": 4, "V": 5, "VI": 6}[v]
         if (v != self.v) {
             self.v = v
             self.setGameVersion(self.v)
@@ -3217,7 +3217,7 @@ gtadb.Map = function() {
         const url = `data/${self.v}/landmarks.json`
         self.loadJSON([url]).then(function([landmarks]) {
             self.parseLandmarks(landmarks)
-            document.title = "GTA " + {5: "V", 6: "VI"}[self.v] + " Landmarks Map"
+            document.title = "GTA " + {4: "IV", 5: "V", 6: "VI"}[self.v] + " Landmarks Map"
             self.updateGameIcon()
             self.initMarkers()
             self.renderMarkers()
@@ -3362,7 +3362,7 @@ gtadb.Map = function() {
 
     self.updateGameIcon = function() {
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
-        self.gameIcon.innerHTML = {5: "V", 6: "VI"}[self.v]
+        self.gameIcon.innerHTML = {4: "IV", 5: "V", 6: "VI"}[self.v]
     }
 
     // User ////////////////////////////////////////////////////////////////////////////////////////
