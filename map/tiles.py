@@ -29,7 +29,7 @@ maps = [
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
     ("martipk", 5, 0.558, (2232, -2232)),
-    ("rickrick", 2, 2.5, (5000, 7500)),
+    ("rickrick", 3, 2.5, (10000, 7500)),
     ("vlad", 1, 1.674, (3000 * 1.674, -3000 * 1.674)),
 ]
 overlays_string  = ",".join([
