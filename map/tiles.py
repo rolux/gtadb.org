@@ -30,7 +30,7 @@ overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
     ("martipk", 5, 0.558, (2232, -2232)),
     ("rickrick", 3, 2.5, (10000, 7500)),
-    ("vlad", 1, 1.674, (3000 * 1.674, -3000 * 1.674)),
+    # ("vlad", 1, 1.674, (3000 * 1.674, -3000 * 1.674)),
 ]
 overlays_string  = ",".join([
     f"{name},{version}" for name, version, scale, zero in overlays
