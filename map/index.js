@@ -1407,8 +1407,8 @@ gtadb.Map = function() {
         self.sourceCodeElement = document.createElement("div")
         self.sourceCodeElement.style.margin = "8px"
         self.sourceCodeElement.innerHTML = `<p>This website, including
-            the GTA VI map application, is free Open Source software,
-            written in JavaScript and Python.</p>
+            the GTA VI map application, is free Open Source software
+            (MIT License), written in JavaScript and Python.</p>
             <p>You can get the source code on GitHub. That's also the
             best place to request features or report bugs.</p>
             <p><a href="https://github.com/rolux/gtadb.org"
@@ -1420,7 +1420,7 @@ gtadb.Map = function() {
         self.landmarkDataElement.style.margin = "8px"
         self.landmarkDataElement.innerHTML = `<p>You are welcome
             to use the landmark data for your own purposes.</p>
-            <p>The latest versions can always be found here:</p>
+            <p>The latest versions (CC-BY 4.0) can always be found here:</p>
             <p><a href="https://map.gtadb.org/data/5/landmarks.json"
             target="_blank">https://map.gtadb.org/data/5/landmarks.json</a>
             </p>
