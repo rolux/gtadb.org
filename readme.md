@@ -8,4 +8,4 @@ It includes the source code for [map.gtadb.org](https://map.gtadb.org) – a col
 
 You're welcome to use the [landmark data](https://map.gtadb.org/data/6/landmarks.json) or [map tiles](https://github.com/rolux/gtadb.org/tree/main/map/tiles) for your own purposes.
 
-Public Domain. Thanks to all contributors!
+MIT (code) / CC BY 4.0 (data). Thanks to all contributors!
