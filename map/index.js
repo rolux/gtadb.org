@@ -171,7 +171,7 @@ gtadb.Button = function(options) {
     that.element = document.createElement("div")
     that.element.className = "button"
     that.element.title = self.options.tooltip
-    that.element.innerHTML = self.options.text
+    that.element.innerText = self.options.text
     if (self.options.click) {
         that.element.addEventListener("click", self.options.click)
     }
@@ -190,7 +190,7 @@ gtadb.Button = function(options) {
             that.element.addEventListener("mousedown", self.options.mousedown)
         }
         if ("text" in options) {
-            that.element.innerHTML = options.text
+            that.element.innerText = options.text
         }
         if ("tooltip" in options) {
             that.element.title = options.tooltip
@@ -222,7 +222,7 @@ gtadb.Dialog = function(options) {
     that.element.style.width = self.options.width + "px"
     that.element.style.height = self.options.height + "px"
     self.titleElement = document.createElement("div")
-    self.titleElement.innerHTML = self.options.title
+    self.titleElement.innerText = self.options.title
     self.closeButton = gtadb.Button({
         click: function() {
             that.close()
@@ -258,7 +258,7 @@ gtadb.Dialog = function(options) {
             self.content.appendChild(options.content)
         }
         if ("title" in options) {
-            self.titleElement.innerHTML = options.title
+            self.titleElement.innerText = options.title
             self.bar.set({
                 element: self.titleElement
             })
@@ -332,7 +332,7 @@ gtadb.Form = function(options) {
     })
     self.button = document.createElement("div")
     self.button.className = "formButton"
-    self.button.innerHTML = self.options.buttonText
+    self.button.innerText = self.options.buttonText
     self.button.addEventListener("click", function() {
         const entries = self.inputs.map(function(input, i) {
             return [
@@ -349,7 +349,7 @@ gtadb.Form = function(options) {
     that.element.appendChild(self.message)
     that.setMessage = function(status, text) {
         self.message.classList.add(status)
-        self.message.innerHTML = text
+        self.message.innerText = text
         setTimeout(function() {
             self.message.innerHTML = ""
             self.message.classList.remove(status)
@@ -433,7 +433,7 @@ gtadb.Input = function(options) {
         if (self.options.removeButton) {
             self.removeButton = document.createElement("div")
             self.removeButton.classList.add("removeButton")
-            self.removeButton.innerHTML = "remove"
+            self.removeButton.innerText = "remove"
             //self.removeButton.style.zIndex = 100
             self.upload.appendChild(self.options.button)
         }
@@ -490,7 +490,7 @@ gtadb.Input = function(options) {
             if (options.removeButton) {
                 self.removeButton = document.createElement("div")
                 self.removeButton.classList.add("removeButton")
-                self.removeButton.innerHTML = "REMOVE"
+                self.removeButton.innerText = "REMOVE"
                 self.upload.appendChild(self.removeButton)
             } else {
                 if (self.removeButton) {
@@ -587,7 +587,7 @@ gtadb.Panel = function(options) {
         Object.keys(self.options.elements).forEach(function(title) {
             let menuItem = document.createElement("div")
             menuItem.className = "menuItem"
-            menuItem.innerHTML = title
+            menuItem.innerText = title
             ;(function(i) {
                 menuItem.addEventListener("click", function() {
                     that.set({"selected": i})
@@ -1007,7 +1007,7 @@ gtadb.Map = function() {
         self.uiIcon = document.createElement("div")
         self.uiIcon.classList.add("icon")
         self.uiIcon.id = "uiIcon"
-        self.uiIcon.innerHTML = "UI"
+        self.uiIcon.innerText = "UI"
         self.uiIcon.title = "H"
         self.uiIcon.addEventListener("click", function() {
             self.toggleUI()
@@ -1017,7 +1017,7 @@ gtadb.Map = function() {
         self.streetviewIcon = document.createElement("div")
         self.streetviewIcon.classList.add("icon")
         self.streetviewIcon.id = "streetviewIcon"
-        self.streetviewIcon.innerHTML = "X"
+        self.streetviewIcon.innerText = "X"
         self.streetviewIcon.title = "ESC"
         self.streetviewIcon.addEventListener("click", function() {
             self.googleMap.getStreetView().setVisible(false)
@@ -1052,7 +1052,7 @@ gtadb.Map = function() {
         self.siteIcon = document.createElement("div")
         self.siteIcon.classList.add("icon")
         self.siteIcon.id = "siteIcon"
-        self.siteIcon.innerHTML = "gtadb"
+        self.siteIcon.innerText = "gtadb"
         self.siteIcon.title = "GTADB.ORG"
         self.siteIcon.style.backgroundColor = "rgb(" + [0, 1, 2].map(function() {
             return Math.floor(Math.random() * 192)
@@ -1065,7 +1065,7 @@ gtadb.Map = function() {
         self.gameIcon = document.createElement("div")
         self.gameIcon.classList.add("icon")
         self.gameIcon.id = "gameIcon"
-        self.gameIcon.innerHTML = {4: "IV", 5: "V", 6: "VI"}[self.v]
+        self.gameIcon.innerText = {4: "IV", 5: "V", 6: "VI"}[self.v]
         self.gameIcon.title = "V"
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
         self.gameIcon.addEventListener("click", function() {
@@ -1076,7 +1076,7 @@ gtadb.Map = function() {
         self.googlemapsIcon = document.createElement("div")
         self.googlemapsIcon.classList.add("icon")
         self.googlemapsIcon.id = "googlemapsIcon"
-        self.googlemapsIcon.innerHTML = "G"
+        self.googlemapsIcon.innerText = "G"
         self.googlemapsIcon.title = "G"
         self.googlemapsIcon.addEventListener("click", function() {
             self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
@@ -2651,7 +2651,6 @@ gtadb.Map = function() {
             return
         }
 
-
         if (self.focus != "dialog") {
             if (e.key == "a") {
                 if (self.sessionId && self.mapMode == "gta") {
@@ -2866,7 +2865,7 @@ gtadb.Map = function() {
                     ]
                     // make sure we can zoom while dragging
                     self.landmarksById[id].igCoordinates = coordinates
-                    self.itemIgCoordinatesLink.innerHTML = self.formatCoordinates("ig", coordinates)
+                    self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", coordinates)
                 }
                 function onMouseup(e) {
                     self.isDraggingMarker = false
@@ -2977,12 +2976,12 @@ gtadb.Map = function() {
                 title: self.editing ? "": "E"
             })
 
-            self.itemId.innerHTML = landmark.id
+            self.itemId.innerText = landmark.id
 
             self.itemBody.classList[self.editing ? "add" : "remove"]("editing")
             self.itemBody.style.borderRightColor = "#" + landmark.color
 
-            self.itemIgAddress.innerHTML = landmark.igAddress || "?"
+            self.itemIgAddress.innerText = landmark.igAddress || "?"
             self.itemIgAddress.dataset.landmarkId = self.l
             if (!self.editing) {
                 self.itemIgAddress.removeAttribute("contenteditable")
@@ -2996,7 +2995,7 @@ gtadb.Map = function() {
 
             self.itemIgCoordinates.innerHTML = ""
             self.itemIgCoordinatesLink = document.createElement("span")
-            self.itemIgCoordinatesLink.innerHTML = self.formatCoordinates("ig", landmark.igCoordinates)
+            self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", landmark.igCoordinates)
             if (landmark.igCoordinates) {
                 self.itemIgCoordinatesLink.classList.add("link")
                 self.itemIgCoordinatesLink.addEventListener("mousedown", function() {
@@ -3014,7 +3013,7 @@ gtadb.Map = function() {
             if (self.editing && (landmark.igCoordinates || self.mapMode == "gta")) {
                 let button = document.createElement("span")
                 button.id = "editIgCoordinatesButton"
-                button.innerHTML = landmark.igCoordinates ? "REMOVE" : "ADD"
+                button.innerText = landmark.igCoordinates ? "REMOVE" : "ADD"
                 button.addEventListener("click", function() {
                     self.editLandmark(self.l, "ig_coordinates", landmark.igCoordinates ? [] : [self.x, self.y])
                 })
@@ -3054,7 +3053,7 @@ gtadb.Map = function() {
             self.itemIgPhoto.style.display = !self.editing ? "block" : "none"
             self.editItemIgPhoto.element.style.display = !self.editing ? "none" : "block"
 
-            self.itemRlAddress.innerHTML = landmark.rlAddress || "?"
+            self.itemRlAddress.innerText = landmark.rlAddress || "?"
             self.itemRlAddress.dataset.landmarkId = self.l
             if (!self.editing) {
                 self.itemRlAddress.removeAttribute("contenteditable")
@@ -3068,7 +3067,7 @@ gtadb.Map = function() {
 
             self.itemRlCoordinates.innerHTML = ""
             self.itemRlCoordinatesLink = document.createElement("span")
-            self.itemRlCoordinatesLink.innerHTML = self.formatCoordinates("rl", landmark.rlCoordinates)
+            self.itemRlCoordinatesLink.innerText = self.formatCoordinates("rl", landmark.rlCoordinates)
             if (landmark.rlCoordinates) {
                 self.itemRlCoordinatesLink.classList.add("link")
                 self.itemRlCoordinatesLink.addEventListener("mousedown", function() {
@@ -3120,11 +3119,11 @@ gtadb.Map = function() {
             self.itemTags.dataset.landmarkId = self.l
             if (!self.editing) {
                 if (landmark.tags.length) {
-                    self.itemTags.innerHTML = "TAGS: "
+                    self.itemTags.innerText = "TAGS: "
                     landmark.tags.forEach(function(tag, i) {
                         let span = document.createElement("span")
                         span.classList.add("link")
-                        span.innerHTML = tag
+                        span.innerText = tag
                         span.addEventListener("click", function() {
                             self.findElement.value = tag.toUpperCase()
                             self.findElement.dispatchEvent(new Event("input", {bubbles: true}))
@@ -3133,24 +3132,24 @@ gtadb.Map = function() {
                         self.itemTags.appendChild(span)
                         if (i < landmark.tags.length - 1) {
                             span = document.createElement("span")
-                            span.innerHTML = ", "
+                            span.innerText = ", "
                             self.itemTags.appendChild(span)
                         }
                     })
                 } else {
-                    self.itemTags.innerHTML = "TAGS: NONE"
+                    self.itemTags.innerText = "TAGS: NONE"
                 }
                 self.itemTags.removeAttribute("contenteditable")
                 self.itemTags.removeEventListener("paste", self.onPaste)
                 self.itemTags.removeEventListener("blur", self.onBlur)
             } else {
-                self.itemTags.innerHTML = landmark.tags.join(", ")
+                self.itemTags.innerText = landmark.tags.join(", ")
                 self.itemTags.contentEditable = "true"
                 self.itemTags.addEventListener("paste", self.onPaste)
                 self.itemTags.addEventListener("blur", self.onBlur)
             } 
 
-            self.itemStatusElement.innerHTML = "LAST EDITED: " + self.formatDate(landmark.edited[0])
+            self.itemStatusElement.innerText = "LAST EDITED: " + self.formatDate(landmark.edited[0])
             if (self.ui) {
                 self.itemPanel.style.display = "block"
             }
@@ -3173,12 +3172,12 @@ gtadb.Map = function() {
             itemElement.style.borderLeftColor = "#" + landmark.color
             const igElement = document.createElement("div")
             igElement.className = "ig"
-            igElement.innerHTML = self.sort.includes("Address") ? (landmark.igAddress || "?")
+            igElement.innerText = self.sort.includes("Address") ? (landmark.igAddress || "?")
                     : (landmark.igAddress || "?") + " &nbsp;|&nbsp; " + (landmark.rlAddress || "?")
             itemElement.appendChild(igElement)
             const rlElement = document.createElement("div")
             rlElement.className = "rl"
-            rlElement.innerHTML = self.sort.includes("Address") ? (landmark.rlAddress || "?")
+            rlElement.innerText = self.sort.includes("Address") ? (landmark.rlAddress || "?")
                     : self.sort.includes("igL") ? self.formatCoordinates("ig", landmark.igCoordinates)
                     : self.sort.includes("rlL") ? self.formatCoordinates("rl", landmark.rlCoordinates)
                     : self.sort == "tags" ? (landmark.tags.join(", ").toUpperCase() || "NONE")
@@ -3190,7 +3189,7 @@ gtadb.Map = function() {
     }
 
     self.renderStatus = function() {
-        self.listStatusElement.innerHTML = self.currentLandmarks.length + " LANDMARK" + (
+        self.listStatusElement.innerText = self.currentLandmarks.length + " LANDMARK" + (
             self.currentLandmarks.length == 1 ? "" : "S"
         )
     }
@@ -3346,13 +3345,13 @@ gtadb.Map = function() {
             return
         }
         self.userIcon.style.backgroundColor = "#" + self.profileColor
-        self.userIcon.innerHTML = self.username[0]
+        self.userIcon.innerText = self.username[0]
         self.userIcon.title = self.sessionId ? `USER: ${self.username}` : ""
     }
 
     self.updateGameIcon = function() {
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
-        self.gameIcon.innerHTML = {4: "IV", 5: "V", 6: "VI"}[self.v]
+        self.gameIcon.innerText = {4: "IV", 5: "V", 6: "VI"}[self.v]
     }
 
     // User ////////////////////////////////////////////////////////////////////////////////////////
