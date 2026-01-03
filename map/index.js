@@ -3173,7 +3173,7 @@ gtadb.Map = function() {
             const igElement = document.createElement("div")
             igElement.className = "ig"
             igElement.innerText = self.sort.includes("Address") ? (landmark.igAddress || "?")
-                    : (landmark.igAddress || "?") + " &nbsp;|&nbsp; " + (landmark.rlAddress || "?")
+                    : (landmark.igAddress || "?") + " | " + (landmark.rlAddress || "?")
             itemElement.appendChild(igElement)
             const rlElement = document.createElement("div")
             rlElement.className = "rl"
