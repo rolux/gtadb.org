@@ -349,6 +349,9 @@ textarea:focus {
     border-radius: 0 0 8px 8px;
     margin-top: 32px;
 }
+.form {
+    overflow-x: hidden;
+}
 .form .formButton {
     float: left;
     cursor: pointer;
