@@ -1980,7 +1980,7 @@ gtadb.Map = function() {
         requestAnimationFrame(function() {
 
             const zInt = Math.ceil(self.z)
-            const mapSize = self.tileSize * Math.pow(2, self.z)
+            const mapSize = 1024 * Math.pow(2, self.z)
             const mppx = mapSize / self.mapW
             const cX = (self.x + self.zeroX) * mppx
             const cY = (self.zeroY - self.y) * mppx
