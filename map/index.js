@@ -964,11 +964,9 @@ gtadb.Map = function() {
                     self.landmarksData[v] = landmarks[i]
                 })
                 self.setTheme()
-                self.setMapMode(self.mapMode)
                 self.initUI(self.landmarksData[self.v])
-                self.initGooglemaps().then(function() {
-                    self.onHashchange()
-                })
+                self.setMapMode(self.mapMode)
+                self.onHashchange()
             })
         })
         
@@ -1801,21 +1799,31 @@ gtadb.Map = function() {
 
     }
 
-    self.initGooglemaps = async function() {
+    self.googlemapsPromise = null
 
-        (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",
-        q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,
-        e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));
-        e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);
-        e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;
-        a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";
-        m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u()
-        .then(()=>d[l](f,...n))})({
-            key: GOOGLE_MAPS_API_KEY,
-            v: "weekly",
-        });
+    self.initGooglemaps = function() {
 
-        async function init() {
+        if (self.googleMap) {
+            return Promise.resolve(self.googleMap)
+        }
+        if (self.googlemapsPromise) {  // already in progress
+            return self.googlemapsPromise
+        }
+
+        self.googlemapsPromise = (async function() {
+
+            (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",
+            q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,
+            e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));
+            e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);
+            e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;
+            a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";
+            m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u()
+            .then(()=>d[l](f,...n))})({
+                key: GOOGLE_MAPS_API_KEY,
+                v: "weekly",
+            });
+
             const { Map } = await google.maps.importLibrary("maps")
             const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
             self.googleMap = new Map(document.getElementById("googlemapsLayer"), {
@@ -1906,16 +1914,21 @@ gtadb.Map = function() {
                 self.setUserSettings()
             })
 
-        }
+            if (self.mapMode == "googlemaps") {
+                // FIXME: shouldn't need timeout
+                setTimeout(function() {
+                    self.setMapMode("googlemaps")
+                }, 1000)
+            }
 
-        await init()
+            return self.googleMap
 
-        if (self.mapMode == "googlemaps") {
-            // FIXME: shouldn't need timeout
-            setTimeout(function() {
-                self.setMapMode("googlemaps")
-            }, 1000)
-        }
+        })().catch(function(err) {
+            self.googlemapsPromise = null
+            throw err
+        })
+
+        return self.googlemapsPromise
 
     }
 
@@ -3074,12 +3087,14 @@ gtadb.Map = function() {
                     if (self.mapMode == "gta") {
                         self.setMapMode("googlemaps")
                     }
-                    const panorama = self.googleMap.getStreetView()
-                    if (panorama.getVisible()) {
-                        panorama.setVisible(false)
-                    }
-                    self.googleMap.setZoom(16)
-                    self.panGooglemaps(landmark.id)
+                    self.initGooglemaps().then(function() {
+                        const panorama = self.googleMap.getStreetView()
+                        if (panorama.getVisible()) {
+                            panorama.setVisible(false)
+                        }
+                        self.googleMap.setZoom(16)
+                        self.panGooglemaps(landmark.id)
+                    })
                 }) 
             }
             self.itemRlCoordinates.appendChild(self.itemRlCoordinatesLink)
@@ -3210,7 +3225,9 @@ gtadb.Map = function() {
             self.updateGameIcon()
             self.initMarkers()
             self.renderMarkers()
-            self.initGooglemapsMarkers()
+            if (self.googleMap) {
+                self.initGooglemapsMarkers()
+            }
             self.renderMap()
             self.renderList()
             self.selectLandmark(self.l)
@@ -3233,33 +3250,41 @@ gtadb.Map = function() {
             if (self.l) {
                 self.setLandmark(self.l, true)
             }
+            self.updateAddItemButton()
         } else {
             document.body.classList.add("googlemaps")
             document.body.classList.remove("gta")
             self.canvas.style.display = "none"
             self.markersLayer.style.display = "none"
             self.googlemapsLayer.style.display = "block"
-            if (self.l) {
-                self.setLandmark(self.l)
-            }
-            // FIXME: shouldn't be necessary
-            // self.l should be set when googlemaps initializes
-            if (self.l) {
-                const element = document.getElementById(`googlemapsMarker_${self.l}`)
-                if (element) {
-                    element.classList.add("selected")
+            self.initGooglemaps().then(function() {
+                if (self.mapMode == "gta") {
+                    return
                 }
-            }
+                if (self.l) {
+                    self.setLandmark(self.l)
+                }
+                self.updateAddItemButton()
+                // FIXME: shouldn't be necessary
+                // self.l should be set when googlemaps initializes
+                if (self.l) {
+                    const element = document.getElementById(`googlemapsMarker_${self.l}`)
+                    if (element) {
+                        element.classList.add("selected")
+                    }
+                }
+            })
         }
-        self.updateAddItemButton()
     }
 
     self.setMapType = function(mapType) {
         self.googlemaps.mapType = mapType
         self.setUserSettings()
-        self.googleMap.setOptions({
-            mapTypeId: google.maps.MapTypeId[self.googlemaps.mapType.toUpperCase()]
-        })
+        if (self.googleMap) {
+            self.googleMap.setOptions({
+                mapTypeId: google.maps.MapTypeId[self.googlemaps.mapType.toUpperCase()]
+            })
+        }
     }
 
     self.setTheme = function() {
@@ -3544,7 +3569,7 @@ gtadb.Map = function() {
     }
 
     self.panGooglemaps = function(id) {
-        if (self.landmarksById[id].rlCoordinates) {
+        if (self.googleMap && self.landmarksById[id].rlCoordinates) {
             const [lat, lng] = self.landmarksById[id].rlCoordinates
             self.googleMap.panTo({lat: lat, lng: lng})
         }
