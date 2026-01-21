@@ -983,15 +983,6 @@ gtadb.Map = function() {
         self.parseLandmarks(landmarks) // populates self.landmarks / ...ById / current...
         self.initMarkers()
 
-        self.markers = {}
-        self.landmarks.filter(function(landmark) {
-            return landmark.igCoordinates !== null
-        }).sort(function(a, b) {
-            return b.igCoordinates[1] - a.igCoordinates[1]
-        }).forEach(function(landmark) {
-            self.addMarker(landmark)
-        })
-
         self.uiIcon = document.createElement("div")
         self.uiIcon.classList.add("icon")
         self.uiIcon.id = "uiIcon"
