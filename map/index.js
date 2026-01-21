@@ -1984,9 +1984,9 @@ gtadb.Map = function() {
             const mppx = mapSize / self.mapW
             const cX = (self.x + self.zeroX) * mppx
             const cY = (self.zeroY - self.y) * mppx
-            const offsetX = self.canvas.width / 2 - cX;
-            const offsetY = self.canvas.height / 2 - cY;
-            const tileSize = self.tileSize * Math.pow(2, self.z - zInt);
+            const offsetX = self.canvas.width / 2 - cX
+            const offsetY = self.canvas.height / 2 - cY
+            const tileSize = self.tileSize * Math.pow(2, self.z - zInt)
 
             const [[x0, y0], [x1, y1]] = self.tileSetRanges[self["gta" + self.v].tileSet][zInt]
 
@@ -2020,7 +2020,7 @@ gtadb.Map = function() {
                                 })
                             })(self.x, self.y, self.z)
                             const tilePath = self.tilePaths[self.v][self.tileSet][overlays][zInt][y][x]
-                            img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`;
+                            img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`
                         } else {
                             self.context.drawImage(
                                 img,
@@ -2849,7 +2849,7 @@ gtadb.Map = function() {
             } else if (isSelected && self.editing) {
                 e.stopPropagation()
                 self.isDraggingMarker = true
-                let marker = e.target.closest(".marker");
+                let marker = e.target.closest(".marker")
                 const startCoordinates = self.landmarksById[id].igCoordinates
                 let coordinates = startCoordinates
                 let startX = e.clientX 
