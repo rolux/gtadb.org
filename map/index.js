@@ -2048,7 +2048,6 @@ gtadb.Map = function() {
                         img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`
                     }
                     tryDrawParentTile(x, y, tx, ty)
-
                 }
             }
             self.renderMarkers()
