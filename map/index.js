@@ -1970,6 +1970,33 @@ gtadb.Map = function() {
 
         requestAnimationFrame(function() {
 
+            function tryDrawParentTile(x, y, tx, ty) {
+                const maxParentLevels = 2
+                for (let parentZ = zInt - 1; parentZ >= Math.max(self.minZ, zInt - maxParentLevels); parentZ--) {
+                    const scale = Math.pow(2, zInt - parentZ)
+                    const parentX = Math.floor(x / scale)
+                    const parentY = Math.floor(y / scale)
+                    const parentRows = tiles[parentZ]
+                    if (!parentRows || !parentRows[parentY] || !parentRows[parentY][parentX]) {
+                        continue
+                    }
+                    const parentImg = parentRows[parentY][parentX]
+                    if (!parentImg.complete || parentImg.naturalWidth === 0) {
+                        continue
+                    }
+                    const srcSize = self.tileSize / scale
+                    const srcX = (x - parentX * scale) * srcSize
+                    const srcY = (y - parentY * scale) * srcSize
+                    self.context.drawImage(
+                        parentImg,
+                        srcX, srcY, srcSize, srcSize,
+                        tx, ty, tileSize, tileSize
+                    )
+                    return true
+                }
+                return false
+            }
+
             const zInt = Math.ceil(self.z)
             const mapSize = 1024 * Math.pow(2, self.z)
             const mppx = mapSize / self.mapW
@@ -1987,48 +2014,41 @@ gtadb.Map = function() {
             const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
 
             const overlays = {5: 0, 6: self.tileOverlays}[self.v]
+            const tiles = self.tiles[self.v][self.tileSet][overlays]
+            const tilePaths = self.tilePaths[self.v][self.tileSet][overlays]
 
             for (let y = minTy; y <= maxTy; y++) {
                 for (let x = minTx; x <= maxTx; x++) {
-                    if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
-                        const img = self.tiles[self.v][self.tileSet][overlays][zInt][y][x]
-                        if (!img.src) {
-                            (function(originalX, originalY, originalZ) {
-                                img.addEventListener("load", function() {
-                                    if (
-                                        originalX.toFixed(3) == self.x &&
-                                        originalY.toFixed(3) == self.y &&
-                                        originalZ.toFixed(3) == self.z
-                                    ) {
-                                        self.context.drawImage(
-                                            img,
-                                            offsetX + x * tileSize,
-                                            offsetY + y * tileSize,
-                                            tileSize,
-                                            tileSize
-                                        )
-                                    }
-                                })
-                            })(self.x, self.y, self.z)
-                            const tilePath = self.tilePaths[self.v][self.tileSet][overlays][zInt][y][x]
-                            img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`
-                        } else {
-                            self.context.drawImage(
-                                img,
-                                offsetX + x * tileSize,
-                                offsetY + y * tileSize,
-                                tileSize,
-                                tileSize
-                            )
-                        }
-                    } else {
-                        self.context.clearRect(
-                            offsetX + x * tileSize,
-                            offsetY + y * tileSize,
-                            tileSize,
-                            tileSize
-                        )
+                    const tx = offsetX + x * tileSize
+                    const ty = offsetY + y * tileSize
+                    if (x < x0 || x > x1 || y < y0 || y > y1) {
+                        self.context.clearRect(tx, ty, tileSize, tileSize)
+                        continue
                     }
+                    const img = tiles[zInt][y][x]
+                    if (img.complete && img.naturalWidth > 0) {
+                        self.context.drawImage(img, tx, ty, tileSize, tileSize)
+                        continue
+                    }
+                    if (!img.src) {
+                        (function(originalX, originalY, originalZ) {
+                            img.addEventListener("load", function() {
+                                if (
+                                    originalX.toFixed(3) == self.x &&
+                                    originalY.toFixed(3) == self.y &&
+                                    originalZ.toFixed(3) == self.z
+                                ) {
+                                    requestAnimationFrame(function() {
+                                        self.context.drawImage(img, tx, ty, tileSize, tileSize)
+                                    })
+                                }
+                            }, {once: true})
+                        })(self.x, self.y, self.z)
+                        const tilePath = tilePaths[zInt][y][x]
+                        img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`
+                    }
+                    tryDrawParentTile(x, y, tx, ty)
+
                 }
             }
             self.renderMarkers()
