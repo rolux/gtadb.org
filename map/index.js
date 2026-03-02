@@ -1949,9 +1949,10 @@ gtadb.Map = function() {
         const mppx = self.getMppx()
         const minX = self.x - mppx * self.canvas.width / 2
         const maxY = self.y + mppx * self.canvas.height / 2
-        self.currentLandmarks.filter(function(landmark) {
-            return landmark.igCoordinates !== null
-        }).forEach(function(landmark) {
+        self.currentLandmarks.forEach(function(landmark) {
+            if (landmark.igCoordinates === null) {
+                return
+            }
             let markerElement = self.markers[landmark.id]
             const [x, y] = landmark.igCoordinates
             const screenX = (x - minX) / mppx
