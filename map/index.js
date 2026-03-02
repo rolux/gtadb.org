@@ -1953,7 +1953,7 @@ gtadb.Map = function() {
             if (landmark.igCoordinates === null) {
                 return
             }
-            let markerElement = self.markers[landmark.id]
+            const markerElement = self.markers[landmark.id]
             const [x, y] = landmark.igCoordinates
             const screenX = (x - minX) / mppx
             const screenY = (maxY - y) / mppx
