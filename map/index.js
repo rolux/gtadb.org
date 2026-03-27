@@ -2371,6 +2371,9 @@ gtadb.Map = function() {
     }
 
     self.updateGooglemapsMarker = function(landmark) {
+        if (!self.googlemapsMarkers) {
+            return
+        }
         if (landmark.rlCoordinates) {
             if (self.googlemapsMarkers[landmark.id]) {
                 self.googlemapsMarkers[landmark.id].position = {
@@ -2378,7 +2381,7 @@ gtadb.Map = function() {
                     lng: landmark.rlCoordinates[1]
                 }
                 self.googlemapsMarkers[landmark.id].title = landmark.title
-                self.googlemapsMarkers[landmark.id].style.backgroundColor = "#" + landmark.color
+                self.googlemapsMarkers[landmark.id].content.style.backgroundColor = "#" + landmark.color
             } else {
                 self.addGooglemapsMarker(landmark)
             }
