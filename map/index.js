@@ -2352,12 +2352,18 @@ gtadb.Map = function() {
     }
 
     self.addGooglemapsMarker = function(landmark) {
+        if (!self.googlemapsMarkers) {
+            return
+        }
         if (!self.googlemapsMarkers[landmark.id] && landmark.rlCoordinates) {
             self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
         }
     }
 
     self.removeGooglemapsMarker = function(id) {
+        if (!self.googlemapsMarkers) {
+            return
+        }
         if (self.googlemapsMarkers[id]) {
             self.googlemapsMarkers[id].map = null
             delete self.googlemapsMarkers[id]
