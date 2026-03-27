@@ -118,8 +118,13 @@ def get_landmarks_since(game, since):
 
 def add_landmark(game, ig_coordinates, username):
     landmarks = read_json(LANDMARKS_FILE[game])
-    last_id = list(landmarks.keys())[-1]
-    landmark_id = f"L{int(last_id[1:]) + 1}"
+    ids = landmarks.keys()
+    i = 1
+    while True:
+        if f"L{i}" not in ids:
+            break
+        i += 1
+    landmark_id = f"L{i}"
     timestamp = time.time()
     color = get_landmark_color("", "")
     landmarks[landmark_id] = [
