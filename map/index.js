@@ -2166,7 +2166,7 @@ gtadb.Map = function() {
     }
 
     self.parseLandmark = function(id, item) {
-        landmark = {
+        let landmark = {
             "id": id,
             "idSortString": self.getIdSortString(id),
             "igAddress": item[0],
@@ -2213,7 +2213,7 @@ gtadb.Map = function() {
                 element.classList.add("selected")
             })
         }
-        element = document.querySelector(".item.selected")
+        let element = document.querySelector(".item.selected")
         if (element) {
             element.classList.remove("selected")
         }
@@ -3301,7 +3301,7 @@ gtadb.Map = function() {
         self.themes.forEach(function(theme) {
             document.body.classList.remove(theme)
         })
-        if (!self.theme.includes("light", "dark")) {
+        if (!["light", "dark"].includes(self.theme)) {
             document.body.classList.add("light")
         }
         document.body.classList.add(self.theme)
@@ -3447,7 +3447,7 @@ gtadb.Map = function() {
                 v[key] = {}
             }
         })
-        checked = {}
+        let checked = {}
         checked.v = self.vs.includes(v.v) ? v.v : self.defaults.v
         ;["gta5", "gta6"].forEach(function(gta) { // fixme: loop over self.vs
             let key = gta[gta.length - 1]
