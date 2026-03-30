@@ -1929,18 +1929,28 @@ gtadb.Map = function() {
         self.x += easeAmount * dx
         self.y += easeAmount * dy
         self.z += easeAmount * dz
+        const done = immediate || (
+            Math.abs(dx) <= 0.1 &&
+            Math.abs(dy) <= 0.1 &&
+            Math.abs(dz) <= 0.01
+        )
+        if (done) {
+            self.x = self.targetX
+            self.y = self.targetY
+            self.z = self.targetZ
+            self.isAnimating = false
+        } else {
+            self.x += easeAmount * dx
+            self.y += easeAmount * dy
+            self.z += easeAmount * dz
+        }
         self.renderMap()
-        if (!immediate) {
-            if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dz) > 0.01) {
-                self.animate()
-            } else {
-                self.x = self.targetX
-                self.y = self.targetY
-                self.z = self.targetZ
-                self.isAnimating = false
-                self.renderMap() // FIXME
+        if (done) {
+            if (!immediate) {
                 self.setHash()
             }
+        } else {
+            self.animate()
         }
     }
 
