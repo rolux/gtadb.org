@@ -2356,14 +2356,13 @@ gtadb.Map = function() {
     }
 
     self.clearMarkers = function() {
-        self.landmarks.filter(function(landmark) {
-            return landmark.igCoordinates !== null
-        }).forEach(function(landmark) {
-            if (!self.currentLandmarks.includes(landmark)) {
-                let marker = self.markers[landmark.id]
-                marker.classList.remove("selected")
-                marker.style.display = "none"
+        self.landmarks.forEach(function(landmark) {
+            if (landmark.igCoordinates === null || self.currentLandmarks.includes(landmark)) {
+                return
             }
+            let marker = self.markers[landmark.id]
+            marker.classList.remove("selected")
+            marker.style.display = "none"
         })
     }
 
@@ -2449,10 +2448,10 @@ gtadb.Map = function() {
         if (!self.googlemapsMarkers) {
             return
         }
-        self.landmarks.filter(function(landmark) {
-            return !self.currentLandmarks.includes(landmark)
-        }).forEach(function(landmark) {
-            self.removeGooglemapsMarker(landmark.id)
+        self.landmarks.forEach(function(landmark) {
+            if (!self.currentLandmarks.includes(landmark)) {
+                self.removeGooglemapsMarker(landmark.id)
+            }
         })
         self.currentLandmarks.forEach(function(landmark) {
             self.addGooglemapsMarker(landmark)
