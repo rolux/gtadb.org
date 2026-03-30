@@ -1961,10 +1961,18 @@ gtadb.Map = function() {
             const screenX = (x - minX) / mppx
             const screenY = (maxY - y) / mppx
             if (screenX >= left && screenX <= right && screenY >= top && screenY <= bottom) {
-                markerElement.style.left = screenX + "px"
-                markerElement.style.top = screenY + "px"
-                markerElement.style.display = "block"
-            } else {
+                const markerLeft = screenX + "px"
+                const markerTop = screenY + "px"
+                if (markerElement.style.left != markerLeft) {
+                    markerElement.style.left = markerLeft
+                }
+                if (markerElement.style.top != markerTop) {
+                    markerElement.style.top = markerTop
+                }
+                if (markerElement.style.display != "block") {
+                    markerElement.style.display = "block"
+                }
+            } else if (markerElement.style.display != "none") {
                 markerElement.style.display = "none"
             }
         })
