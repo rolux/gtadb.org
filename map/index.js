@@ -725,6 +725,9 @@ gtadb.Map = function() {
         targetZ: 0,
         isAnimating: false,
         isDragging: false,
+        keys: {},
+        keyboardFrame: null,
+        keyboardTimestamp: null,
         panAmount: 0.025,
         wheelAmount: 0.005,
         zoomAmount: 0.025,
@@ -2056,6 +2059,53 @@ gtadb.Map = function() {
 
     }
 
+    self.updateKeyboardNavigation = function(timestamp) {
+        if (self.keyboardFrame === null) {
+            return
+        }
+
+        const frameDuration = 1000 / 60
+        const deltaFactor = self.keyboardTimestamp === null
+            ? 1
+            : Math.min((timestamp - self.keyboardTimestamp) / frameDuration, 2)
+        self.keyboardTimestamp = timestamp
+
+        const panStep = self.getMppx(self.targetZ) * self.canvas.height * self.panAmount * deltaFactor
+        const zoomStep = self.zoomAmount * deltaFactor
+
+        let targetX = self.targetX
+        let targetY = self.targetY
+        let targetZ = self.targetZ
+
+        if (self.keys["-"]) {
+            targetZ -= zoomStep
+        }
+        if (self.keys["="]) {
+            targetZ += zoomStep
+        }
+        if (self.keys["ArrowDown"]) {
+            targetY -= panStep
+        }
+        if (self.keys["ArrowLeft"]) {
+            targetX -= panStep
+        }
+        if (self.keys["ArrowRight"]) {
+            targetX += panStep
+        }
+        if (self.keys["ArrowUp"]) {
+            targetY += panStep
+        }
+
+        self.setTarget(targetX, targetY, targetZ)
+
+        if (Object.values(self.keys).some(Boolean)) {
+            self.keyboardFrame = requestAnimationFrame(self.updateKeyboardNavigation)
+        } else {
+            self.keyboardFrame = null
+            self.keyboardTimestamp = null
+        }
+    }
+
     self.setHash = function() {
         const hash = {4: "IV", 5: "V", 6: "VI"}[self.v] + "," + [self.targetX, self.targetY, self.targetZ].map(function (v) {
             return v.toFixed(3)
@@ -2739,26 +2789,12 @@ gtadb.Map = function() {
             } else if ([
                 "-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"
             ].includes(e.key)) {
-                if (self.keydownTimeout) {
-                    clearTimeout(self.keydownTimeout)
-                    self.keydownTimeout = null
+                e.preventDefault()
+                self.keys[e.key] = true
+                if (self.keyboardFrame === null) {
+                    self.keyboardTimestamp = null
+                    self.keyboardFrame = requestAnimationFrame(self.updateKeyboardNavigation)
                 }
-                (function keydownFn() {
-                    if (e.key == "-") {
-                        self.setTarget(self.targetX, self.targetY, self.targetZ - self.zoomAmount)
-                    } else if (e.key == "=") {
-                        self.setTarget(self.targetX, self.targetY, self.targetZ + self.zoomAmount)
-                    } else if (e.key == "ArrowDown") {
-                        self.setTarget(self.targetX, self.targetY - self.getMppx() * self.canvas.height * self.panAmount, self.targetZ)
-                    } else if (e.key == "ArrowLeft") {
-                        self.setTarget(self.targetX - self.getMppx() * self.canvas.height * self.panAmount, self.targetY, self.targetZ)
-                    } else if (e.key == "ArrowRight") {
-                        self.setTarget(self.targetX + self.getMppx() * self.canvas.height * self.panAmount, self.targetY, self.targetZ)
-                    } else if (e.key == "ArrowUp") {
-                        self.setTarget(self.targetX, self.targetY + self.getMppx() * self.canvas.height * self.panAmount, self.targetZ)
-                    }
-                    self.keydownTimeout = setTimeout(keydownFn)
-                }())
             } else if (e.key == "Escape") {
                 if (self.l) {
                     self.setLandmark(null)
@@ -2846,9 +2882,13 @@ gtadb.Map = function() {
             return
         }
         self.dialogLayer.element.classList.remove("clicked")
-        if (self.keydownTimeout) {
-            clearTimeout(self.keydownTimeout)
-            self.keydownTimeout = null
+        if (e.key in self.keys) {
+            self.keys[e.key] = false
+            if (!Object.values(self.keys).some(Boolean) && self.keyboardFrame !== null) {
+                cancelAnimationFrame(self.keyboardFrame)
+                self.keyboardFrame = null
+                self.keyboardTimestamp = null
+            }
         }
     }
 
