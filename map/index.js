@@ -2232,7 +2232,7 @@ gtadb.Map = function() {
         }
         self.updateRemoveItemButton()
         self.renderItem()
-        if (self.mapMode == "GTA") {
+        if (self.mapMode == "gta") {
             self.panGooglemaps(id)
         }
     }
