@@ -725,7 +725,6 @@ gtadb.Map = function() {
         targetZ: 0,
         isAnimating: false,
         isDragging: false,
-        key: null,
         panAmount: 0.025,
         wheelAmount: 0.005,
         zoomAmount: 0.025,
@@ -3466,7 +3465,7 @@ gtadb.Map = function() {
             lat: isNaN(v.googlemaps.lat) ? self.defaults.googlemaps.lat : self.clamp(v.googlemaps.lat, -90, 90),
             lng: isNaN(v.googlemaps.lng) ? self.defaults.googlemaps.lng : self.clamp(v.googlemaps.lng, -180, 180),
             zoom: isNaN(v.googlemaps.zoom) ? self.defaults.googlemaps.zoom : self.clamp(parseInt(v.googlemaps.zoom), 0, 24),
-            mapType: self.googlemaps.mapTypes.includes(v.mapType) ? v.googlemaps.mapType : self.defaults.googlemaps.mapType,
+            mapType: self.googlemaps.mapTypes.includes(v.googlemaps.mapType) ? v.googlemaps.mapType : self.defaults.googlemaps.mapType,
         }
         checked.mapMode = self.mapModes.includes(v.mapMode) ? v.mapMode : self.defaults.mapMode
         checked.profileColor = /^[0-9A-Fa-f]{6}$/.test(v.profileColor) ? v.profileColor : self.defaults.profileColor,
