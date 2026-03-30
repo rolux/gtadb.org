@@ -734,6 +734,7 @@ gtadb.Map = function() {
         easeAmount: 0.2,
         landmarks: [],
         landmarksById: {},
+        landmarksIndexById: {},
         currentLandmarks: [],
         currentLandmarksIndexById: {},
         find: "",
@@ -2136,6 +2137,7 @@ gtadb.Map = function() {
                 let landmark = self.parseLandmark(ret.id, ret.data)
                 self.landmarks.push(landmark)
                 self.landmarksById[ret.id] = landmark
+                self.landmarksIndexById[ret.id] = self.landmarks.length - 1
                 self.currentLandmarks.push(landmark)
                 self.addMarker(landmark)
                 self.setLandmark(ret.id)
@@ -2153,19 +2155,13 @@ gtadb.Map = function() {
         self.api.editLandmark(self.v, id, key, value).then(function(ret) {
             if (ret.status == "ok") {
                 let landmark = self.parseLandmark(id, ret.data)
-                // FIXME: can we replace this index dance with
-                // something like self.landmarkIndexById?
-                let index = self.landmarks.findIndex(function(landmark) {
-                    return landmark.id == id
-                })
-                if (index > -1) {
+                let index = self.landmarksIndexById[id]
+                if (index !== void 0) {
                     self.landmarks[index] = landmark
                 }
                 self.landmarksById[id] = landmark
-                index = self.currentLandmarks.findIndex(function(item) {
-                    return item.id == id
-                })
-                if (index > -1) {
+                index = self.currentLandmarksIndexById[id]
+                if (index !== void 0) {
                     self.currentLandmarks[index] = landmark
                 }
                 self.updateMarker(landmark)
@@ -2186,19 +2182,25 @@ gtadb.Map = function() {
     self.removeLandmark = function() {
         self.api.removeLandmark(self.v, self.l).then(function(ret) {
             if (ret.status == "ok") {
-                let index = self.landmarks.findIndex(function(landmark) {
-                    return landmark.id == self.l
-                })
-                if (index > -1) {
+                let index = self.landmarksIndexById[self.l]
+                if (index !== void 0) {
                     self.landmarks.splice(index, 1)
+                    self.landmarksIndexById = self.landmarks.reduce(function(a, landmark, i) {
+                        a[landmark.id] = i
+                        return a
+                    }, {})
                 }
                 delete self.landmarksById[self.l]
-                index = self.currentLandmarks.findIndex(function(item) {
-                    return item.id == self.l
-                })
-                if (index > -1) {
+                delete self.landmarksIndexById[self.l]
+                index = self.currentLandmarksIndexById[self.l]
+                if (index !== void 0) {
                     self.currentLandmarks.splice(index, 1)
+                    self.currentLandmarksIndexById = self.currentLandmarks.reduce(function(a, landmark, i) {
+                        a[landmark.id] = i
+                        return a
+                    }, {})
                 }
+                delete self.currentLandmarksIndexById[self.l]
                 self.removeMarker(self.l)
                 self.removeGooglemapsMarker(self.l)
                 self.l = null
@@ -2239,10 +2241,12 @@ gtadb.Map = function() {
         self.landmarks = Object.entries(landmarks).map(function([id, item]) {
             return self.parseLandmark(id, item)
         })
-        self.landmarksById = self.landmarks.reduce(function(a, v) {
-            a[v.id] = v
-            return a
-        }, {})
+        self.landmarksById = {}
+        self.landmarksIndexById = {}
+        self.landmarks.forEach(function(landmark, index) {
+            self.landmarksById[landmark.id] = landmark
+            self.landmarksIndexById[landmark.id] = index
+        })
         self.currentLandmarks = self.landmarks.slice()
     }
 
