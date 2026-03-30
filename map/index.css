@@ -110,7 +110,7 @@ body.dark .form .formMessage.ok {
 body.dark .input input[type="text"],
 body.dark .input input[type="password"],
 body.dark .input textarea,
-body.datk .input .upload {
+body.dark .input .upload {
     border-color: rgba(224, 224, 224, 0.25);
 }
 body.dark .input .upload {
