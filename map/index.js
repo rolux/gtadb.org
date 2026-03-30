@@ -928,7 +928,6 @@ gtadb.Map = function() {
 
         })
 
-        self.markersLayer.addEventListener("click", self.onClick) // FIXME: doesn't exist
         window.addEventListener("hashchange", self.onHashchange)
         document.addEventListener("keydown", self.onKeydown)
         document.addEventListener("keyup", self.onKeyup)
