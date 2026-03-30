@@ -2073,12 +2073,7 @@ gtadb.Map = function() {
         let targetY = self.targetY
         let targetZ = self.targetZ
 
-        if (self.keys["-"]) {
-            targetZ -= zoomStep
-        }
-        if (self.keys["="]) {
-            targetZ += zoomStep
-        }
+
         if (self.keys["ArrowDown"]) {
             targetY -= panStep
         }
@@ -2090,6 +2085,12 @@ gtadb.Map = function() {
         }
         if (self.keys["ArrowUp"]) {
             targetY += panStep
+        }
+        if (self.keys["-"]) {
+            targetZ -= zoomStep
+        }
+        if (self.keys["="]) {
+            targetZ += zoomStep
         }
 
         self.setTarget(targetX, targetY, targetZ)
