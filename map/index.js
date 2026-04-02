@@ -678,7 +678,7 @@ gtadb.Map = function() {
                 5: [[0, 17], [77, 94]],
                 6: [[1, 34], [155, 188]]
             },
-            "yanis,10": {
+            "yanis,11": {
                 0: [[0, 0], [2, 2]],
                 1: [[0, 1], [4, 5]],
                 2: [[0, 2], [9, 11]],
@@ -829,10 +829,10 @@ gtadb.Map = function() {
                 find: "",
                 filter: "all",
                 sort: "igAddress",
-                tileSet: "yanis,10",
+                tileSet: "yanis,11",
                 tileSets: [
                     "dupzor,51",
-                    "yanis,10",
+                    "yanis,11",
                 ]
             },
             googlemaps: {
