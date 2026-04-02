@@ -2208,7 +2208,6 @@ gtadb.Map = function() {
                     }, {})
                 }
                 delete self.landmarksById[self.l]
-                delete self.landmarksIndexById[self.l]
                 index = self.currentLandmarksIndexById[self.l]
                 if (index !== void 0) {
                     self.currentLandmarks.splice(index, 1)
@@ -2217,7 +2216,6 @@ gtadb.Map = function() {
                         return a
                     }, {})
                 }
-                delete self.currentLandmarksIndexById[self.l]
                 self.removeMarker(self.l)
                 self.removeGooglemapsMarker(self.l)
                 self.l = null
