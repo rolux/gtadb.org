@@ -203,16 +203,19 @@ body.hidden #uiIcon {
 
 
 canvas.satellite {
-    background-color: rgb(20, 61, 107);
+    background-color: rgb(13, 43, 79);
 }
 canvas.hybrid {
     background-color: rgb(10, 30, 54);
 }
-canvas.atlas {
-    background-color: rgb(15, 168, 210);
+canvas.terrain {
+    background-color: rgb(78, 177, 208);
 }
 canvas.roadmap {
     background-color: rgb(24, 97, 173);
+}
+canvas.radar {
+    background-color: rgb(56, 73, 80);
 }
 canvas.yanis-7 {
     background-color: rgb(24, 97, 173);
