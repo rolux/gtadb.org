@@ -3318,6 +3318,10 @@ gtadb.Map = function() {
         if (self.mapMode == "gta") {
             document.body.classList.add("gta")
             document.body.classList.remove("googlemaps")
+            document.body.classList.remove("streetview")
+            if (self.googleMap) {
+                self.googleMap.getStreetView().setVisible(false)
+            }
             self.canvas.style.display = "block"
             self.markersLayer.style.display = "block"
             self.googlemapsLayer.style.display = "none"
