@@ -3643,7 +3643,7 @@ gtadb.Map = function() {
     }
 
     self.panGooglemaps = function(id) {
-        if (self.googleMap && self.landmarksById[id].rlCoordinates) {
+        if (self.googleMap && self.landmarksById[id] && self.landmarksById[id].rlCoordinates) {
             const [lat, lng] = self.landmarksById[id].rlCoordinates
             self.googleMap.panTo({lat: lat, lng: lng})
         }
