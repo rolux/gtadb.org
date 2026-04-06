@@ -2074,7 +2074,7 @@ gtadb.Map = function() {
                         }, {once: true})
                     })(self.x, self.y, self.z)
                     const tilePath = tilePaths[zInt][y][x]
-                    img.src = `tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`
+                    img.src = `https://maps.gtadb.org/tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`
                 }
                 tryDrawParentTile(x, y, tx, ty)
             }
