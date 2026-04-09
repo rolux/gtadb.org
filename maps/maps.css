@@ -1,0 +1,108 @@
+body.streetview #streetviewIcon {
+    display: block;
+}
+
+body:not(.streetview) #streetviewIcon {
+    display: none;
+}
+
+canvas.satellite {
+    background-color: rgb(13, 43, 79);
+}
+
+canvas.hybrid {
+    background-color: rgb(10, 30, 54);
+}
+
+canvas.terrain {
+    background-color: rgb(78, 177, 208);
+}
+
+canvas.roadmap {
+    background-color: rgb(24, 97, 173);
+}
+
+canvas.radar {
+    background-color: rgb(56, 73, 80);
+}
+
+canvas.yanis-7 {
+    background-color: rgb(24, 97, 173);
+}
+
+canvas.yanis-8,
+canvas.yanis-9,
+canvas.yanis-10,
+canvas.yanis-11 {
+    background-color: rgb(44, 103, 164);
+}
+
+#map, #canvas, #markers {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#map {
+    cursor: default;
+    inset: 0;
+}
+
+#map.dragging {
+    cursor: grabbing;
+}
+
+#canvas {
+    user-select: none;
+}
+
+.marker {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 8px 8px 0 8px;
+    cursor: pointer;
+    display: none;
+    height: 14px;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -19.314px;
+    position: absolute;
+    top: 50%;
+    transform: rotate(45deg);
+    width: 14px;
+    z-index: 100;
+}
+
+.marker.selected {
+    border: 2.5px solid rgb(255, 255, 255);
+    height: 11px;
+    width: 11px;
+    z-index: 101;
+}
+
+body.editing:not(.googlemaps) .marker.selected {
+    border: 2.5px solid rgb(192, 224, 255);
+}
+
+.marker.dragging {
+    border: 2px solid rgb(128, 128, 128);
+}
+
+#googlemapsLayer {
+    bottom: 0;
+    display: none;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#streetviewIcon {
+    background-color: rgb(128, 128, 128);
+    display: none;
+    left: 8px;
+    position: absolute;
+    top: 8px;
+    z-index: 1000;
+}

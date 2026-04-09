@@ -1,0 +1,352 @@
+body.light .bar {
+    border-color: rgba(0, 0, 0, 0.125);
+}
+
+body.light .dialog .bar,
+body.light .dialog .content {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+body.light .form .formMessage.error {
+    color: rgb(192, 64, 64);
+}
+
+body.light .form .formMessage.ok {
+    color: rgb(64, 192, 64);
+}
+
+body.light .input input[type="text"],
+body.light .input input[type="password"],
+body.light .input textarea,
+body.light .input .upload {
+    border-color: rgba(0, 0, 0, 0.25);
+}
+
+body.light .input .upload {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+body.light .input .upload.hover {
+    background-color: rgba(128, 192, 255, 0.25);
+}
+
+body.light .input .upload .removeButton {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+body.light .panel .menuItem:not(.selected):hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+body.light .panel .menuItem.selected {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+body.light #dialogLayer {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+body.light #dialogLayer.clicked {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+body.dark .bar {
+    border-color: rgba(224, 224, 224, 0.125);
+}
+
+body.dark .dialog .bar,
+body.dark .dialog .content {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+body.dark .form .formMessage.error {
+    color: rgb(192, 64, 64);
+}
+
+body.dark .form .formMessage.ok {
+    color: rgb(64, 192, 64);
+}
+
+body.dark .input input[type="text"],
+body.dark .input input[type="password"],
+body.dark .input textarea,
+body.dark .input .upload {
+    border-color: rgba(224, 224, 224, 0.25);
+}
+
+body.dark .input .upload {
+    background-color: rgba(224, 224, 224, 0.25);
+}
+
+body.dark .input .upload.hover {
+    background-color: rgba(0, 64, 128, 0.25);
+}
+
+body.dark .input .upload .removeButton {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+body.dark .panel .menuItem:not(.selected):hover {
+    background-color: rgba(32, 32, 32);
+}
+
+body.dark .panel .menuItem.selected {
+    background-color: rgba(64, 64, 64);
+}
+
+body.dark #dialogLayer {
+    background-color: rgba(224, 224, 224, 0.25);
+}
+
+body.dark #dialogLayer.clicked {
+    background-color: rgba(224, 224, 224, 0.5);
+}
+
+input[type="password"],
+input[type="text"] {
+    all: unset;
+    appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    font-size: 12px;
+    height: 18px;
+    margin: 0;
+    padding: 2px 4px;
+    position: absolute;
+}
+
+input[type="text"]:focus {
+    border: 1px solid transparent;
+    outline: none;
+}
+
+select {
+    all: unset;
+    appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-family: sans-serif;
+    font-size: 12px;
+    margin: 0;
+    padding: 2px 4px;
+    text-overflow: ellipsis;
+}
+
+select:focus {
+    outline: none;
+}
+
+select::-ms-expand {
+    display: none
+}
+
+textarea {
+    all: unset;
+    appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -webkit-appearance: none;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+.bar {
+    height: 23px;
+    padding: 4px;
+    position: absolute;
+}
+
+.bar.borderBottom {
+    border-bottom: 1px solid transparent
+}
+
+.bar.borderTop {
+    border-top: 1px solid transparent
+}
+
+.bar :first-child {
+    float: left;
+    margin: 5px 8px;
+}
+
+.bar .button {
+    float: right;
+}
+
+.button {
+    cursor: pointer;
+    font-size: 11px;
+    height: 12px;
+    margin: 5px 4px;
+    user-select: none;
+}
+
+.button.disabled {
+    color: rgb(128, 128, 128);
+    cursor: default;
+}
+
+.dialog {
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+.dialog .bar {
+    border-radius: 8px 8px 0 0;
+}
+
+.dialog .bar :first-child {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    height: 16px;
+    margin: 5px 4px;
+    left: 0;
+    overflow-x: hidden;
+    top: 0;
+}
+
+.dialog .content {
+    border-radius: 0 0 8px 8px;
+    margin-top: 32px;
+}
+
+.form {
+    overflow-x: hidden;
+}
+
+.form .formButton {
+    float: left;
+    cursor: pointer;
+    height: auto;
+    margin: 4px 6px;
+    user-select: none;
+    width: auto;
+}
+
+.form .formMessage {
+    float: right;
+    font-size: 12px;
+    height: auto;
+    margin: 3px 6px;
+    text-align: right;
+    width: auto;
+}
+
+.input {
+    margin: 4px;
+}
+
+.input .label {
+    font-size: 11px;
+    height: 16px;
+    margin-left: 2px;
+}
+
+.input input[type="password"],
+.input input[type="text"],
+.input textarea {
+    border: 1px solid transparent;
+    font-size: 12px;
+    padding: 3px;
+}
+
+.input input[type="text"] {
+    background-color: transparent;
+}
+
+.input .upload {
+    cursor: pointer;
+}
+
+.input .upload .removeButton {
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    display: none;
+    font-size: 11px;
+    height: fit-content;
+    margin-top: -19px;
+    padding: 2px 4px;
+    position: relative;
+    right: 0;
+    text-transform: uppercase;
+    width: fit-content;
+}
+
+.input .upload:hover .removeButton {
+    display: block;
+}
+
+.panel > div {
+    float: left
+}
+
+.panel select {
+    display: block;
+    margin-top: 8px;
+}
+
+.panel select:first-child {
+    margin-top: 0;
+}
+
+.panel .menuItem {
+    cursor: pointer;
+    font-size: 12px;
+    height: 14px;
+    padding: 9px 8px;
+    text-transform: uppercase;
+    user-select: none;
+    width: 240px;
+}
+
+.panel div:last-child {
+    overflow-y: auto;
+}
+
+.icon {
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    height: 14px;
+    padding: 3px;
+    text-align: center;
+    user-select: none;
+}
+
+.icon:not(#siteIcon) {
+    text-transform: uppercase;
+    width: 14px;
+}
+
+#dialogLayer {
+    align-items: center;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1001;
+}
