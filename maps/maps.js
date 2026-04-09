@@ -1101,6 +1101,11 @@ gtadb.Maps = function(options) {
             if (self.mouseTimeout) {
                 clearTimeout(self.mouseTimeout)
                 self.mouseTimeout = null
+                self.setTarget(
+                    originalX + mppx * (e.clientX - self.canvas.width / 2),
+                    originalY - mppx * (e.clientY - self.canvas.height / 2),
+                    originalZ
+                )
             } else if (self.isDragging) {
                 self.isDragging = false
                 self.element.classList.remove("dragging")
