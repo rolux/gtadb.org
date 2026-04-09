@@ -291,7 +291,7 @@ gtadb.Guess = function() {
             <p>You don't need to make an account &mdash; your guesses are stored locally in your web browser.
             Once you have placed all 25 markers, click submit, head over to the GTA VI Mapping Discord, and paste your guesses in the gta6guessr thread.
             You can still edit them later.</p>
-            <p>The game runs until the release of Trailer 3, and the winner will be determined a week after the launch of the game.
+            <p>The challenge runs until the release of Trailer 3, and the winner will be determined a week after the launch of the game.
             The player with the lowest total distance wins.</p>`
 
         self.keyboardShortcutsElement = document.createElement("div")
