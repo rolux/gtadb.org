@@ -968,9 +968,11 @@ gtadb.Map = function() {
             self.gta5.tileSet = this.value
             if (self.v == 5) { // FIXME: shouldn't be needed
                 self.tileSet = self.gta5.tileSet
+                self.maps.set({
+                    tileSet: self.tileSet,
+                })
             }
             self.setUserSettings()
-            self.renderMap()
         })
         self.mapSettingsElement.appendChild(self.tileSetVSelect)
 
@@ -988,9 +990,11 @@ gtadb.Map = function() {
             self.gta6.tileSet = this.value
             if (self.v == 6) { // FIXME: shouldn't be needed
                 self.tileSet = self.gta6.tileSet
+                self.maps.set({
+                    tileSet: self.tileSet,
+                })
             }
             self.setUserSettings()
-            self.renderMap()
         })
         self.mapSettingsElement.appendChild(self.tileSetVISelect)
 
@@ -1007,7 +1011,9 @@ gtadb.Map = function() {
             this.blur()
             self.tileOverlays = this.value
             self.setUserSettings()
-            self.renderMap()
+            self.maps.set({
+                tileOverlays: self.tileOverlays,
+            })
         })
         self.mapSettingsElement.appendChild(self.tileOverlaysSelect)
 
@@ -2185,7 +2191,6 @@ gtadb.Map = function() {
         self.googlemaps.mapType = mapType
         self.setUserSettings()
         self.maps.set({
-            googlemaps: self.googlemaps,
             mapType: self.googlemaps.mapType,
         })
     }
