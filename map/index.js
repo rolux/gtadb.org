@@ -2200,12 +2200,14 @@ gtadb.Map = function() {
     self.startEditing = function() {
         self.editing = true
         document.body.classList.add("editing")
+        self.maps.set({editing: true})
         self.renderItem()
     }
 
     self.stopEditing = function() {
         self.editing = false
         document.body.classList.remove("editing")
+        self.maps.set({editing: false})
         self.renderItem()
     }
 
