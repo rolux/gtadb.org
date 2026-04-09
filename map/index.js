@@ -1,4 +1,5 @@
-let gtadb = {}
+var gtadb = window.gtadb || {}
+window.gtadb = gtadb
 
 gtadb.API = function(options) {
     if (!(this instanceof gtadb.API)) {
@@ -122,486 +123,6 @@ gtadb.API = function(options) {
     return that
 }
 
-gtadb.Bar = function(options) {
-    if (!(this instanceof gtadb.Bar)) {
-        return new gtadb.Bar(options)
-    }
-    let that = this
-    let self = {
-        defaults: {
-            border: "bottom",
-            buttons: [],
-            element: null,
-        },
-        options: options
-    }
-    self.options = {...self.defaults, ...self.options}
-    that.element = document.createElement("div")
-    const className = self.options.border == "bottom" ? "borderBottom" : "borderTop"
-    that.element.className = "bar " + className
-    that.element.appendChild(self.options.element)
-    self.options.buttons.reverse().forEach(function(button) {
-        that.element.appendChild(button.element)
-    })
-    that.set = function(options) {
-        if ("element" in options) {
-            that.element.removeChild(self.options.element)
-            that.element.prepend(options.element)
-            self.options.element = options.element
-        }
-    }
-    return that
-}
-
-gtadb.Button = function(options) {
-    if (!(this instanceof gtadb.Button)) {
-        return new gtadb.Button(options)
-    }
-    let that = this
-    let self = {
-        defaults: {
-            click: null,
-            mousedown: null,
-            text: "",
-            tooltip: ""
-        },
-        options: options
-    }
-    self.options = {...self.defaults, ...self.options}
-    that.element = document.createElement("div")
-    that.element.className = "button"
-    that.element.title = self.options.tooltip
-    that.element.innerText = self.options.text
-    if (self.options.click) {
-        that.element.addEventListener("click", self.options.click)
-    }
-    if (self.options.mousedown) {
-        that.element.addEventListener("mousedown", self.options.mousedown)
-    }
-    that.set = function(options) {
-        if ("click" in options) {
-            that.element.removeEventListener("click", self.options.click)
-            self.options.click = options.click
-            that.element.addEventListener("click", self.options.click)
-        }
-        if ("mousedown" in options) {
-            that.element.removeEventListener("mousedown", self.options.mousedown)
-            self.options.mousedown = options.mousedown
-            that.element.addEventListener("mousedown", self.options.mousedown)
-        }
-        if ("text" in options) {
-            that.element.innerText = options.text
-        }
-        if ("tooltip" in options) {
-            that.element.title = options.tooltip
-        }
-    }
-    return that
-}
-
-gtadb.Dialog = function(options) {
-    if (!(this instanceof gtadb.Dialog)) {
-        return new gtadb.Dialog(options)
-    }
-    let that = this
-    let self = {
-        defaults: {
-            buttons: [],
-            content: null,
-            height: 0,
-            layer: null,
-            resize: function() {},
-            title: "",
-            width: 0,
-        },
-        options: options
-    }
-    self.options = {...self.defaults, ...self.options}
-    that.element = document.createElement("div")
-    that.element.className = "dialog"
-    that.element.style.width = self.options.width + "px"
-    that.element.style.height = self.options.height + "px"
-    self.titleElement = document.createElement("div")
-    self.titleElement.innerText = self.options.title
-    self.closeButton = gtadb.Button({
-        click: function() {
-            that.close()
-        },
-        text: "CLOSE",
-        tooltip: "ESC"
-    })
-    self.bar = gtadb.Bar({
-        borderBottom: "1px",
-        borderTopRadius: "8px",
-        buttons: self.options.buttons.concat(self.closeButton),
-        element: self.titleElement,
-    })
-    self.bar.element.style.width = self.options.width - 8 + "px"
-    that.element.appendChild(self.bar.element)
-    self.content = document.createElement("div")
-    self.content.className = "content"
-    self.content.style.width = self.options.width + "px"
-    self.content.style.height = self.options.height - 32 + "px"
-    self.content.appendChild(self.options.content)
-    that.element.appendChild(self.content)
-    that.open = function() {
-        self.options.layer.element.appendChild(that.element)
-        self.options.layer.element.style.display = "flex"
-    }
-    that.close = function() {
-        that.element.remove()
-        self.options.layer.element.style.display = "none"
-    }
-    that.set = function(options) {
-        if ("content" in options) {
-            self.content.innerHTML = ""
-            self.content.appendChild(options.content)
-        }
-        if ("title" in options) {
-            self.titleElement.innerText = options.title
-            self.bar.set({
-                element: self.titleElement
-            })
-        }
-        if ("width" in options) {
-            that.element.style.width = options.width + "px"
-            self.bar.element.style.width = options.width - 8 + "px"
-            self.content.style.width = options.width + "px"
-        }
-        if ("height" in options) {
-            that.element.style.height = options.height + "px"
-            self.content.style.height = options.height - 32 + "px"
-        }
-    }
-    return that
-}
-
-gtadb.DialogLayer = function() {
-    if (!(this instanceof gtadb.DialogLayer)) {
-        return new gtadb.DialogLayer()
-    }
-    let that = this
-    that.element = document.createElement("div")
-    that.element.id = "dialogLayer"
-    that.element.addEventListener("mousedown", function(e) {
-        if (e.target == that.element) {
-            that.element.classList.add("clicked")
-        }
-    })
-    that.element.addEventListener("mouseup", function() {
-        that.element.classList.remove("clicked")
-    })
-    that.show = function() {
-        that.element.style.display = "flex"
-    }
-    that.hide = function() {
-        that.element.style.display = "none"
-    }
-    return that
-}
-
-gtadb.Form = function(options) {
-    if (!(this instanceof gtadb.Form)) {
-        return new gtadb.Form(options)
-    }
-    let that = this
-    let self = {
-        defaults: {
-            buttonText: "",
-            click: null,
-            inputs: {},
-            width: 512
-        },
-        options: options
-    }
-    self.options = {...self.defaults, ...self.options}
-    that.element = document.createElement("div")
-    that.element.className = "form"
-    self.inputs = []
-    Object.entries(self.options.inputs).forEach(function([id, [label, type, value]]) {
-        let input = gtadb.Input({
-            height: 48,
-            label: label,
-            readonly: self.options._readonly && self.options._readonly.includes(id),
-            type: type,
-            value: value,
-            width: self.options.width
-        })
-        self.inputs.push(input)
-        that.element.appendChild(input.element)
-    })
-    self.button = document.createElement("div")
-    self.button.className = "formButton"
-    self.button.innerText = self.options.buttonText
-    self.button.addEventListener("click", function() {
-        const entries = self.inputs.map(function(input, i) {
-            return [
-                Object.keys(self.options.inputs)[i],
-                input.value()
-            ]
-        })
-        const values = Object.fromEntries(entries)
-        self.options.click(values)
-    })
-    that.element.appendChild(self.button)
-    self.message = document.createElement("div")
-    self.message.className = "formMessage"
-    that.element.appendChild(self.message)
-    that.setMessage = function(status, text) {
-        self.message.classList.add(status)
-        self.message.innerText = text
-        setTimeout(function() {
-            self.message.innerHTML = ""
-            self.message.classList.remove(status)
-        }, 3000)
-    }
-    that.setValue = function(index, value) {
-        self.inputs[index].set({value: value})
-    }
-    return that
-}
-
-gtadb.Input = function(options) {
-    if (!(this instanceof gtadb.Input)) {
-        return new gtadb.Input(options)
-    }
-    let that = this
-    let self = {
-        defaults: {
-            change: null,
-            height: 32,
-            image: null,
-            label: "",
-            readonly: false,
-            removeButton: null,
-            type: "text",
-            value: "",
-            width: 232
-        },
-        options: options
-    }
-    self.options = {...self.defaults, ...self.options}
-    that.element = document.createElement("div")
-    that.element.className = "input"
-    that.element.style.width = self.options.width + "px"
-    that.element.style.height = self.options.height + "px"
-    self.label = document.createElement("div")
-    self.label.className = "label"
-    self.label.style.height = self.options.label ? "16px" : 0
-    self.label.innerHTML = self.options.label
-    that.element.appendChild(self.label)
-    self.input = document.createElement(
-        self.options.type == "textarea" ? "textarea" : "input"
-    )
-    if (self.options.type != "textarea") {
-        self.input.type = self.options.type
-    }
-    if (self.options.type == "file") {
-        self.input.accept = "image/*"
-        self.input.hidden = true
-    }
-    if (self.options.readonly) {
-        self.input.readOnly = true
-        self.input.style.backgroundColor = "transparent"
-        self.input.style.borderWidth = 0
-        self.input.style.margin = 0
-        self.input.style.marginLeft = "3px"
-        self.input.style.outline = 0
-        self.input.style.paddding = 0
-    }
-    self.input.value = self.options.value
-    self.input.style.width = self.options.width - 8 + "px" // 2 * 3 padding + 2 * 1 border
-    self.input.style.height = self.options.height - 8 - 16 * !!self.options.label + "px"
-    if (self.options.change && self.options.type != "file") {
-        self.input.addEventListener("change", function() {
-            self.options.change(self.input.value)
-        })
-    }
-    that.element.appendChild(self.input)
-    if (self.options.type == "file") {
-        self.upload = document.createElement("div")
-        self.upload.className = "upload"
-        self.upload.title = "CLICK OR DROP"
-        self.upload.style.width = self.options.width + "px"
-        self.upload.style.height = self.options.height - 16 * !!self.options.label + "px"
-        if (self.options.image) {
-            // FIXME: use 100%
-            self.options.image.style.width = self.upload.style.width
-            self.options.image.style.height = self.upload.style.height
-            self.upload.appendChild(self.options.image)
-        }
-        if (self.options.removeButton) {
-            self.removeButton = document.createElement("div")
-            self.removeButton.classList.add("removeButton")
-            self.removeButton.innerText = "remove"
-            //self.removeButton.style.zIndex = 100
-            self.upload.appendChild(self.options.button)
-        }
-        self.upload.addEventListener("click", function(e) {
-            if (e.target.classList.contains("removeButton")) {
-                self.options.change(null)
-            } else {
-                self.input.click()
-            }
-        })
-        self.upload.addEventListener("dragover", function(e) {
-            e.preventDefault()
-            self.upload.classList.add("hover")
-        })
-        self.upload.addEventListener("dragleave", function(e) {
-            self.upload.classList.remove("hover")
-        })
-        self.upload.addEventListener("drop", function(e) {
-            e.preventDefault()
-            self.upload.classList.remove("hover")
-            self.uploadFile(e.dataTransfer.files[0])
-        })
-        self.input.addEventListener('change', function(e) {
-            self.uploadFile(self.input.files[0])
-        })
-        that.element.appendChild(self.upload)
-    }
-    that.set = function(options) {
-        if ("height" in options) {
-            self.options.height = options.height
-            that.element.style.height = self.options.height + "px"
-            self.input.style.height = self.options.height - 8 - 16 * !!self.options.label + "px"
-            if (self.options.type == "file") {
-                self.upload.style.height = self.options.height - 16 * !!self.options.label + "px"
-                if (self.options.image) {
-                    self.options.image.style.height = self.upload.style.height
-                }
-            }
-        }
-        if ("image" in options) {
-            self.options.image = options.image
-            self.upload.innerHTML = ""
-            if (self.options.image) {
-                // FIXME: use 100%
-                self.options.image.style.width = self.upload.style.width
-                self.options.image.style.height = self.upload.style.height
-                self.upload.appendChild(self.options.image)
-            }
-        }
-        if ("label" in options) {
-            self.label.innerHTML = options.label
-        }
-        if ("removeButton" in options) {
-            if (options.removeButton) {
-                self.removeButton = document.createElement("div")
-                self.removeButton.classList.add("removeButton")
-                self.removeButton.innerText = "REMOVE"
-                self.upload.appendChild(self.removeButton)
-            } else {
-                if (self.removeButton) {
-                    self.removeButton.remove()
-                }
-            }
-        }
-        if ("value" in options) {
-            self.options.value = options.value
-            self.input.value = self.options.value
-        }
-        if ("width" in options) {
-            self.options.width = options.width
-            that.element.style.width = self.options.height + "px"
-            self.input.style.width = self.options.width + "px"
-            if (self.options.type == "file") {
-                self.upload.style.width = self.options.width + "px"
-                if (self.options.image) {
-                    self.options.image.style.width = self.options.width + "px"
-                }
-            }
-        }
-    }
-    that.value = function() {
-        return self.input.value
-    }
-    self.uploadFile = function(file) {
-        if (!file || !file.type.startsWith('image/')) {
-            return
-        }
-        const img = document.createElement("img")
-        img.onload = function() {
-            const imgRatio = img.naturalHeight / img.naturalWidth
-            const imgHeight = self.options.width * imgRatio
-            that.element.style.height = imgHeight + 16 * !!self.options.label + "px"
-            self.upload.style.height = imgHeight + "px"
-            img.style.width = "100%"
-            img.style.height = "100%"
-            img.style.objectFit = "contain"
-            self.upload.innerHTML = ""
-            self.upload.appendChild(img)
-        }
-        img.src = URL.createObjectURL(file)
-        self.options.change(file)
-    }
-    return that
-}
-
-gtadb.Panel = function(options) {
-    if (!(this instanceof gtadb.Panel)) {
-        return new gtadb.Panel(options)
-    }
-    let that = this
-    let self = {
-        defaults: {
-            elements: {},
-            height: 512,
-            menuWidth: 256,
-            selected: 0,
-            width: 768,
-        },
-        options: options
-    }
-    self.options = {...self.defaults, ...self.options}
-    that.element = document.createElement("div")
-    that.element.className = "panel"
-    that.element.style.width = self.options.width + "px"
-    that.element.style.height = self.options.height + "px"
-    self.menu = document.createElement("div")
-    self.menu.style.width = self.options.menuWidth + "px"
-    self.menu.style.height = self.options.height + "px"
-    that.element.appendChild(self.menu)
-    self.content = document.createElement("div")
-    self.content.style.width = self.options.width - self.options.menuWidth + "px"
-    self.content.style.height = self.options.height + "px"
-    that.element.appendChild(self.content)
-    that.set = function(options) {
-        if ("elements" in options) {
-            self.options.elements = options.elements
-            self.renderElements()
-        }
-        if ("selected" in options) {
-            self.menuItems[self.options.selected].classList.remove("selected")
-            self.options.selected = options.selected
-            self.menuItems[self.options.selected].classList.add("selected")
-            self.content.innerHTML = ""
-            const title = Object.keys(self.options.elements)[self.options.selected]
-            self.content.appendChild(self.options.elements[title])
-        }
-    }
-    self.renderElements = function() {
-        self.menu.innerHTML = ""
-        self.menuItems = []
-        Object.keys(self.options.elements).forEach(function(title) {
-            let menuItem = document.createElement("div")
-            menuItem.className = "menuItem"
-            menuItem.innerText = title
-            ;(function(i) {
-                menuItem.addEventListener("click", function() {
-                    that.set({"selected": i})
-                })
-            }(self.menuItems.length))
-            self.menuItems.push(menuItem)
-            self.menu.appendChild(menuItem)
-        })
-    }
-    self.renderElements()
-    that.set({selected: self.options.selected})
-    return that
-}
-
 gtadb.Map = function() {
 
     if (!(this instanceof gtadb.Map)) {
@@ -621,110 +142,12 @@ gtadb.Map = function() {
         },
         mapMode: "gta",
         mapModes: ["gta", "googlemaps"],
-        mapW: 32768,
-        mapH: 32768,
         minX: -16000,
         maxX: 4000,
         minY: -8000,
         maxY: 12000,
         minZ: 0,
         maxZ: 6,
-        zeroX: 16384,
-        zeroY: 16384,
-        tileSize: 256,
-        tileSetRanges: {
-            "satellite": {
-                0: [[1, 0], [2, 2]],
-                1: [[2, 1], [5, 5]],
-                2: [[5, 3], [10, 10]],
-                3: [[11, 7], [20, 20]],
-                4: [[23, 15], [41, 41]],
-                5: [[47, 31], [83, 83]],
-                6: [[95, 62], [166, 167]]
-            },
-            "hybrid": {
-                0: [[1, 0], [2, 2]],
-                1: [[2, 1], [5, 4]],
-                2: [[5, 3], [11, 9]],
-                3: [[10, 7], [22, 19]],
-                4: [[20, 15], [45, 39]],
-                5: [[41, 31], [90, 79]],
-                6: [[83, 62], [180, 159]]
-            },
-            "terrain": {
-                0: [[1, 0], [2, 2]],
-                1: [[2, 1], [5, 5]],
-                2: [[5, 3], [10, 10]],
-                3: [[11, 7], [20, 20]],
-                4: [[23, 15], [41, 41]],
-                5: [[47, 31], [83, 83]],
-                6: [[95, 62], [166, 167]]
-            },
-            "roadmap": {
-                0: [[1, 0], [2, 2]],
-                1: [[2, 1], [5, 4]],
-                2: [[5, 3], [11, 9]],
-                3: [[10, 7], [22, 19]],
-                4: [[20, 15], [45, 39]],
-                5: [[41, 31], [90, 79]],
-                6: [[83, 62], [180, 159]]
-            },
-            "radar": {
-                0: [[1, 0], [2, 2]],
-                1: [[2, 1], [5, 5]],
-                2: [[5, 3], [10, 10]],
-                3: [[11, 7], [20, 20]],
-                4: [[23, 15], [41, 41]],
-                5: [[47, 31], [83, 83]],
-                6: [[95, 62], [166, 167]]
-            },
-            "dupzor,51": {
-                0: [[0, 0], [2, 2]],
-                1: [[0, 1], [4, 5]],
-                2: [[0, 2], [9, 11]],
-                3: [[0, 4], [19, 23]],
-                4: [[0, 8], [38, 47]],
-                5: [[0, 17], [77, 94]],
-                6: [[1, 34], [155, 188]]
-            },
-            "yanis,11": {
-                0: [[0, 0], [2, 2]],
-                1: [[0, 1], [4, 5]],
-                2: [[0, 2], [9, 11]],
-                3: [[0, 4], [19, 23]],
-                4: [[0, 8], [38, 47]],
-                5: [[0, 17], [77, 95]],
-                6: [[0, 34], [155, 190]]}
-        },
-        tileOverlayRanges: {
-            "aiwe,1": {
-                0: [[1, 1], [1, 1]],
-                1: [[2, 3], [2, 3]],
-                2: [[4, 6], [5, 6]],
-                3: [[9, 12], [10, 13]],
-                4: [[18, 25], [20, 27]],
-                5: [[37, 50], [41, 55]],
-                6: [[74, 100], [82, 110]]
-            },
-            "martipk,5": {
-                0: [[1, 2], [1, 2]],
-                1: [[3, 4], [3, 5]],
-                2: [[6, 9], [7, 11]],
-                3: [[12, 19], [15, 23]],
-                4: [[24, 39], [31, 46]],
-                5: [[48, 79], [62, 93]],
-                6: [[96, 159], [124, 186]]
-            },
-            "rickrick,3": {
-                0: [[1, 1], [2, 2]],
-                1: [[3, 3], [4, 4]],
-                2: [[6, 6], [9, 9]],
-                3: [[12, 13], [18, 19]],
-                4: [[24, 26], [36, 39]],
-                5: [[48, 52], [73, 79]],
-                6: [[96, 104], [147, 159]]    
-            }
-        },
         x: null,
         y: null,
         z: null,
@@ -733,14 +156,6 @@ gtadb.Map = function() {
         targetY: 0,
         targetZ: 0,
         isAnimating: false,
-        isDragging: false,
-        keys: {},
-        keyboardFrame: null,
-        keyboardTimestamp: null,
-        panAmount: 0.025,
-        wheelAmount: 0.005,
-        zoomAmount: 0.025,
-        easeAmount: 0.2,
         landmarks: [],
         landmarksById: {},
         landmarksIndexById: {},
@@ -871,81 +286,58 @@ gtadb.Map = function() {
 
     self.init = function() {
 
-        self.element = document.createElement("div")
-        self.element.id = "map"
-        self.canvas = document.createElement("canvas")
-        self.canvas.id = "canvas"
-        self.element.appendChild(self.canvas)
-        self.context = self.canvas.getContext("2d")
-        self.markersLayer = document.createElement("div")
-        self.markersLayer.id = "markers"
-        self.element.appendChild(self.markersLayer)
-        self.googlemapsLayer = document.createElement("div")
-        self.googlemapsLayer.id = "googlemapsLayer"
-        self.element.appendChild(self.googlemapsLayer)
-        document.body.appendChild(self.element)
-
-        const zInt = Math.ceil(self.z)
-
-        const overlayString = Object.keys(self.tileOverlayRanges).join(",")
-        self.tiles = {}
-        self.tilePaths = {}
-        self.vs.forEach(function(v) {
-            let gta = "gta" + v
-            self.tiles[v] = {}
-            self.tilePaths[v] = {}
-            let overlays = {5: [0], 6: [0, 1]}[v]
-            self[gta].tileSets.forEach(function(tileSet) {
-                self.tiles[v][tileSet] = {}
-                self.tilePaths[v][tileSet] = {}
-                overlays.forEach(function(overlay) {
-                    self.tiles[v][tileSet][overlay] = {}
-                    self.tilePaths[v][tileSet][overlay] = {}
-                    for (let z = self.minZ; z <= self.maxZ; z++) {
-                        self.tiles[v][tileSet][overlay][z] = {}
-                        self.tilePaths[v][tileSet][overlay][z] = {}
-                        const [[x0, y0], [x1, y1]] = self.tileSetRanges[tileSet][z]
-                        for (let y = y0; y <= y1; y++) {
-                            self.tiles[v][tileSet][overlay][z][y] = {}
-                            self.tilePaths[v][tileSet][overlay][z][y] = {}
-                            for (let x = x0; x <= x1; x++) {
-                                self.tiles[v][tileSet][overlay][z][y][x] = new Image()
-                                self.tilePaths[v][tileSet][overlay][z][y][x] = tileSet
-                                if (overlay == 1) {
-                                    Object.entries(self.tileOverlayRanges).forEach(function([name, ranges]) {
-                                        if (
-                                            x >= ranges[z][0][0] && x <= ranges[z][1][0] &&
-                                            y >= ranges[z][0][1] && y <= ranges[z][1][1] && (
-                                                [ranges[z][0][0], ranges[z][1][0]].includes(x) ||
-                                                [ranges[z][0][1], ranges[z][1][1]].includes(y)
-                                            )
-                                        ) {
-                                            self.tilePaths[v][tileSet][overlay][z][y][x] = `${tileSet},${overlayString}`
-                                        } else if (
-                                            x > ranges[z][0][0] && x < ranges[z][1][0] &&
-                                            y > ranges[z][0][1] && y < ranges[z][1][1] &&
-                                            self.tilePaths[v][tileSet][overlay][z][y][x] == tileSet
-                                        ) {
-                                            self.tilePaths[v][tileSet][overlay][z][y][x] = name
-                                        }
-                                    })
-                                }
-                            }
-                        }
-                    }
-                })
-            })
-
+        self.maps = gtadb.Maps({
+            focused: true,
+            googlemaps: self.googlemaps,
+            gta5: self.gta5,
+            gta6: self.gta6,
+            mapMode: self.mapMode,
+            parentElement: document.body,
+            selected: self.l,
+            tileOverlays: self.tileOverlays,
+            v: self.v,
+            x: self.targetX,
+            y: self.targetY,
+            z: self.targetZ,
+        })
+        self.maps.addEventListener("select", function(e) {
+            const id = e.detail.id
+            self.l = id
+            self.selectLandmark(id)
+            if (id !== null) {
+                self.setHash()
+            }
+        })
+        self.maps.addEventListener("mapchange", function(e) {
+            const mapState = self.maps.get()
+            self.isAnimating = mapState.isAnimating
+            self.x = mapState.x
+            self.y = mapState.y
+            self.z = mapState.z
+            self.targetX = mapState.targetX
+            self.targetY = mapState.targetY
+            self.targetZ = mapState.targetZ
+        })
+        self.maps.addEventListener("mapchangeend", function() {
+            const mapState = self.maps.get()
+            self.isAnimating = mapState.isAnimating
+            self.x = mapState.x
+            self.y = mapState.y
+            self.z = mapState.z
+            self.targetX = mapState.targetX
+            self.targetY = mapState.targetY
+            self.targetZ = mapState.targetZ
+            self.setHash()
+        })
+        self.maps.addEventListener("mapmodechange", function(e) {
+            self.mapMode = e.detail.mapMode
+            self.setUserSettings()
+            self.updateAddItemButton()
         })
 
-        window.addEventListener("hashchange", self.onHashchange)
         document.addEventListener("keydown", self.onKeydown)
         document.addEventListener("keyup", self.onKeyup)
-        self.markersLayer.addEventListener('mousedown',self.onMousedown)
-        window.addEventListener("resize", self.onResize)
-        self.markersLayer.addEventListener("wheel", self.onWheel, {passive: false})
-
-        self.onResize(false)
+        window.addEventListener("hashchange", self.onHashchange)
 
         self.getUserSettings()
         self.api.getUser().then(function([username, sessionId, profileColor]) {
@@ -967,6 +359,22 @@ gtadb.Map = function() {
                 })
                 self.setTheme()
                 self.initUI(self.landmarksData[self.v])
+                self.maps.set({
+                    currentLandmarks: self.currentLandmarks,
+                    focused: self.focus == "map",
+                    googlemaps: self.googlemaps,
+                    gta5: self.gta5,
+                    gta6: self.gta6,
+                    landmarks: self.landmarks,
+                    mapMode: self.mapMode,
+                    selected: self.l,
+                    tileOverlays: self.tileOverlays,
+                    tileSet: self.tileSet,
+                    v: self.v,
+                    x: self.targetX,
+                    y: self.targetY,
+                    z: self.targetZ,
+                })
                 self.setMapMode(self.mapMode)
                 self.onHashchange()
             })
@@ -977,16 +385,10 @@ gtadb.Map = function() {
     }
 
     self.initMarkers = function() {
-        if (self.markers) {
-            self.removeMarkers()
-        }
-        self.markers = {}
-        self.landmarks.filter(function(landmark) {
-            return landmark.igCoordinates !== null
-        }).sort(function(a, b) {
-            return b.igCoordinates[1] - a.igCoordinates[1]
-        }).forEach(function(landmark) {
-            self.addMarker(landmark)
+        self.maps.set({
+            landmarks: self.landmarks,
+            currentLandmarks: self.currentLandmarks,
+            selected: self.l,
         })
     }
 
@@ -1003,7 +405,7 @@ gtadb.Map = function() {
         self.uiIcon.addEventListener("click", function() {
             self.toggleUI()
         })
-        self.element.appendChild(self.uiIcon)
+        self.maps.element.appendChild(self.uiIcon)
 
         self.streetviewIcon = document.createElement("div")
         self.streetviewIcon.classList.add("icon")
@@ -1011,16 +413,16 @@ gtadb.Map = function() {
         self.streetviewIcon.innerText = "X"
         self.streetviewIcon.title = "ESC"
         self.streetviewIcon.addEventListener("click", function() {
-            self.googleMap.getStreetView().setVisible(false)
+            self.maps.exitStreetView()
         })
-        self.element.appendChild(self.streetviewIcon)
+        self.maps.element.appendChild(self.streetviewIcon)
 
         self.listPanel = document.createElement("div")
         self.listPanel.className = "mapPanel"
         self.listPanel.id = "listPanel"
         self.listPanel.addEventListener("mousedown", function(e) {
             setTimeout(function() { // allow for blur
-                self.focus = "list"
+                self.setFocus("list")
                 const element = e.target.closest(".item")
                 if (element) {
                     const id = element.id.replace("item_", "")
@@ -1033,7 +435,7 @@ gtadb.Map = function() {
                 }
             })
         })
-        self.element.appendChild(self.listPanel)
+        self.maps.element.appendChild(self.listPanel)
 
         // Title Bar
 
@@ -1083,13 +485,14 @@ gtadb.Map = function() {
         self.userIcon.addEventListener("click", function() {
             self.settingsPanel.set({selected: 3})
             self.settingsDialog.open()
+            self.setFocus("dialog")
         })
         self.titleElement.appendChild(self.userIcon)
 
         self.aboutButton = gtadb.Button({
             click: function() {
                 self.aboutDialog.open()
-                self.focus = "dialog"
+                self.setFocus("dialog")
             },
             text: "ABOUT",
             tooltip: "."
@@ -1098,7 +501,7 @@ gtadb.Map = function() {
         self.settingsButton = gtadb.Button({
             click: function() {
                 self.settingsDialog.open()
-                self.focus = "dialog"
+                self.setFocus("dialog")
             },
             text: "SETTINGS",
             tooltip: ","
@@ -1262,7 +665,7 @@ gtadb.Map = function() {
         self.itemPanel = document.createElement("div")
         self.itemPanel.className = "mapPanel"
         self.itemPanel.id = "itemPanel"
-        self.element.appendChild(self.itemPanel)
+        self.maps.element.appendChild(self.itemPanel)
 
         self.itemId = document.createElement("div")
         self.itemId.id = "itemId"
@@ -1370,7 +773,7 @@ gtadb.Map = function() {
 
         self.dialogLayer = gtadb.DialogLayer()
         self.dialogLayer.element.id = "dialogLayer"
-        self.element.appendChild(self.dialogLayer.element)
+        self.maps.element.appendChild(self.dialogLayer.element)
 
         // About Dialog
 
@@ -1517,6 +920,9 @@ gtadb.Map = function() {
 
         self.aboutDialog = gtadb.Dialog({
             buttons: [self.switchToSettingsButton],
+            onClose: function() {
+                self.setFocus("list")
+            },
             content: self.aboutPanel.element,
             height: 544,
             layer: self.dialogLayer,
@@ -1765,6 +1171,9 @@ gtadb.Map = function() {
 
         self.settingsDialog = gtadb.Dialog({
             buttons: [self.switchToAboutButton],
+            onClose: function() {
+                self.setFocus("list")
+            },
             content: self.settingsPanel.element,
             height: 544,
             layer: self.dialogLayer,
@@ -1784,6 +1193,9 @@ gtadb.Map = function() {
         })
         self.photoDialog = gtadb.Dialog({
             buttons: [self.switchPhotoButton],
+            onClose: function() {
+                self.setFocus("list")
+            },
             content: document.createElement("div"),
             layer: self.dialogLayer,
             title: ""
@@ -1792,343 +1204,32 @@ gtadb.Map = function() {
 
     }
 
-    self.googlemapsPromise = null
-
-    self.initGooglemaps = function() {
-
-        if (self.googleMap) {
-            return Promise.resolve(self.googleMap)
-        }
-        if (self.googlemapsPromise) {  // already in progress
-            return self.googlemapsPromise
-        }
-
-        self.googlemapsPromise = (async function() {
-
-            (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",
-            q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,
-            e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));
-            e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);
-            e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;
-            a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";
-            m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u()
-            .then(()=>d[l](f,...n))})({
-                key: GOOGLE_MAPS_API_KEY,
-                v: "weekly",
-            });
-
-            const { Map } = await google.maps.importLibrary("maps")
-            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker")
-            self.googleMap = new Map(document.getElementById("googlemapsLayer"), {
-                mapId: "b7ed25226b73d4cc3e56b039",
-                center: {lat: self.googlemaps.lat, lng: self.googlemaps.lng},
-                zoom: self.googlemaps.zoom,
-                mapTypeId: self.googlemaps.mapType,
-                cameraControl: false,
-                fullscreenControl: false,
-                mapTypeControl: false,
-                rotateControl: true,
-                rotateControlOptions: {
-                    position: google.maps.ControlPosition.TOP_CENTER
-                },
-                scaleControl: false,
-                streetViewControl: true,
-                streetViewControlOptions: {
-                    position: google.maps.ControlPosition.BOTTOM_CENTER
-                },
-                zoomControl: false,
-            })
-
-            const streetView = self.googleMap.getStreetView()
-            streetView.setOptions({
-                disableDefaultUI: true,
-                enableCloseButton: false,
-            })
-            streetView.addListener("visible_changed", function() {
-                document.body.classList[streetView.getVisible() ? "add" : "remove"]("streetview")
-            })
-
-            self.initGooglemapsMarkers = function() {
-                if (self.googlemapsMarkers) {
-                    self.removeGooglemapsMarkers()
-                }
-                self.googlemapsMarkers = {}
-                self.landmarks.forEach(function(landmark) {
-                    if (landmark.rlCoordinates) {
-                        self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
-                    }
-                })
-            }
-
-            self.renderGooglemapsMarker = function(landmark) {
-                let customMarker = document.createElement("div")
-                customMarker.className = "marker googlemaps"
-                if (self.l == landmark.id) {
-                    customMarker.classList.add("selected")
-                }
-                customMarker.id = "googlemapsMarker_" + landmark.id
-                customMarker.style.backgroundColor = "#" + landmark.color
-                customMarker.style.display = "block"
-                const googlemapsMarker = new AdvancedMarkerElement({
-                    map: self.googleMap,
-                    content: customMarker,
-                    position: {
-                        lat: landmark.rlCoordinates[0],
-                        lng: landmark.rlCoordinates[1]
-                    },
-                    title: landmark.title,
-                    gmpClickable: true,
-                    zIndex: 10
-                })
-                googlemapsMarker.addListener("click", function({domEvent, latLng}) {
-                    const {target} = domEvent
-                    const id = target.id.replace("googlemapsMarker_", "")
-                    const isSelected = target.classList.contains("selected")
-                    Object.values(self.googlemapsMarkers).forEach(function(gM) {
-                        gM.zIndex = 10
-                    })
-                    googlemapsMarker.zIndex = 100
-                    if (isSelected && domEvent.metaKey) {
-                        self.setLandmark(null)
-                    } else if (!isSelected) {
-                        self.setLandmark(id)
-                    }
-                })
-                return googlemapsMarker
-            }
-
-            self.initGooglemapsMarkers()
-
-            google.maps.event.addListener(self.googleMap, 'idle', function() {
-                const center = self.googleMap.getCenter()
-                self.googlemaps.lat = center.lat()
-                self.googlemaps.lng = center.lng()
-                self.googlemaps.zoom = self.googleMap.getZoom()
-                self.setUserSettings()
-            })
-
-            if (self.mapMode == "googlemaps") {
-                // FIXME: shouldn't need timeout
-                setTimeout(function() {
-                    self.setMapMode("googlemaps")
-                }, 1000)
-            }
-
-            return self.googleMap
-
-        })().catch(function(err) {
-            self.googlemapsPromise = null
-            throw err
-        })
-
-        return self.googlemapsPromise
-
-    }
-
     // Map /////////////////////////////////////////////////////////////////////////////////////////
 
     self.animate = function(immediate=false) {
-        if (!immediate) {
-            self.isAnimating = true
-        }
-        const dx = self.targetX - self.x
-        const dy = self.targetY - self.y
-        const dz = self.targetZ - self.z
-        const easeAmount = immediate ? 1 : self.easeAmount
-        self.x += easeAmount * dx
-        self.y += easeAmount * dy
-        self.z += easeAmount * dz
-        const done = immediate || (
-            Math.abs(dx) <= 0.1 &&
-            Math.abs(dy) <= 0.1 &&
-            Math.abs(dz) <= 0.01
-        )
-        if (done) {
-            self.x = self.targetX
-            self.y = self.targetY
-            self.z = self.targetZ
-            self.isAnimating = false
-        } else {
-            self.x += easeAmount * dx
-            self.y += easeAmount * dy
-            self.z += easeAmount * dz
-        }
-        self.renderMap()
-        if (done) {
-            if (!immediate) {
-                self.setHash()
-            }
-        } else {
-            self.animate()
-        }
+        self.maps.set({
+            x: self.targetX,
+            y: self.targetY,
+            z: self.targetZ,
+            immediate: immediate,
+        })
     }
 
     self.renderMarkers = function() {
-        const left = -16
-        const right = self.canvas.width + 16
-        const top = -24
-        const bottom = self.canvas.height + 24
-        const mppx = self.getMppx()
-        const minX = self.x - mppx * self.canvas.width / 2
-        const maxY = self.y + mppx * self.canvas.height / 2
-        self.currentLandmarks.forEach(function(landmark) {
-            if (landmark.igCoordinates === null) {
-                return
-            }
-            const markerElement = self.markers[landmark.id]
-            const [x, y] = landmark.igCoordinates
-            const screenX = (x - minX) / mppx
-            const screenY = (maxY - y) / mppx
-            if (screenX >= left && screenX <= right && screenY >= top && screenY <= bottom) {
-                const markerLeft = screenX + "px"
-                const markerTop = screenY + "px"
-                if (markerElement.style.left != markerLeft) {
-                    markerElement.style.left = markerLeft
-                }
-                if (markerElement.style.top != markerTop) {
-                    markerElement.style.top = markerTop
-                }
-                if (markerElement.style.display != "block") {
-                    markerElement.style.display = "block"
-                }
-            } else if (markerElement.style.display != "none") {
-                markerElement.style.display = "none"
-            }
+        self.maps.set({
+            currentLandmarks: self.currentLandmarks,
+            selected: self.l,
         })
     }
 
     self.renderMap = function() {
+        self.maps.set({
+            x: self.x,
+            y: self.y,
+            z: self.z,
+            immediate: true,
+        })
 
-        function tryDrawParentTile(x, y, tx, ty) {
-            const maxParentLevels = 2
-            for (let parentZ = zInt - 1; parentZ >= Math.max(self.minZ, zInt - maxParentLevels); parentZ--) {
-                const scale = Math.pow(2, zInt - parentZ)
-                const parentX = Math.floor(x / scale)
-                const parentY = Math.floor(y / scale)
-                const parentRows = tiles[parentZ]
-                if (!parentRows || !parentRows[parentY] || !parentRows[parentY][parentX]) {
-                    continue
-                }
-                const parentImg = parentRows[parentY][parentX]
-                if (!parentImg.complete || parentImg.naturalWidth === 0) {
-                    continue
-                }
-                const srcSize = self.tileSize / scale
-                const srcX = (x - parentX * scale) * srcSize
-                const srcY = (y - parentY * scale) * srcSize
-                self.context.drawImage(
-                    parentImg,
-                    srcX, srcY, srcSize, srcSize,
-                    tx, ty, tileSize, tileSize
-                )
-                return true
-            }
-            return false
-        }
-
-        const zInt = Math.ceil(self.z)
-        const mapSize = 1024 * Math.pow(2, self.z)
-        const mppx = mapSize / self.mapW
-        const cX = (self.x + self.zeroX) * mppx
-        const cY = (self.zeroY - self.y) * mppx
-        const offsetX = self.canvas.width / 2 - cX
-        const offsetY = self.canvas.height / 2 - cY
-        const tileSize = self.tileSize * Math.pow(2, self.z - zInt)
-
-        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self["gta" + self.v].tileSet][zInt]
-
-        const minTx = Math.floor(-offsetX / tileSize)
-        const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)
-        const minTy = Math.floor(-offsetY / tileSize)
-        const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
-
-        const overlays = {5: 0, 6: self.tileOverlays}[self.v]
-        const tiles = self.tiles[self.v][self.tileSet][overlays]
-        const tilePaths = self.tilePaths[self.v][self.tileSet][overlays]
-
-        for (let y = minTy; y <= maxTy; y++) {
-            for (let x = minTx; x <= maxTx; x++) {
-                const tx = offsetX + x * tileSize
-                const ty = offsetY + y * tileSize
-                if (x < x0 || x > x1 || y < y0 || y > y1) {
-                    self.context.clearRect(tx, ty, tileSize, tileSize)
-                    continue
-                }
-                const img = tiles[zInt][y][x]
-                if (img.complete && img.naturalWidth > 0) {
-                    self.context.drawImage(img, tx, ty, tileSize, tileSize)
-                    continue
-                }
-                if (!img.src) {
-                    (function(originalX, originalY, originalZ) {
-                        img.addEventListener("load", function() {
-                            if (
-                                originalX.toFixed(3) == self.x &&
-                                originalY.toFixed(3) == self.y &&
-                                originalZ.toFixed(3) == self.z
-                            ) {
-                                requestAnimationFrame(function() {
-                                    self.context.drawImage(img, tx, ty, tileSize, tileSize)
-                                })
-                            }
-                        }, {once: true})
-                    })(self.x, self.y, self.z)
-                    const tilePath = tilePaths[zInt][y][x]
-                    img.src = `https://maps.gtadb.org/tiles/${self.v}/${tilePath}/${zInt}/${zInt},${y},${x}.jpg`
-                }
-                tryDrawParentTile(x, y, tx, ty)
-            }
-        }
-        self.renderMarkers()
-
-    }
-
-    self.updateKeyboardNavigation = function(timestamp) {
-        if (self.keyboardFrame === null) {
-            return
-        }
-
-        const frameDuration = 1000 / 60
-        const deltaFactor = self.keyboardTimestamp === null
-            ? 1
-            : Math.min((timestamp - self.keyboardTimestamp) / frameDuration, 2)
-        self.keyboardTimestamp = timestamp
-
-        const panStep = self.getMppx(self.targetZ) * self.canvas.height * self.panAmount * deltaFactor
-        const zoomStep = self.zoomAmount * deltaFactor
-
-        let targetX = self.targetX
-        let targetY = self.targetY
-        let targetZ = self.targetZ
-
-
-        if (self.keys["ArrowDown"]) {
-            targetY -= panStep
-        }
-        if (self.keys["ArrowLeft"]) {
-            targetX -= panStep
-        }
-        if (self.keys["ArrowRight"]) {
-            targetX += panStep
-        }
-        if (self.keys["ArrowUp"]) {
-            targetY += panStep
-        }
-        if (self.keys["-"]) {
-            targetZ -= zoomStep
-        }
-        if (self.keys["="]) {
-            targetZ += zoomStep
-        }
-
-        self.setTarget(targetX, targetY, targetZ)
-
-        if (Object.values(self.keys).some(Boolean)) {
-            self.keyboardFrame = requestAnimationFrame(self.updateKeyboardNavigation)
-        } else {
-            self.keyboardFrame = null
-            self.keyboardTimestamp = null
-        }
     }
 
     self.setHash = function() {
@@ -2142,17 +1243,12 @@ gtadb.Map = function() {
     }
 
     self.setTarget = function(x, y, z, immediate=false) {
-        x = self.clamp(x, self.minX, self.maxX)
-        y = self.clamp(y, self.minY, self.maxY)
-        z = self.clamp(z, self.minZ, self.maxZ)
-        if (x != self.targetX || y != self.targetY || z != self.targetZ) {
-            self.targetX = x
-            self.targetY = y
-            self.targetZ = z
-            if (!self.isAnimating || immediate) {
-                self.animate(immediate)
-            }
-        }
+        self.maps.set({
+            x: x,
+            y: y,
+            z: z,
+            immediate: immediate,
+        })
     }
 
     // Landmarks ///////////////////////////////////////////////////////////////////////////////////
@@ -2166,7 +1262,10 @@ gtadb.Map = function() {
                 self.landmarksById[ret.id] = landmark
                 self.landmarksIndexById[ret.id] = self.landmarks.length - 1
                 self.currentLandmarks.push(landmark)
-                self.addMarker(landmark)
+                self.maps.set({
+                    landmarks: self.landmarks,
+                    currentLandmarks: self.currentLandmarks,
+                })
                 self.setLandmark(ret.id)
                 self.renderMarkers()
                 self.renderList()
@@ -2191,9 +1290,11 @@ gtadb.Map = function() {
                 if (index !== void 0) {
                     self.currentLandmarks[index] = landmark
                 }
-                self.updateMarker(landmark)
-                self.renderMarkers()
-                self.updateGooglemapsMarker(landmark)
+                self.maps.set({
+                    landmarks: self.landmarks,
+                    currentLandmarks: self.currentLandmarks,
+                    selected: self.l,
+                })
                 self.renderList()
                 self.renderStatus()
                 self.renderItem()
@@ -2226,9 +1327,12 @@ gtadb.Map = function() {
                         return a
                     }, {})
                 }
-                self.removeMarker(self.l)
-                self.removeGooglemapsMarker(self.l)
                 self.l = null
+                self.maps.set({
+                    landmarks: self.landmarks,
+                    currentLandmarks: self.currentLandmarks,
+                    selected: null,
+                })
                 self.setLandmark(null)
                 self.renderList()
                 self.renderStatus()
@@ -2307,6 +1411,9 @@ gtadb.Map = function() {
         }
         self.updateRemoveItemButton()
         self.renderItem()
+        self.maps.set({
+            selected: self.l,
+        })
         if (self.mapMode == "gta") {
             self.panGooglemaps(id)
         }
@@ -2361,129 +1468,10 @@ gtadb.Map = function() {
         }, {})
     }
 
-    // Markers /////////////////////////////////////////////////////////////////////////////////////
-
-    self.addMarker = function(landmark) {
-        if (!self.markers[landmark.id]) {
-            self.markers[landmark.id] = document.createElement("div")
-            self.markers[landmark.id].id = "marker_" + landmark.id
-            self.markers[landmark.id].className = "marker"
-            /*
-            landmark.tags.forEach(function(tag) {
-                if (tag == "entertainment") {
-                    tag = "leisure"
-                }
-                if (self.landmarkTypes.includes(tag)) {
-                    self.markers[landmark.id].classList.add(tag)
-                }
-            })
-            */
-            self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
-            self.markers[landmark.id].title = landmark.title
-            self.markersLayer.appendChild(self.markers[landmark.id])
-        }
-    }
-
-    self.clearMarkers = function() {
-        self.landmarks.forEach(function(landmark) {
-            if (landmark.igCoordinates === null || self.currentLandmarks.includes(landmark)) {
-                return
-            }
-            let marker = self.markers[landmark.id]
-            marker.classList.remove("selected")
-            marker.style.display = "none"
-        })
-    }
-
-    self.removeMarker = function(id) {
-        if (self.markers[id]) {
-            self.markers[id].remove()
-            delete self.markers[id]
-        }
-    }
-
-    self.removeMarkers = function() {
-        Object.keys(self.markers).forEach(function(id) {
-            self.removeMarker(id)
-        })
-    }
-
-    self.updateMarker = function(landmark) {
-        if (landmark.igCoordinates) {
-            if (self.markers[landmark.id]) {
-                self.markers[landmark.id].style.backgroundColor = "#" + landmark.color 
-                self.markers[landmark.id].title = landmark.title
-            } else {
-                self.addMarker(landmark)
-                if (landmark.id == self.l) {
-                    self.markers[landmark.id].classList.add("selected")
-                }
-            }
-        } else if (self.markers[landmark.id]) {
-            self.removeMarker(landmark.id)
-        }
-
-    }
-
-    self.addGooglemapsMarker = function(landmark) {
-        if (!self.googlemapsMarkers) {
-            return
-        }
-        if (!self.googlemapsMarkers[landmark.id] && landmark.rlCoordinates) {
-            self.googlemapsMarkers[landmark.id] = self.renderGooglemapsMarker(landmark)
-        }
-    }
-
-    self.removeGooglemapsMarker = function(id) {
-        if (!self.googlemapsMarkers) {
-            return
-        }
-        if (self.googlemapsMarkers[id]) {
-            self.googlemapsMarkers[id].map = null
-            delete self.googlemapsMarkers[id]
-        }
-    }
-
-    self.removeGooglemapsMarkers = function() {
-        Object.keys(self.googlemapsMarkers).forEach(function(id) {
-            self.removeGooglemapsMarker(id)
-        })
-    }
-
-    self.updateGooglemapsMarker = function(landmark) {
-        if (!self.googlemapsMarkers) {
-            return
-        }
-        if (landmark.rlCoordinates) {
-            if (self.googlemapsMarkers[landmark.id]) {
-                self.googlemapsMarkers[landmark.id].position = {
-                    lat: landmark.rlCoordinates[0],
-                    lng: landmark.rlCoordinates[1]
-                }
-                self.googlemapsMarkers[landmark.id].title = landmark.title
-                self.googlemapsMarkers[landmark.id].content.style.backgroundColor = "#" + landmark.color
-            } else {
-                self.addGooglemapsMarker(landmark)
-            }
-            self.googlemapsMarkers[landmark.id].content.classList.add("selected")
-        } else if (self.googlemapsMarkers[landmark.id]) {
-            self.removeGooglemapsMarker(landmark.id)
-        }
-    }
-
     self.updateGooglemapsMarkers = function() {
-        // not yet present on page load,
-        // but gets invoked via onHashchange
-        if (!self.googlemapsMarkers) {
-            return
-        }
-        self.landmarks.forEach(function(landmark) {
-            if (!self.currentLandmarks.includes(landmark)) {
-                self.removeGooglemapsMarker(landmark.id)
-            }
-        })
-        self.currentLandmarks.forEach(function(landmark) {
-            self.addGooglemapsMarker(landmark)
+        self.maps.set({
+            currentLandmarks: self.currentLandmarks,
+            selected: self.l,
         })
     }
 
@@ -2501,7 +1489,7 @@ gtadb.Map = function() {
         self.resizePhotoDialog()
         self.switchPhotoButton.element.style.display = self.hasBothPhotos(landmark) ? "block" : "none"
         self.photoDialog.open()
-        self.focus = "dialog"
+        self.setFocus("dialog")
     }
 
     self.switchPhoto = function() {
@@ -2548,7 +1536,7 @@ gtadb.Map = function() {
     self.closePhotoDialog = function() {
         self.dialogLayer.element.style.display = "none"
         self.photoDialog.style.display = "none"
-        self.focus = "list"
+        self.setFocus("list")
     }
 
     self.hasBothPhotos = function(landmark) {
@@ -2601,7 +1589,6 @@ gtadb.Map = function() {
         if (self.l && self.currentLandmarksIndexById[self.l] === void 0) {
             self.l = null
         }
-        self.clearMarkers()
         self.renderMarkers()
         self.updateGooglemapsMarkers()
         self.sortLandmarks(self.sort) // update indexById 
@@ -2733,7 +1720,6 @@ gtadb.Map = function() {
     }
 
     self.onKeydown = function(e) {
-
         if (e.altKey || e.ctrlKey || e.metaKey) {
             return
         }
@@ -2762,25 +1748,28 @@ gtadb.Map = function() {
                     self.removeLandmark(self.l)
                 }
             } else if (e.key == "f") {
-                e.preventDefault()
-                self.findElement.focus()
-                self.findElement.select()
+                if (self.findElement) {
+                    e.preventDefault()
+                    self.findElement.focus()
+                    self.findElement.select()
+                }
             } else if (e.key == "F") {
-                if (self.find) {
+                if (self.find && self.clearFindButton) {
                     self.clearFindButton.element.dispatchEvent(new Event("mousedown", {bubbles: true}))
                 }
-            } else if (e.key == "g") {
-                self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
             } else if (e.key == "h") {
                 self.toggleUI()
             } else if (e.key == "t") {
+                e.preventDefault()
                 if (self.mapMode == "gta") {
-                    const key = `gta${self.v}`
+                    const key = "gta" + self.v
                     const tileSets = self.defaults[key].tileSets
-                    // FIXME: there should be a `setTileSet` function
-                    self.tileSet = tileSets[(tileSets.indexOf(self.tileSet) + 1) % tileSets.length]
+                    self[key].tileSet = tileSets[(tileSets.indexOf(self[key].tileSet) + 1) % tileSets.length]
+                    self.tileSet = self[key].tileSet
                     self.setUserSettings()
-                    self.renderMap()
+                    self.maps.set({
+                        tileSet: self.tileSet,
+                    })
                 } else {
                     const mapTypes = self.defaults.googlemaps.mapTypes
                     self.setMapType(mapTypes[(mapTypes.indexOf(self.googlemaps.mapType) + 1) % mapTypes.length])
@@ -2790,43 +1779,27 @@ gtadb.Map = function() {
                     self.tileOverlays = 1 - self.tileOverlays
                     self.setUserSettings()
                     if (self.v == 6) {
-                        self.renderMap()
+                        self.maps.set({
+                            tileOverlays: self.tileOverlays,
+                        })
                     }
                 }
             } else if (e.key == "v") {
-                self.setGameVersion(self.v == 5 ? 6 : 5) 
+                self.setGameVersion(self.v == 5 ? 6 : 5)
             } else if (e.key == ".") {
-                self.aboutDialog.open()
-                self.focus = "dialog"
+                if (self.aboutDialog) {
+                    self.aboutDialog.open()
+                    self.setFocus("dialog")
+                }
             } else if (e.key == ",") {
-                self.settingsDialog.open()
-                self.focus = "dialog"
-            } else if (e.key == "Escape" && self.mapMode == "googlemaps" && self.googleMap.getStreetView().getVisible()) {
-                self.googleMap.getStreetView().setVisible(false)
-                return
+                if (self.settingsDialog) {
+                    self.settingsDialog.open()
+                    self.setFocus("dialog")
+                }
             }
         }
 
-        if (self.focus == "map") {
-
-            if ("0123456".includes(e.key)) {
-                self.setTarget(self.targetX, self.targetY, parseInt(e.key))
-            } else if ([
-                "-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"
-            ].includes(e.key)) {
-                e.preventDefault()
-                self.keys[e.key] = true
-                if (self.keyboardFrame === null) {
-                    self.keyboardTimestamp = null
-                    self.keyboardFrame = requestAnimationFrame(self.updateKeyboardNavigation)
-                }
-            } else if (e.key == "Escape") {
-                if (self.l) {
-                    self.setLandmark(null)
-                }
-            }
-
-        } else if (self.focus == "list") {
+        if (self.focus == "list") {
 
             if (self.l === null) {
                 return
@@ -2860,10 +1833,8 @@ gtadb.Map = function() {
                         self.panGooglemaps(id)
                     }
                 }
-            } else if (e.key == "Escape") {
-                if (self.l) {
-                    self.setLandmark(null)
-                }
+            } else if (e.key == "Escape" && self.l) {
+                self.setLandmark(null)
             }
 
         } else if (self.focus == "dialog") {
@@ -2874,7 +1845,7 @@ gtadb.Map = function() {
                     self.settingsDialog.open()
                 } else if (e.key == "Escape") {
                     self.aboutDialog.close()
-                    self.focus = "list"
+                    self.setFocus("list")
                 }
             } else if (document.getElementById("settingsDialog")) {
                 if (e.key == ".") {
@@ -2882,16 +1853,16 @@ gtadb.Map = function() {
                     self.aboutDialog.open()
                 } else if (e.key == "Escape") {
                     self.settingsDialog.close()
-                    self.focus = "list"
+                    self.setFocus("list")
                 }
             } else if (document.getElementById("photoDialog")) {
                 if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
                     self.switchPhoto()
                 } else if (e.key == "Escape") {
                     self.photoDialog.close()
-                    self.focus = "list"
+                    self.setFocus("list")
                 }
-            } 
+            }
 
             if ("0123456fghftTv".includes(e.key)) {
                 self.dialogLayer.element.classList.add("clicked")
@@ -2906,143 +1877,15 @@ gtadb.Map = function() {
         if (activeElement.tagName == "INPUT") {
             return
         }
-        self.dialogLayer.element.classList.remove("clicked")
-        if (e.key in self.keys) {
-            self.keys[e.key] = false
-            if (!Object.values(self.keys).some(Boolean) && self.keyboardFrame !== null) {
-                cancelAnimationFrame(self.keyboardFrame)
-                self.keyboardFrame = null
-                self.keyboardTimestamp = null
-            }
+        if (self.dialogLayer) {
+            self.dialogLayer.element.classList.remove("clicked")
         }
-    }
-
-    self.onMousedown = function(e) {
-        self.focus = "map"
-        if (e.target.classList.contains("marker")) {
-            const id = e.target.id.replace("marker_", "")
-            const isSelected = e.target.classList.contains("selected")
-            if (isSelected && e.metaKey) {
-                setTimeout(function() { // allow for blur
-                    self.setLandmark(null)
-                })
-            } else if (!isSelected) {
-                setTimeout(function() { // allow for blur
-                    self.setLandmark(id)
-                })
-            } else if (isSelected && self.editing) {
-                e.stopPropagation()
-                self.isDraggingMarker = true
-                let marker = e.target.closest(".marker")
-                const startCoordinates = self.landmarksById[id].igCoordinates
-                let coordinates = startCoordinates
-                let startX = e.clientX 
-                let startY = e.clientY
-                let markerX = parseInt(marker.style.left)
-                let markerY = parseInt(marker.style.top)
-                function onMousemove(e) {
-                    const dx = e.clientX - startX
-                    const dy = e.clientY - startY
-                    marker.style.left = (markerX + dx) + 'px'
-                    marker.style.top  = (markerY + dy) + 'px'
-                    const mppx = self.getMppx()
-                    coordinates = [
-                        startCoordinates[0] + dx * mppx,
-                        startCoordinates[1] - dy * mppx
-                    ]
-                    // make sure we can zoom while dragging
-                    self.landmarksById[id].igCoordinates = coordinates
-                    self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", coordinates)
-                }
-                function onMouseup(e) {
-                    self.isDraggingMarker = false
-                    document.removeEventListener("mousemove", onMousemove)
-                    document.removeEventListener("mouseup", onMouseup)
-                    self.editLandmark(self.l, "ig_coordinates", coordinates)
-                }
-                document.addEventListener("mousemove", onMousemove)
-                document.addEventListener("mouseup", onMouseup)
-            }
-            return
-        }
-        self.isDragging = false
-        const clientX = e.clientX
-        const clientY = e.clientY
-        const [originalX, originalY, originalZ] = [self.targetX, self.targetY, self.targetZ]
-        const mppx = self.getMppx()
-        function onMousemove(e) {
-            if (!self.isDragging) {
-                self.isDragging = true
-                self.element.classList.add("dragging")
-            }
-            self.setTarget(
-                originalX - mppx * (e.clientX - clientX),
-                originalY + mppx * (e.clientY - clientY),
-                originalZ,
-                true
-            )
-        }
-        function onMouseup(e) {
-            if (self.mouseTimeout) {
-                clearTimeout(self.mouseTimeout)
-                self.mouseTimeout = null
-                const x = originalX + mppx * (clientX - self.canvas.width / 2)
-                const y = originalY - mppx * (clientY - self.canvas.height / 2)
-                self.setTarget(x, y, originalZ)
-                // FIXME: change this to right-click only
-                // navigator.clipboard.writeText(Math.round(x) + "," + Math.round(y))
-            } else if (self.isDragging) {
-                self.isDragging = false
-                self.element.classList.remove("dragging")
-                self.setHash()
-            }
-            document.removeEventListener("mousemove", onMousemove)
-            document.removeEventListener("mouseup", onMouseup)
-        }
-        self.mouseTimeout = setTimeout(function() {
-            document.addEventListener("mousemove", onMousemove)
-            self.mouseTimeout = null
-        }, 250)
-        document.addEventListener("mouseup", onMouseup)
     }
 
     self.onPaste = function(e) {
         e.preventDefault()
         const text = (e.clipboardData || window.clipboardData).getData("text/plain")
         document.execCommand("insertText", false, text)
-    }
- 
-    self.onResize = function(render=true) {
-        self.canvas.width = window.innerWidth
-        self.canvas.height = window.innerHeight
-        if (render) {
-            self.renderMap()
-        }
-        if (self.focus == "dialog") {
-            self.resizePhotoDialog()
-        }
-    }
-
-    self.onWheel = function(e) {
-        e.preventDefault()
-        if (self.wheelTimeout) {
-            clearTimeout(self.wheelTimeout)
-            self.wheelTimeout = null
-        }
-        const targetZ = self.clamp(self.z - e.deltaY * self.wheelAmount, self.minZ, self.maxZ)
-        const mppx = self.getMppx()
-        const targetMppx = self.getMppx(targetZ)
-        const offsetX = e.clientX - self.canvas.width / 2
-        const offsetY = e.clientY - self.canvas.height / 2
-        self.setTarget(
-            self.x + mppx * offsetX - targetMppx * offsetX,
-            self.y - mppx * offsetY + targetMppx * offsetY,
-            targetZ,
-            true
-        )
-        self.wheelTimeout = setTimeout(function() {
-            self.setHash()
-        }, 100)
     }
 
     // Render //////////////////////////////////////////////////////////////////////////////////////
@@ -3161,14 +2004,9 @@ gtadb.Map = function() {
                     if (self.mapMode == "gta") {
                         self.setMapMode("googlemaps")
                     }
-                    self.initGooglemaps().then(function() {
-                        const panorama = self.googleMap.getStreetView()
-                        if (panorama.getVisible()) {
-                            panorama.setVisible(false)
-                        }
-                        self.googleMap.setZoom(16)
-                        self.panGooglemaps(landmark.id)
-                    })
+                    self.maps.exitStreetView()
+                    self.maps.zoomGooglemaps(16)
+                    self.panGooglemaps(landmark.id)
                 }) 
             }
             self.itemRlCoordinates.appendChild(self.itemRlCoordinatesLink)
@@ -3285,6 +2123,15 @@ gtadb.Map = function() {
 
     // Setters /////////////////////////////////////////////////////////////////////////////////////
 
+    self.setFocus = function(focus) {
+        self.focus = focus
+        if (self.maps) {
+            self.maps.set({
+                focused: self.focus == "map",
+            })
+        }
+    }
+
     self.setGameVersion = function(gameVersion) {
         self.v = gameVersion
         const key = "gta" + self.v
@@ -3297,12 +2144,21 @@ gtadb.Map = function() {
             self.parseLandmarks(landmarks)
             document.title = "GTA " + {4: "IV", 5: "V", 6: "VI"}[self.v] + " Landmarks Map"
             self.updateGameIcon()
-            self.initMarkers()
-            self.renderMarkers()
-            if (self.googleMap) {
-                self.initGooglemapsMarkers()
-            }
-            self.renderMap()
+            self.maps.set({
+                currentLandmarks: self.currentLandmarks,
+                googlemaps: self.googlemaps,
+                gta5: self.gta5,
+                gta6: self.gta6,
+                landmarks: self.landmarks,
+                mapMode: self.mapMode,
+                selected: self.l,
+                tileOverlays: self.tileOverlays,
+                tileSet: self.tileSet,
+                v: self.v,
+                x: self.x,
+                y: self.y,
+                z: self.z,
+            })
             self.renderList()
             self.selectLandmark(self.l)
             self.targetX = self.x
@@ -3315,54 +2171,20 @@ gtadb.Map = function() {
     self.setMapMode = function(mapMode) {
         self.mapMode = mapMode
         self.setUserSettings()
-        if (self.mapMode == "gta") {
-            document.body.classList.add("gta")
-            document.body.classList.remove("googlemaps")
-            document.body.classList.remove("streetview")
-            if (self.googleMap) {
-                self.googleMap.getStreetView().setVisible(false)
-            }
-            self.canvas.style.display = "block"
-            self.markersLayer.style.display = "block"
-            self.googlemapsLayer.style.display = "none"
-            if (self.l) {
-                self.setLandmark(self.l, true)
-            }
-            self.updateAddItemButton()
-        } else {
-            document.body.classList.add("googlemaps")
-            document.body.classList.remove("gta")
-            self.canvas.style.display = "none"
-            self.markersLayer.style.display = "none"
-            self.googlemapsLayer.style.display = "block"
-            self.initGooglemaps().then(function() {
-                if (self.mapMode == "gta") {
-                    return
-                }
-                if (self.l) {
-                    self.setLandmark(self.l)
-                }
-                self.updateAddItemButton()
-                // FIXME: shouldn't be necessary
-                // self.l should be set when googlemaps initializes
-                if (self.l) {
-                    const element = document.getElementById(`googlemapsMarker_${self.l}`)
-                    if (element) {
-                        element.classList.add("selected")
-                    }
-                }
-            })
-        }
+        self.maps.set({
+            mapMode: self.mapMode,
+            selected: self.l,
+        })
+        self.updateAddItemButton()
     }
 
     self.setMapType = function(mapType) {
         self.googlemaps.mapType = mapType
         self.setUserSettings()
-        if (self.googleMap) {
-            self.googleMap.setOptions({
-                mapTypeId: google.maps.MapTypeId[self.googlemaps.mapType.toUpperCase()]
-            })
-        }
+        self.maps.set({
+            googlemaps: self.googlemaps,
+            mapType: self.googlemaps.mapType,
+        })
     }
 
     self.setTheme = function() {
@@ -3390,7 +2212,7 @@ gtadb.Map = function() {
     self.toggleUI = function() {
         self.ui = !self.ui
         if (!self.ui) {
-            self.focus = "map"
+            self.setFocus("map")
         }
         if (self.l) {
             self.itemPanel.style.display = self.ui ? "block" : "none"
@@ -3473,6 +2295,9 @@ gtadb.Map = function() {
         Object.entries(user["gta" + self.v]).forEach(function([key, value]) {
             self[key] = value
         })
+        self.targetX = self.x
+        self.targetY = self.y
+        self.targetZ = self.z
     }
 
     self.setUserSettings = function() {
@@ -3499,7 +2324,6 @@ gtadb.Map = function() {
             tileOverlays: self.tileOverlays,
             username: self.username
         }}))
-        self.canvas.className = self.tileSet.replace(",", "-")
         if (self.mapModeSelect) {
             self.mapModeSelect.value = self.mapMode
             self.mapTypeSelect.value = self.googlemaps.mapType
@@ -3523,7 +2347,7 @@ gtadb.Map = function() {
                 x: isNaN(v[gta].x) ? 0 : self.clamp(v[gta].x, self.minX, self.maxX),
                 y: isNaN(v[gta].y) ? 0 : self.clamp(v[gta].y, self.minY, self.maxY),
                 z: isNaN(v[gta].z) ? 0 : self.clamp(v[gta].z, self.minZ, self.maxZ),
-                l: v.l, // FIXME: v[gta].l in self.landmarksData[key] ? v[gta].l : self.defaults[gta].l,
+                l: v[gta].l, // FIXME: v[gta].l in self.landmarksData[key] ? v[gta].l : self.defaults[gta].l,
                 find: v[gta].find,
                 filter: self.filterOptions[v[gta].filter] ? v[gta].filter : self.defaults[gta].filter,
                 sort: self.sortOptions[v[gta].sort] ? v[gta].sort : self.defaults[gta].sort,
@@ -3631,10 +2455,6 @@ gtadb.Map = function() {
         )
     }
 
-    self.getMppx = function(z=self.z) {
-        return self.mapW / (1024 * Math.pow(2, z))
-    }
-
     self.loadJSON = async function(urls) {
         const fetchURL = async function(url) {
             const req = await fetch(url, {cache: "no-cache"})
@@ -3647,9 +2467,11 @@ gtadb.Map = function() {
     }
 
     self.panGooglemaps = function(id) {
-        if (self.googleMap && self.landmarksById[id] && self.landmarksById[id].rlCoordinates) {
-            const [lat, lng] = self.landmarksById[id].rlCoordinates
-            self.googleMap.panTo({lat: lat, lng: lng})
+        if (self.landmarksById[id] && self.landmarksById[id].rlCoordinates) {
+            self.maps.panGooglemaps(
+                self.landmarksById[id].rlCoordinates[0],
+                self.landmarksById[id].rlCoordinates[1]
+            )
         }
     }
 
