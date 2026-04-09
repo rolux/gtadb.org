@@ -359,6 +359,7 @@ gtadb.Guess = function() {
 
         self.renderList()
         self.renderStatus()
+        self.renderItem()
 
     }
 
