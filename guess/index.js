@@ -419,7 +419,7 @@ gtadb.Guess = function() {
 
     self.parseScreenshot = function(item) {
         const [idx, id, color] = item
-        const guess = self.guesses[id] || self.guesses[idx] || {}
+        const guess = self.guesses[id] || {}
         const image = `screenshots/${self.game}/${idx}_${id.replace("/", "_")}.jpg`
         return {
             idx: idx,
@@ -958,7 +958,7 @@ gtadb.Guess = function() {
         if (typeof guesses[self.game] == "object" && guesses[self.game] !== null) {
             return guesses[self.game]
         }
-        return guesses
+        return {}
     }
 
     self.formatCoordinates = function(key, coordinates) {
