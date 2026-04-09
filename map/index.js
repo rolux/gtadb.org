@@ -308,6 +308,9 @@ gtadb.Map = function() {
                 self.setHash()
             }
         })
+        self.maps.addEventListener("edit", function(e) {
+            self.editLandmark(e.detail.id, "ig_coordinates", e.detail.igCoordinates)
+        })
         self.maps.addEventListener("mapchange", function(e) {
             const mapState = self.maps.get()
             self.isAnimating = mapState.isAnimating
