@@ -819,9 +819,9 @@ gtadb.Map = function() {
         self.keyboardShortcutsElement.style.margin = "8px"
         self.keyboardShortcutsElement.innerHTML = `<table>
             <tr><td>← → ↑ ↓</td><td>Pan</td></tr>
-            <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
+            <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
             <tr><td>V</td><td>Switch game version (GTA V / GTA VI)</td></tr>
             <tr><td>G</td><td>Switch map mode (GTA / Google Maps)</td></tr>
             <tr><td>T</td><td>Switch tile set (GTA) or map type (Google Maps)</td></tr>
