@@ -1,4 +1,5 @@
 .DS_Store
+guess/logo.py
 map/config.js
 map/api/__pycache__/
 map/api/venv/
@@ -6,3 +7,4 @@ map/data/
 map/photos/
 map/trash/
 map/invite.py
+maps/config.js
