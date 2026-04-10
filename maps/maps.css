@@ -83,10 +83,12 @@ canvas.yanis-11 {
 
 body.editing:not(.googlemaps) .marker.selected {
     border: 2.5px solid rgb(192, 224, 255);
+    cursor: grab;
 }
 
 .marker.dragging {
     border: 2px solid rgb(128, 128, 128);
+    cursor: grabbing;
 }
 
 #googlemapsLayer {
