@@ -302,11 +302,8 @@ gtadb.Map = function() {
         })
         self.maps.addEventListener("select", function(e) {
             const id = e.detail.id
-            self.l = id
+            self.setLandmark(id)
             self.selectLandmark(id)
-            if (id !== null) {
-                self.setHash()
-            }
         })
         self.maps.addEventListener("edit", function(e) {
             self.editLandmark(e.detail.id, "ig_coordinates", e.detail.igCoordinates)
