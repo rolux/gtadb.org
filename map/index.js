@@ -334,6 +334,16 @@ gtadb.Map = function() {
             self.setUserSettings()
             self.updateAddItemButton()
         })
+        self.maps.element.addEventListener("mousedown", function() {
+            if (self.focus != "dialog") {
+                self.setFocus("map")
+            }
+        })
+        self.maps.element.addEventListener("wheel", function() {
+            if (self.focus != "dialog") {
+                self.setFocus("map")
+            }
+        }, {passive: true})
 
         document.addEventListener("keydown", self.onKeydown)
         document.addEventListener("keyup", self.onKeyup)
