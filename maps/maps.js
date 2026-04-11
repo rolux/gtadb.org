@@ -547,9 +547,21 @@ gtadb.Maps = function(options) {
                     if (isSelected && domEvent.metaKey) {
                         self.setLandmark(null)
                         self.selectLandmark(null)
+                        self.element.dispatchEvent(new CustomEvent("select", {
+                            detail: {
+                                id: null,
+                                landmark: null
+                            }
+                        }))
                     } else if (!isSelected) {
                         self.setLandmark(id)
                         self.selectLandmark(id)
+                        self.element.dispatchEvent(new CustomEvent("select", {
+                            detail: {
+                                id: id,
+                                landmark: self.landmarksById[id] || null
+                            }
+                        }))
                     }
                 })
                 return googlemapsMarker
