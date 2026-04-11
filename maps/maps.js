@@ -824,9 +824,6 @@ gtadb.Maps = function(options) {
                 element.classList.add("selected")
             })
         }
-        if (self.mapMode == "googlemaps") {
-            self.panGooglemaps(id)
-        }
     }
 
     self.setLandmark = function(id, pan) {
