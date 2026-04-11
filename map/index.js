@@ -327,7 +327,12 @@ gtadb.Map = function() {
             self.targetX = mapState.targetX
             self.targetY = mapState.targetY
             self.targetZ = mapState.targetZ
-            self.setHash()
+            self.googlemaps = {...mapState.googlemaps}
+            if (self.mapMode == "googlemaps") {
+                self.setUserSettings()
+            } else {
+                self.setHash()
+            }
         })
         self.maps.addEventListener("mapmodechange", function(e) {
             self.mapMode = e.detail.mapMode

@@ -575,6 +575,13 @@ gtadb.Maps = function(options) {
                 self.googlemaps.lat = center.lat()
                 self.googlemaps.lng = center.lng()
                 self.googlemaps.zoom = self.googleMap.getZoom()
+                self.element.dispatchEvent(new CustomEvent("mapchangeend", {
+                    detail: {
+                        x: self.targetX,
+                        y: self.targetY,
+                        z: self.targetZ
+                    }
+                }))
             })
 
             return self.googleMap
