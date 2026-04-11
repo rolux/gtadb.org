@@ -156,6 +156,7 @@ gtadb.Map = function() {
         targetY: 0,
         targetZ: 0,
         isAnimating: false,
+        isInitializing: true,
         landmarks: [],
         landmarksById: {},
         landmarksIndexById: {},
@@ -328,6 +329,9 @@ gtadb.Map = function() {
             self.targetY = mapState.targetY
             self.targetZ = mapState.targetZ
             self.googlemaps = {...mapState.googlemaps}
+            if (self.isInitializing) {
+                return
+            }
             if (self.mapMode == "googlemaps") {
                 self.setUserSettings()
             } else {
@@ -392,6 +396,7 @@ gtadb.Map = function() {
                 })
                 self.setMapMode(self.mapMode)
                 self.onHashchange()
+                self.isInitializing = false
             })
         })
         

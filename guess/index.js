@@ -25,6 +25,7 @@ gtadb.Guess = function() {
         targetY: 0,
         targetZ: 0,
         isAnimating: false,
+        isInitializing: true,
         screenshots: [],
         screenshotsById: {},
         screenshotsIndexById: {},
@@ -97,6 +98,9 @@ gtadb.Guess = function() {
             self.targetX = mapState.targetX
             self.targetY = mapState.targetY
             self.targetZ = mapState.targetZ
+            if (self.isInitializing) {
+                return
+            }
             self.setUserSettings()
             self.setHash()
         })
@@ -134,6 +138,7 @@ gtadb.Guess = function() {
                 z: self.targetZ,
             })
             self.onHashchange()
+            self.isInitializing = false
         })
 
         return that
