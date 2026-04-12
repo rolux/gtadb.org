@@ -302,6 +302,9 @@ gtadb.Map = function() {
             z: self.targetZ,
         })
         self.maps.addEventListener("select", function(e) {
+            if (!e.detail || !("id" in e.detail)) {
+                return
+            }
             const id = e.detail.id
             self.setLandmark(id)
             self.selectLandmark(id)
