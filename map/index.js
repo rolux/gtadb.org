@@ -1587,7 +1587,8 @@ gtadb.Map = function() {
         self.filter = filter
         self.setUserSettings()
         self.currentLandmarks = self.landmarks.filter(function(landmark) {
-            return landmark.findString.includes(self.find) && (
+            let found = self.find[0] == "!" ? !landmark.findString.includes(self.find.substr(1)) : landmark.findString.includes(self.find)
+            return found && (
                 self.filter == "all" ||
                 self.filter == "igNameConfirmed" && !landmark.igAddress.includes("?") && landmark.igAddress[0] != '"' ||
                 self.filter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?" ||
