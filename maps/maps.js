@@ -7,7 +7,7 @@ gtadb.Maps = function(options) {
     let that = this
     let self = {
         v: null,
-        vs: [5, 6],
+        vs: [4, 5, 6],
         mapMode: "gta",
         mapModes: ["gta", "googlemaps"],
         mapW: 32768,
@@ -22,6 +22,24 @@ gtadb.Maps = function(options) {
         zeroY: 16384,
         tileSize: 256,
         tileSetRanges: {
+            "original": {
+                0: [[1, 1], [2, 2]],
+                1: [[3, 3], [4, 4]],
+                2: [[6, 6], [9, 8]],
+                3: [[13, 13], [18, 17]],
+                4: [[27, 27], [37, 34]],
+                5: [[54, 54], [75, 68]],
+                6: [[109, 109], [151, 137]]
+            },
+            "elevation": {
+                0: [[1, 1], [2, 2]],
+                1: [[3, 3], [4, 4]],
+                2: [[6, 6], [9, 8]],
+                3: [[13, 13], [18, 17]],
+                4: [[27, 27], [37, 34]],
+                5: [[54, 54], [75, 68]],
+                6: [[109, 109], [151, 137]]
+            },
             "satellite": {
                 0: [[1, 0], [2, 2]],
                 1: [[2, 1], [5, 5]],
@@ -152,6 +170,16 @@ gtadb.Maps = function(options) {
                     "roadmap"
                 ],
             },
+            gta4: {
+                x: 0,
+                y: 0,
+                z: 1,
+                tileSet: "original",
+                tileSets: [
+                    "original",
+                    "elevation"
+                ]
+            },
             gta5: {
                 x: -4000,
                 y: 2000,
@@ -181,7 +209,7 @@ gtadb.Maps = function(options) {
             selected: null,
             tileOverlays: 0,
             v: 6,
-            vs: [5, 6],
+            vs: [4, 5, 6],
             x: null,
             y: null,
             z: null,
@@ -189,6 +217,7 @@ gtadb.Maps = function(options) {
     }
     self.options = {...self.defaults, ...(options || {})}
     self.options.googlemaps = {...self.defaults.googlemaps, ...((options || {}).googlemaps || {})}
+    self.options.gta4 = {...self.defaults.gta4, ...((options || {}).gta4 || {})}
     self.options.gta5 = {...self.defaults.gta5, ...((options || {}).gta5 || {})}
     self.options.gta6 = {...self.defaults.gta6, ...((options || {}).gta6 || {})}
     Object.entries(self.options).forEach(function([key, value]) {
@@ -200,6 +229,7 @@ gtadb.Maps = function(options) {
             editing: self.editing,
             focused: self.focused,
             googlemaps: self.googlemaps,
+            gta4: self.gta4,
             gta5: self.gta5,
             gta6: self.gta6,
             isAnimating: self.isAnimating,
@@ -377,7 +407,7 @@ gtadb.Maps = function(options) {
             let gta = "gta" + v
             self.tiles[v] = {}
             self.tilePaths[v] = {}
-            let overlays = {5: [0], 6: [0, 1]}[v]
+            let overlays = {4: [0], 5: [0], 6: [0, 1]}[v]
             self[gta].tileSets.forEach(function(tileSet) {
                 self.tiles[v][tileSet] = {}
                 self.tilePaths[v][tileSet] = {}
@@ -722,7 +752,7 @@ gtadb.Maps = function(options) {
         const minTy = Math.floor(-offsetY / tileSize)
         const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
 
-        const overlays = {5: 0, 6: self.tileOverlays}[self.v]
+        const overlays = {4: 0, 5: 0, 6: self.tileOverlays}[self.v]
         const tiles = self.tiles[self.v][self.tileSet][overlays]
         const tilePaths = self.tilePaths[self.v][self.tileSet][overlays]
 
