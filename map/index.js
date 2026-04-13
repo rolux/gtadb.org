@@ -134,7 +134,7 @@ gtadb.Map = function() {
     let that = this
     let self = {
         v: null,
-        vs: [5, 6],
+        vs: [4, 5, 6],
         gameColors: { // FIXME: move into class
             4: "rgb(192, 64, 64)",
             5: "rgb(64, 192, 64)",
@@ -230,6 +230,20 @@ gtadb.Map = function() {
         sessionId: "",
         defaults: {
             v: 6,
+            gta4: {
+                x: 0,
+                y: 0,
+                z: 1,
+                l: null,
+                find: "",
+                filter: "all",
+                sort: "igAddress",
+                tileSet: "original",
+                tileSets: [
+                    "original",
+                    "elevation",
+                ]
+            },
             gta5: {
                 x: -4000,
                 y: 2000,
@@ -290,6 +304,7 @@ gtadb.Map = function() {
         self.maps = gtadb.Maps({
             focused: true,
             googlemaps: self.googlemaps,
+            gta4: self.gta4,
             gta5: self.gta5,
             gta6: self.gta6,
             mapMode: self.mapMode,
@@ -485,7 +500,7 @@ gtadb.Map = function() {
         self.gameIcon.title = "V"
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
         self.gameIcon.addEventListener("click", function() {
-            self.setGameVersion(self.v == 5 ? 6 : 5)
+            self.setGameVersion(self.v == 4 ? 6 : self.v - 1)
         })
         self.titleElement.appendChild(self.gameIcon)
 
@@ -828,6 +843,9 @@ gtadb.Map = function() {
         self.landmarkDataElement.innerHTML = `<p>You are welcome
             to use the landmark data for your own purposes.</p>
             <p>The latest versions (CC-BY 4.0) can always be found here:</p>
+            <p><a href="https://map.gtadb.org/data/4/landmarks.json"
+            target="_blank">https://map.gtadb.org/data/4/landmarks.json</a>
+            </p>
             <p><a href="https://map.gtadb.org/data/5/landmarks.json"
             target="_blank">https://map.gtadb.org/data/5/landmarks.json</a>
             </p>
@@ -842,7 +860,7 @@ gtadb.Map = function() {
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
             <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
-            <tr><td>V</td><td>Switch game version (GTA V / GTA VI)</td></tr>
+            <tr><td>V</td><td>Switch game version (GTA IV/V/VI)</td></tr>
             <tr><td>G</td><td>Switch map mode (GTA / Google Maps)</td></tr>
             <tr><td>T</td><td>Switch tile set (GTA) or map type (Google Maps)</td></tr>
             <tr><td>⇧ T</td><td>Toggle overlays (GTA VI)</td></tr>
@@ -973,6 +991,28 @@ gtadb.Map = function() {
             self.setGameVersion(this.value)
         })
         self.mapSettingsElement.appendChild(self.gameVersionSelect) 
+
+        self.tileSetIVSelect = document.createElement("select")
+        self.defaults.gta4.tileSets.forEach(function(tileSet) {
+            const element = document.createElement("option")
+            element.value = tileSet
+            element.textContent = ("GTA IV TILE SET: " + tileSet).toUpperCase()
+            element.selected = tileSet == self.gta4.tileSet
+            self.tileSetIVSelect.appendChild(element)
+        })
+        self.tileSetIVSelect.value = self.gta4.tileSet
+        self.tileSetIVSelect.addEventListener("change", function() {
+            this.blur()
+            self.gta4.tileSet = this.value
+            if (self.v == 4) { // FIXME: shouldn't be needed
+                self.tileSet = self.gta4.tileSet
+                self.maps.set({
+                    tileSet: self.tileSet,
+                })
+            }
+            self.setUserSettings()
+        })
+        self.mapSettingsElement.appendChild(self.tileSetIVSelect)
 
         self.tileSetVSelect = document.createElement("select")
         self.defaults.gta5.tileSets.forEach(function(tileSet) {
@@ -1815,7 +1855,7 @@ gtadb.Map = function() {
                     }
                 }
             } else if (e.key == "v") {
-                self.setGameVersion(self.v == 5 ? 6 : 5)
+                self.setGameVersion(self.v == 4 ? 6 : self.v - 1)
             } else if (e.key == ".") {
                 if (self.aboutDialog) {
                     self.aboutDialog.open()
@@ -2177,6 +2217,7 @@ gtadb.Map = function() {
             self.maps.set({
                 currentLandmarks: self.currentLandmarks,
                 googlemaps: self.googlemaps,
+                gta4: self.gta4,
                 gta5: self.gta5,
                 gta6: self.gta6,
                 landmarks: self.landmarks,
@@ -2345,6 +2386,7 @@ gtadb.Map = function() {
         }
         localStorage.setItem("map.gtadb.org", JSON.stringify({"user": {
             v: self.v,
+            gta4: self.gta4,
             gta5: self.gta5,
             gta6: self.gta6,
             googlemaps: self.googlemaps,
@@ -2365,14 +2407,14 @@ gtadb.Map = function() {
     }
 
     self.checkUserSettings = function(v) {
-        ;["gta5", "gta6", "googlemaps"].forEach(function(key) {
+        ;["gta4", "gta5", "gta6", "googlemaps"].forEach(function(key) {
             if (!(key in v)) {
                 v[key] = {}
             }
         })
         let checked = {}
         checked.v = self.vs.includes(v.v) ? v.v : self.defaults.v
-        ;["gta5", "gta6"].forEach(function(gta) { // fixme: loop over self.vs
+        ;["gta4", "gta5", "gta6"].forEach(function(gta) { // fixme: loop over self.vs
             let key = gta[gta.length - 1]
             checked[gta] = {
                 x: isNaN(v[gta].x) ? 0 : self.clamp(v[gta].x, self.minX, self.maxX),
