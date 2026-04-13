@@ -424,7 +424,7 @@ def api():
     if action == "change_password":
         if not old_password or not new_password or not repeat_new_password:
             return {"status": "error", "message": "Missing password"}
-        if not test_against_hash(old_password, users[username]["password_hash"]):
+        if not validate_user(username, old_password):
             return {"status": "error", "message": "Invalid credentials"}
         if new_password != repeat_new_password:
             return {"status": "error", "message": "Passwords do not match"}
