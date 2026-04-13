@@ -301,6 +301,18 @@ gtadb.Map = function() {
 
     self.init = function() {
 
+        self.getUserSettings()
+        const hashVersion = {"IV": 4, "V": 5, "VI": 6}[window.location.hash.slice(1).split(",")[0]]
+        if (hashVersion && hashVersion != self.v) {
+            self.v = hashVersion
+            Object.entries(self["gta" + self.v]).forEach(function([key, value]) {
+                self[key] = value
+            })
+            self.targetX = self.x
+            self.targetY = self.y
+            self.targetZ = self.z
+        }
+
         self.maps = gtadb.Maps({
             focused: true,
             googlemaps: self.googlemaps,
@@ -375,8 +387,6 @@ gtadb.Map = function() {
         document.addEventListener("keydown", self.onKeydown)
         document.addEventListener("keyup", self.onKeyup)
         window.addEventListener("hashchange", self.onHashchange)
-
-        self.getUserSettings()
         self.api.getUser().then(function([username, sessionId, profileColor]) {
             if (username) {
                 self.onLogin(username, sessionId, profileColor)
