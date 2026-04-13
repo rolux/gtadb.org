@@ -2203,6 +2203,9 @@ gtadb.Map = function() {
     }
 
     self.setGameVersion = function(gameVersion) {
+        if (self.editing) {
+            self.stopEditing()
+        }
         self.v = gameVersion
         const key = "gta" + self.v
         ;["x", "y", "z", "l", "find", "filter", "sort", "tileSet"].forEach(function(key) {
