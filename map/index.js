@@ -828,7 +828,7 @@ gtadb.Map = function() {
         self.aboutThisMapElement = document.createElement("div")
         self.aboutThisMapElement.style.margin = "8px"
         self.aboutThisMapElement.innerHTML = `<p><b>map.gtadb.org</b>
-            is an interactive map of Grand Theft Auto V and VI that
+            is an interactive map of Grand Theft Auto IV, V and VI that
             includes all landmarks that have been identified so far.</p>
             <p>Our current goal is to find the real-life equivalent of
             every single in-game building in GTA VI. This is going to be
