@@ -878,6 +878,7 @@ gtadb.Map = function() {
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>F</td><td>Find</td></tr>
             <tr><td>⇧ F</td><td>Clear find</td></tr>
+            <tr><td>ENTER</td><td>Focus on selected landmark</td></tr>
             <tr><td>↑ ↓</td><td>Select previous / next landmark</td></tr>
             <tr><td>← →</td><td>Select first / last landmark</td></tr>
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
@@ -1516,6 +1517,30 @@ gtadb.Map = function() {
         self.setHash()
     }
 
+    self.focusLandmark = function() {
+        const landmark = self.landmarksById[self.l]
+        if (!landmark) {
+            return
+        }
+        if (self.mapMode == "gta") {
+            if (!landmark.igCoordinates) {
+                return
+            }
+            self.setTarget(
+                landmark.igCoordinates[0],
+                landmark.igCoordinates[1],
+                5
+            )
+        } else {
+            if (!landmark.rlCoordinates) {
+                return
+            }
+            self.maps.exitStreetView()
+            self.maps.zoomGooglemaps(16)
+            self.panGooglemaps(landmark.id)
+        }
+    }
+
     self.sortLandmarks = function(option) {
         self.sort = option
         self.setUserSettings()
@@ -1846,6 +1871,15 @@ gtadb.Map = function() {
                         self.setFocus("list")
                     }
                 }
+            } else if (e.key == "Enter") {
+                const landmark = self.landmarksById[self.l]
+                if (landmark && (
+                    self.mapMode == "gta" && landmark.igCoordinates ||
+                    self.mapMode == "googlemaps" && landmark.rlCoordinates
+                )) {
+                    e.preventDefault()
+                    self.focusLandmark()
+                }
             } else if (e.key == "a") {
                 if (self.sessionId && self.mapMode == "gta") {
                     self.addLandmark()
@@ -2044,14 +2078,7 @@ gtadb.Map = function() {
             if (landmark.igCoordinates) {
                 self.itemIgCoordinatesLink.classList.add("link")
                 self.itemIgCoordinatesLink.addEventListener("mousedown", function() {
-                    if (self.mapMode == "googlemaps") {
-                        self.setMapMode("gta")
-                    }
-                    self.setTarget(
-                        landmark.igCoordinates[0],
-                        landmark.igCoordinates[1],
-                        5
-                    )
+                    self.focusLandmark()
                 })
             }
             self.itemIgCoordinates.appendChild(self.itemIgCoordinatesLink)
