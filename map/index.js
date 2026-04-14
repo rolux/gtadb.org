@@ -510,7 +510,7 @@ gtadb.Map = function() {
         self.gameIcon.title = "V"
         self.gameIcon.style.backgroundColor = self.gameColors[self.v]
         self.gameIcon.addEventListener("click", function() {
-            self.setGameVersion(self.v == 4 ? 6 : self.v - 1)
+            self.setGameVersion(self.v == 6 ? 4 : self.v + 1)
         })
         self.titleElement.appendChild(self.gameIcon)
 
@@ -1933,7 +1933,7 @@ gtadb.Map = function() {
                     }
                 }
             } else if (e.key == "v") {
-                self.setGameVersion(self.v == 4 ? 6 : self.v - 1)
+                self.setGameVersion(self.v == 6 ? 4 : self.v + 1)
             } else if (e.key == ".") {
                 if (self.aboutDialog) {
                     self.aboutDialog.open()
