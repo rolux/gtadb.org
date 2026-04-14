@@ -1881,7 +1881,9 @@ gtadb.Map = function() {
                     self.mapMode == "googlemaps" && landmark.rlCoordinates
                 )) {
                     e.preventDefault()
+                    e.stopImmediatePropagation()
                     self.focusLandmark()
+                    return
                 }
             } else if (e.key == "a") {
                 if (self.sessionId && self.mapMode == "gta") {
