@@ -768,6 +768,7 @@ gtadb.Guess = function() {
                 }
             } else if (e.key == "Escape" && self.screenshotId) {
                 self.setScreenshot(null)
+                self.selectScreenshot(null)
             }
         } else if (self.focus == "dialog") {
             if (document.getElementById("aboutDialog")) {
