@@ -311,7 +311,9 @@ gtadb.Guess = function() {
             <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
             <tr><td>↑ ↓</td><td>Select previous / next list item</td></tr>
             <tr><td>← →</td><td>Select first / last list item</td></tr>
+            <tr><td>TAB</td><td>Switch focus between map and list</td></tr>
             <tr><td>.</td><td>Open About dialog</td></tr>
+            <tr><td>SPACE</td><td>Toggle screenshot dialog</td></tr>
             <tr><td>E</td><td>Edit screenshot</td></tr>
             <tr><td>ESC</td><td>Deselect screenshot / close dialog</td></tr>
             <tr><td>CMD+CLICK</td><td>Deselect selected marker / list item</td></tr>
@@ -567,6 +569,22 @@ gtadb.Guess = function() {
         self.setFocus("dialog")
     }
 
+    self.togglePhotoDialog = function() {
+        if (document.getElementById("photoDialog")) {
+            self.photoDialog.close()
+            self.setFocus("list")
+            return
+        }
+        if (!self.screenshotId) {
+            return
+        }
+        const screenshot = self.screenshotsById[self.screenshotId]
+        if (!screenshot || !screenshot.image) {
+            return
+        }
+        self.openPhotoDialog(screenshot)
+    }
+
     self.resizePhotoDialog = function() {
         if (!self.dialogPhoto.naturalWidth || !self.dialogPhoto.naturalHeight) {
             return
@@ -696,7 +714,19 @@ gtadb.Guess = function() {
         }
 
         if (self.focus != "dialog") {
-            if (e.key == "e") {
+            if (e.key == " " || e.key == "Spacebar") {
+                e.preventDefault()
+                self.togglePhotoDialog()
+            } else if (e.key == "Tab") {
+                e.preventDefault()
+                if (self.ui && self.focus != "dialog") {
+                    if (self.focus == "list") {
+                        self.setFocus("map")
+                    } else if (self.screenshotId) {
+                        self.setFocus("list")
+                    }
+                }
+            } else if (e.key == "e") {
                 if (self.screenshotId) {
                     self.editing ? self.stopEditing() : self.startEditing()
                 }
@@ -750,7 +780,10 @@ gtadb.Guess = function() {
                     self.setFocus("list")
                 }
             } else if (document.getElementById("photoDialog")) {
-                if (e.key == "Escape") {
+                if (e.key == " " || e.key == "Spacebar") {
+                    e.preventDefault()
+                    self.togglePhotoDialog()
+                } else if (e.key == "Escape") {
                     self.photoDialog.close()
                     self.setFocus("list")
                 }

@@ -881,10 +881,12 @@ gtadb.Map = function() {
             <tr><td>↑ ↓</td><td>Select previous / next landmark</td></tr>
             <tr><td>← →</td><td>Select first / last landmark</td></tr>
             <tr><td>ESC</td><td>Deselect landmark</td></tr>
+            <tr><td>TAB</td><td>Switch focus between map and list</td></tr>
             <tr><td>H</td><td>Toggle UI</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>.</td><td>Open About dialog</td></tr>
             <tr><td>,</td><td>Open Settings dialog</td></tr>
+            <tr><td>SPACE</td><td>Toggle photo dialog</td></tr>
             <tr><td>← →</td><td>Switch photo</td></tr>
             <tr><td>ESC</td><td>Close dialog</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -1618,6 +1620,22 @@ gtadb.Map = function() {
         self.setFocus("list")
     }
 
+    self.togglePhotoDialog = function() {
+        if (document.getElementById("photoDialog")) {
+            self.photoDialog.close()
+            self.setFocus("list")
+            return
+        }
+        if (!self.l) {
+            return
+        }
+        const landmark = self.landmarksById[self.l]
+        if (!landmark || (!landmark.igPhotoSize && !landmark.rlPhotoSize)) {
+            return
+        }
+        self.openPhotoDialog(landmark, landmark.igPhotoSize ? "ig" : "rl")
+    }
+
     self.hasBothPhotos = function(landmark) {
         return landmark.igPhotoSize && landmark.rlPhotoSize && (
             self.sessionId || !landmark.tags.includes("2022")
@@ -1815,7 +1833,19 @@ gtadb.Map = function() {
         }
 
         if (self.focus != "dialog") {
-            if (e.key == "a") {
+            if (e.key == " " || e.key == "Spacebar") {
+                e.preventDefault()
+                self.togglePhotoDialog()
+            } else if (e.key == "Tab") {
+                e.preventDefault()
+                if (self.ui && self.focus != "dialog") {
+                    if (self.focus == "list") {
+                        self.setFocus("map")
+                    } else if (self.l) {
+                        self.setFocus("list")
+                    }
+                }
+            } else if (e.key == "a") {
                 if (self.sessionId && self.mapMode == "gta") {
                     self.addLandmark()
                 }
@@ -1936,7 +1966,10 @@ gtadb.Map = function() {
                     self.setFocus("list")
                 }
             } else if (document.getElementById("photoDialog")) {
-                if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
+                if (e.key == " " || e.key == "Spacebar") {
+                    e.preventDefault()
+                    self.togglePhotoDialog()
+                } else if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
                     self.switchPhoto()
                 } else if (e.key == "Escape") {
                     self.photoDialog.close()
