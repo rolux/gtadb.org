@@ -1984,6 +1984,11 @@ gtadb.Map = function() {
 
         } else if (self.focus == "dialog") {
 
+            if (e.key == "Tab") {
+                e.preventDefault()
+                return
+            }
+
             if (document.getElementById("aboutDialog")) {
                 if (e.key == ",") {
                     self.aboutDialog.close()
