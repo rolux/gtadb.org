@@ -1011,9 +1011,9 @@ gtadb.Maps = function(options) {
             return
         }
 
-        if ("0123456".includes(e.key)) {
+        if (self.mapMode == "gta" && "0123456".includes(e.key)) {
             self.setTarget(self.targetX, self.targetY, parseInt(e.key))
-        } else if ([
+        } else if (self.mapMode == "gta" && [
             "-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"
         ].includes(e.key)) {
             e.preventDefault()
