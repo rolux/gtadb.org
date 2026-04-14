@@ -1436,7 +1436,7 @@ gtadb.Map = function() {
             "rlAddress": item[3].replace(/(?<=.)\?$/, ""),
             "rlAddressSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, "")),
             "rlCoordinates": item[4] && item[4].length ? item[4] : null, // FIXME: item[4] should never be null
-            "rlStatus": item[3] == "?" ? "unknown" : item[6].includes("unconfirmed") ? "unconfirmed" : "confirmed",
+            "rlStatus": (item[3] == "" || item[3] == "?") ? "unknown" : item[6].includes("unconfirmed") ? "unconfirmed" : "confirmed",
             "rlPhotoSize": item[5].length ? item[5] : null,
             "rlPhotoRatio": item[5].length ? [item[5][0] / item[5][1]] : 0,
             "tags": item[6],
@@ -1690,7 +1690,7 @@ gtadb.Map = function() {
                 self.filter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?" ||
                 self.filter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
                 self.filter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
-                self.filter == "igLatLngUnconfirmed" && (landmark.igAddress == "" || landmark.igAddress.slice(-1) == "?") ||
+                self.filter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
                 self.filter == "igLatLngUnknown" && landmark.igCoordinates === null ||
                 self.filter == "igWithPhoto" && landmark.igPhotoRatio ||
                 self.filter == "igWithoutPhoto" && !landmark.igPhotoRatio ||
