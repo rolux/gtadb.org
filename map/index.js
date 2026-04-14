@@ -2083,6 +2083,9 @@ gtadb.Map = function() {
             if (landmark.igCoordinates) {
                 self.itemIgCoordinatesLink.classList.add("link")
                 self.itemIgCoordinatesLink.addEventListener("mousedown", function() {
+                    if (self.mapMode == "googlemaps") {
+                        self.setMapMode("gta")
+                    }
                     self.focusLandmark()
                 })
             }
@@ -2151,9 +2154,7 @@ gtadb.Map = function() {
                     if (self.mapMode == "gta") {
                         self.setMapMode("googlemaps")
                     }
-                    self.maps.exitStreetView()
-                    self.maps.zoomGooglemaps(16)
-                    self.panGooglemaps(landmark.id)
+                    self.focusLandmark()
                 }) 
             }
             self.itemRlCoordinates.appendChild(self.itemRlCoordinatesLink)
