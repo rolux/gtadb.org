@@ -1833,9 +1833,10 @@ gtadb.Map = function() {
         }
 
         if (self.focus != "dialog") {
-            if (e.code == "Space" || e.key == " " || e.key == "Spacebar") {
+            if (e.key == " ") {
                 e.preventDefault()
                 self.togglePhotoDialog()
+                return
             } else if (e.key == "Tab") {
                 e.preventDefault()
                 if (self.ui && self.focus != "dialog") {
@@ -1966,9 +1967,10 @@ gtadb.Map = function() {
                     self.setFocus("list")
                 }
             } else if (document.getElementById("photoDialog")) {
-                if (e.code == "Space" || e.key == " " || e.key == "Spacebar") {
+                if (e.key == " ") {
                     e.preventDefault()
                     self.togglePhotoDialog()
+                    return
                 } else if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
                     self.switchPhoto()
                 } else if (e.key == "Escape") {
