@@ -1690,7 +1690,7 @@ gtadb.Map = function() {
                 self.filter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?" ||
                 self.filter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
                 self.filter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
-                self.filter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
+                self.filter == "igLatLngUnconfirmed" && (landmark.igAddress == "" || landmark.igAddress.slice(-1) == "?") ||
                 self.filter == "igLatLngUnknown" && landmark.igCoordinates === null ||
                 self.filter == "igWithPhoto" && landmark.igPhotoRatio ||
                 self.filter == "igWithoutPhoto" && !landmark.igPhotoRatio ||
