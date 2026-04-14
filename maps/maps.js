@@ -1011,11 +1011,11 @@ gtadb.Maps = function(options) {
             return
         }
 
-        if (self.mapMode == "gta" && "0123456".includes(e.key)) {
+        if ("0123456".includes(e.key) && self.mapMode == "gta") {
             self.setTarget(self.targetX, self.targetY, parseInt(e.key))
-        } else if (self.mapMode == "gta" && [
+        } else if ([
             "-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"
-        ].includes(e.key)) {
+        ].includes(e.key) && self.mapMode == "gta") {
             e.preventDefault()
             self.keys[e.key] = true
             self.keyboardPending = true
