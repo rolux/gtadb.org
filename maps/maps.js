@@ -1223,6 +1223,7 @@ gtadb.Maps = function(options) {
         self.canvas.className = self.tileSet.replace(",", "-")
         self.initMarkers()
         if (self.googleMap) {
+            self.removeGooglemapsMarkers()
             self.updateGooglemapsMarkers()
         }
         self.renderMap()
