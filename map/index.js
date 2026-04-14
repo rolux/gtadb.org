@@ -1980,6 +1980,7 @@ gtadb.Map = function() {
                 }
             } else if (e.key == "Escape" && self.l) {
                 self.setLandmark(null)
+                self.selectLandmark(null)
             }
 
         } else if (self.focus == "dialog") {
