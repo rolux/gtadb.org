@@ -714,7 +714,7 @@ gtadb.Guess = function() {
         }
 
         if (self.focus != "dialog") {
-            if (e.key == " " || e.key == "Spacebar") {
+            if (e.code == "Space" || e.key == " " || e.key == "Spacebar") {
                 e.preventDefault()
                 self.togglePhotoDialog()
             } else if (e.key == "Tab") {
@@ -780,7 +780,7 @@ gtadb.Guess = function() {
                     self.setFocus("list")
                 }
             } else if (document.getElementById("photoDialog")) {
-                if (e.key == " " || e.key == "Spacebar") {
+                if (e.code == "Space" || e.key == " " || e.key == "Spacebar") {
                     e.preventDefault()
                     self.togglePhotoDialog()
                 } else if (e.key == "Escape") {
