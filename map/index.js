@@ -1862,6 +1862,9 @@ gtadb.Map = function() {
                 e.preventDefault()
                 self.togglePhotoDialog()
                 return
+            } else if (e.key == "Escape" && self.l) {
+                self.setLandmark(null)
+                return
             } else if (e.key == "Tab") {
                 e.preventDefault()
                 if (self.ui && self.focus != "dialog") {
@@ -1978,11 +1981,7 @@ gtadb.Map = function() {
                         self.panGooglemaps(id)
                     }
                 }
-            } else if (e.key == "Escape" && self.l) {
-                self.setLandmark(null)
-                self.selectLandmark(null)
             }
-
         } else if (self.focus == "dialog") {
 
             if (e.key == "Tab") {

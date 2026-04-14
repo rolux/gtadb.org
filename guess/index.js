@@ -718,6 +718,9 @@ gtadb.Guess = function() {
                 e.preventDefault()
                 self.togglePhotoDialog()
                 return
+            } else if (e.key == "Escape" && self.screenshotId) {
+                self.setScreenshot(null)
+                return
             } else if (e.key == "Tab") {
                 e.preventDefault()
                 if (self.focus != "dialog") {
@@ -766,9 +769,6 @@ gtadb.Guess = function() {
                         self.setScreenshot(id, true)
                     }
                 }
-            } else if (e.key == "Escape" && self.screenshotId) {
-                self.setScreenshot(null)
-                self.selectScreenshot(null)
             }
         } else if (self.focus == "dialog") {
             if (document.getElementById("aboutDialog")) {
