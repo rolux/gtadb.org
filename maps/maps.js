@@ -567,9 +567,8 @@ gtadb.Maps = function(options) {
                     zIndex: 10
                 })
                 googlemapsMarker.addListener("click", function({domEvent}) {
-                    const {target} = domEvent
-                    const id = target.dataset.id
-                    const isSelected = target.classList.contains("selected")
+                    const id = landmark.id
+                    const isSelected = customMarker.classList.contains("selected")
                     Object.values(self.googlemapsMarkers).forEach(function(gM) {
                         gM.zIndex = 10
                     })
