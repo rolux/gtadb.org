@@ -579,8 +579,7 @@ gtadb.Maps = function(options) {
                         self.selectLandmark(null)
                         self.element.dispatchEvent(new CustomEvent("select", {
                             detail: {
-                                id: null,
-                                landmark: null
+                                id: null
                             }
                         }))
                     } else if (!isSelected) {
@@ -588,8 +587,7 @@ gtadb.Maps = function(options) {
                         self.selectLandmark(id)
                         self.element.dispatchEvent(new CustomEvent("select", {
                             detail: {
-                                id: id,
-                                landmark: self.landmarksById[id] || null
+                                id: id
                             }
                         }))
                     }
@@ -1029,6 +1027,11 @@ gtadb.Maps = function(options) {
         } else if (e.key == "Escape" && self.l) {
             self.setLandmark(null)
             self.selectLandmark(null)
+            self.element.dispatchEvent(new CustomEvent("select", {
+                detail: {
+                    id: null
+                }
+            }))
         }
     }
 
@@ -1107,8 +1110,7 @@ gtadb.Maps = function(options) {
                     self.selectLandmark(null)
                     self.element.dispatchEvent(new CustomEvent("select", {
                         detail: {
-                            id: null,
-                            landmark: null
+                            id: null
                         }
                     }))
                 })
@@ -1118,8 +1120,7 @@ gtadb.Maps = function(options) {
                     self.selectLandmark(id)
                     self.element.dispatchEvent(new CustomEvent("select", {
                         detail: {
-                            id: id,
-                            landmark: self.landmarksById[id] || null
+                            id: id
                         }
                     }))
                 })
