@@ -185,9 +185,11 @@ gtadb.Map = function() {
         },
         sort: "igAddress",
         sortOptions: {
+            igName: "in-game name",
             igAddress: "in-game address",
             igLatitude: "in-game latitude",
             igLongitude: "in-game longitude",
+            rlName: "real-life name",
             rlAddress: "real-life address",
             rlLatitude: "real-life latitude",
             rlLongitude: "real-life longitude",
@@ -1546,12 +1548,16 @@ gtadb.Map = function() {
         self.setUserSettings()
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
-                if (self.sort == "igAddress") {
+                if (self.sort == "igName") {
+                    return v.igAddress + "\n" + v.igAddressSortString
+                } else if (self.sort == "igAddress") {
                     return v.igAddressSortString + "\n" + v.rlAddressSortString
                 } else if (self.sort == "igLatitude") {
                     return v.igCoordinates ? -v.igCoordinates[1] : 1e6
                 } else if (self.sort == "igLongitude") {
                     return v.igCoordinates ? v.igCoordinates[0] : 1e6
+                } else if (self.sort == "rlName") {
+                    return self.rlAddress + "\n" + v.rlAddressSortString
                 } else if (self.sort == "rlAddress") {
                     return v.rlAddressSortString + "\n" + v.igAddressSortString
                 } else if (self.sort == "rlLatitude") {
