@@ -1559,7 +1559,7 @@ gtadb.Map = function() {
                 } else if (self.sort == "igLongitude") {
                     return v.igCoordinates ? v.igCoordinates[0] : 1e6
                 } else if (self.sort == "rlName") {
-                    return self.rlNameSortString + "\n" + v.rlAddressSortString
+                    return v.rlNameSortString + "\n" + v.rlAddressSortString
                 } else if (self.sort == "rlAddress") {
                     return v.rlAddressSortString + "\n" + v.igAddressSortString
                 } else if (self.sort == "rlLatitude") {
@@ -2593,7 +2593,7 @@ gtadb.Map = function() {
             let words = part.split(" ")
             words.forEach(function(word, w) {
                 if (/^\d+$/.test(word)) {
-                    words[w] = "0".repeat(10 - word.length) + word
+                    words[w] = word.length < 16 ? word.padStart(16, "0") : word
                 }
             })
             if (/^\d+$/.test(words[0])) {
@@ -2611,7 +2611,7 @@ gtadb.Map = function() {
 
     self.getNameSortString = function(name) {
         return name.replace(/^\d+/, function(digits) {
-            return digits.length < 16 ? digits.padStart(16, '0') : digits
+            return digits.length < 16 ? digits.padStart(16, "0") : digits
         })
     }
 
