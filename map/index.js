@@ -1431,14 +1431,14 @@ gtadb.Map = function() {
             "id": id,
             "idSortString": self.getIdSortString(id),
             "igAddress": item[0],
-            "igNameSortString": self.getNameSortString(item[0]),
-            "igAddressSortString": self.getAddressSortString(item[0]),
+            "igNameSortString": self.getAddressSortString(item[0], "name"),
+            "igAddressSortString": self.getAddressSortString(item[0], "address"),
             "igCoordinates": item[1] && item[1].length ? item[1] : null, // FIXME: item[1] should never be null
             "igPhotoSize": item[2].length ? item[2] : null,
             "igPhotoRatio": item[2].length ? [item[2][0] / item[2][1]] : 0,
             "rlAddress": item[3].replace(/(?<=.)\?$/, ""),
-            "rlNameSortString": self.getNameSortString(item[3].replace(/(?<=.)\?$/, "")),
-            "rlAddressSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, "")),
+            "rlNameSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, ""), "name"),
+            "rlAddressSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, ""), "address"),
             "rlCoordinates": item[4] && item[4].length ? item[4] : null, // FIXME: item[4] should never be null
             "rlStatus": (item[3] == "" || item[3] == "?") ? "unknown" : item[6].includes("unconfirmed") ? "unconfirmed" : "confirmed",
             "rlPhotoSize": item[5].length ? item[5] : null,
@@ -2587,7 +2587,7 @@ gtadb.Map = function() {
         return new Date(timestamp * 1000).toLocaleString('sv-SE', {hour12: false})
     }
 
-    self.getAddressSortString = function(address) {
+    self.getAddressSortString = function(address, mode) {
         let parts = address.replace(/\?/g, "ZZZ").split(", ")
         parts.forEach(function(part, p) {
             let words = part.split(" ")
@@ -2601,18 +2601,15 @@ gtadb.Map = function() {
             }
             parts[p] = words.join(" ")
         })
+        if (mode == "address") {
+            parts = parts.reverse()
+        }
         // newline since we want "Ambrosia" before "Ambrosia County"
-        return parts.reverse().join("\n")
+        return parts.join("\n")
     }
 
     self.getIdSortString = function(id) {
         return "0".repeat(10 - id.length) + id.slice(1)
-    }
-
-    self.getNameSortString = function(name) {
-        return name.replace(/^\d+/, function(digits) {
-            return digits.length < 16 ? digits.padStart(16, "0") : digits
-        })
     }
 
     self.getLandmarkTitle = function(landmark) {
