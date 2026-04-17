@@ -1431,11 +1431,13 @@ gtadb.Map = function() {
             "id": id,
             "idSortString": self.getIdSortString(id),
             "igAddress": item[0],
+            "igNameSortString": self.getNameSortString(item[0]),
             "igAddressSortString": self.getAddressSortString(item[0]),
             "igCoordinates": item[1] && item[1].length ? item[1] : null, // FIXME: item[1] should never be null
             "igPhotoSize": item[2].length ? item[2] : null,
             "igPhotoRatio": item[2].length ? [item[2][0] / item[2][1]] : 0,
             "rlAddress": item[3].replace(/(?<=.)\?$/, ""),
+            "rlNameSortString": self.getNameSortString(item[3].replace(/(?<=.)\?$/, "")),
             "rlAddressSortString": self.getAddressSortString(item[3].replace(/(?<=.)\?$/, "")),
             "rlCoordinates": item[4] && item[4].length ? item[4] : null, // FIXME: item[4] should never be null
             "rlStatus": (item[3] == "" || item[3] == "?") ? "unknown" : item[6].includes("unconfirmed") ? "unconfirmed" : "confirmed",
@@ -1549,7 +1551,7 @@ gtadb.Map = function() {
         self.currentLandmarks.sort(function(a, b) {
             let sortValues = [a, b].map(function(v) {
                 if (self.sort == "igName") {
-                    return v.igAddress + "\n" + v.igAddressSortString
+                    return v.igNameSortString + "\n" + v.igAddressSortString
                 } else if (self.sort == "igAddress") {
                     return v.igAddressSortString + "\n" + v.rlAddressSortString
                 } else if (self.sort == "igLatitude") {
@@ -1557,7 +1559,7 @@ gtadb.Map = function() {
                 } else if (self.sort == "igLongitude") {
                     return v.igCoordinates ? v.igCoordinates[0] : 1e6
                 } else if (self.sort == "rlName") {
-                    return self.rlAddress + "\n" + v.rlAddressSortString
+                    return self.rlNameSortString + "\n" + v.rlAddressSortString
                 } else if (self.sort == "rlAddress") {
                     return v.rlAddressSortString + "\n" + v.igAddressSortString
                 } else if (self.sort == "rlLatitude") {
@@ -2605,6 +2607,12 @@ gtadb.Map = function() {
 
     self.getIdSortString = function(id) {
         return "0".repeat(10 - id.length) + id.slice(1)
+    }
+
+    self.getNameSortString = function(name) {
+        return name.replace(/^\d+/, function(digits) {
+            return digits.length < 16 ? digits.padStart(16, '0') : digits
+        })
     }
 
     self.getLandmarkTitle = function(landmark) {
