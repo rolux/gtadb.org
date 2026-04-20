@@ -285,12 +285,18 @@ body.editing:not(.googlemaps) .marker.selected {
     margin: 3px 3px;
     width: 192px;
 }
+#findBar .button {
+    margin-right: 8px;
+}
 #filterBar {
     left: 0;
     top: 96px;
 }
 #filterBar select {
     width: 192px;
+}
+#filterBar .button {
+    margin-right: 8px;
 }
 .clearButton, .closeButton {
     cursor: pointer;
@@ -302,7 +308,6 @@ body.editing:not(.googlemaps) .marker.selected {
 }
 .clearButton {
     display: none;
-    margin-right: 8px;
 }
 #sortBar {
     left: 0;
