@@ -283,10 +283,9 @@ body.editing:not(.googlemaps) .marker.selected {
 }
 #findBar input {
     margin: 3px 3px;
-    width: 192px;
+    width: 188px;
 }
 #findBar .button {
-    margin-left: 0;
     margin-right: 8px;
 }
 #filterBar {
@@ -294,10 +293,9 @@ body.editing:not(.googlemaps) .marker.selected {
     top: 96px;
 }
 #filterBar select {
-    width: 192px;
+    width: 188px;
 }
 #filterBar .button {
-    margin-left: 0;
     margin-right: 8px;
 }
 .clearButton, .closeButton {
@@ -316,7 +314,7 @@ body.editing:not(.googlemaps) .marker.selected {
     top: 128px;
 }
 #sortBar select {
-    width: 192px;
+    width: 188px;
 }
 #mainBar select, #filterBar select, #sortBar select {
     margin: 2px 3px;
