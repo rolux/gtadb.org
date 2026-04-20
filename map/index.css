@@ -286,6 +286,7 @@ body.editing:not(.googlemaps) .marker.selected {
     width: 192px;
 }
 #findBar .button {
+    margin-left: 0;
     margin-right: 8px;
 }
 #filterBar {
@@ -296,6 +297,7 @@ body.editing:not(.googlemaps) .marker.selected {
     width: 192px;
 }
 #filterBar .button {
+    margin-left: 0;
     margin-right: 8px;
 }
 .clearButton, .closeButton {
