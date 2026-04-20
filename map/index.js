@@ -514,29 +514,6 @@ gtadb.Map = function() {
             window.location.href = "https://gtadb.org"
         })
         self.titleElement.appendChild(self.siteIcon)
-
-        /*
-        self.gameIcon = document.createElement("div")
-        self.gameIcon.classList.add("icon")
-        self.gameIcon.id = "gameIcon"
-        self.gameIcon.innerText = {4: "IV", 5: "V", 6: "VI"}[self.v]
-        self.gameIcon.title = "V"
-        self.gameIcon.style.backgroundColor = self.gameColors[self.v]
-        self.gameIcon.addEventListener("click", function() {
-            self.setGameVersion(self.v == 6 ? 4 : self.v + 1)
-        })
-        self.titleElement.appendChild(self.gameIcon)
-
-        self.googlemapsIcon = document.createElement("div")
-        self.googlemapsIcon.classList.add("icon")
-        self.googlemapsIcon.id = "googlemapsIcon"
-        self.googlemapsIcon.innerText = "G"
-        self.googlemapsIcon.title = "G"
-        self.googlemapsIcon.addEventListener("click", function() {
-            self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
-        })
-        self.titleElement.appendChild(self.googlemapsIcon)
-        */
         
         self.userIcon = document.createElement("div")
         self.userIcon.classList.add("icon")
