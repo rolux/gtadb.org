@@ -355,6 +355,9 @@ body.editing:not(.googlemaps) .marker.selected {
     bottom: 0;
     left: 0;
 }
+#listStatusBar .button:nth-child(2) {
+    margin-right: 8px;
+}
 #itemPanel {
     display: none;
     font-size: 13px;
