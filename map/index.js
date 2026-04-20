@@ -566,7 +566,7 @@ gtadb.Map = function() {
         self.gameElement.value = self.v
         self.gameElement.addEventListener("change", function() {
             this.blur()
-            self.setGameVersion(this.value)
+            self.setGameVersion(parseInt(this.value))
         })
         self.gameElement.title = "V"
 
