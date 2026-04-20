@@ -162,6 +162,15 @@ gtadb.Map = function() {
         landmarksIndexById: {},
         currentLandmarks: [],
         currentLandmarksIndexById: {},
+        gameOptions: {
+            4: "GTA IV",
+            5: "GTA V",
+            6: "GTA VI"
+        },
+        mapOptions: {
+            "gta": "Game Map",
+            "googlemaps": "Google Maps"
+        },
         find: "",
         filter: "all",
         filterOptions: {
@@ -373,6 +382,7 @@ gtadb.Map = function() {
         self.maps.addEventListener("mapmodechange", function(e) {
             self.mapMode = e.detail.mapMode
             self.setUserSettings()
+            self.updateModeElement()
             self.updateAddItemButton()
         })
         self.maps.element.addEventListener("mousedown", function() {
@@ -505,6 +515,7 @@ gtadb.Map = function() {
         })
         self.titleElement.appendChild(self.siteIcon)
 
+        /*
         self.gameIcon = document.createElement("div")
         self.gameIcon.classList.add("icon")
         self.gameIcon.id = "gameIcon"
@@ -525,6 +536,7 @@ gtadb.Map = function() {
             self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
         })
         self.titleElement.appendChild(self.googlemapsIcon)
+        */
         
         self.userIcon = document.createElement("div")
         self.userIcon.classList.add("icon")
@@ -563,6 +575,45 @@ gtadb.Map = function() {
         })
         self.titleBar.element.id = "titleBar"
         self.listPanel.appendChild(self.titleBar.element)
+
+        // Game & Mode
+
+        self.gameElement = document.createElement("select")
+        Object.entries(self.gameOptions).forEach(function([key, value]) {
+            const element = document.createElement("option")
+            element.value = key
+            element.textContent = value.toUpperCase()
+            element.selected = key == self.v
+            self.gameElement.appendChild(element)
+        })
+        self.gameElement.value = self.v
+        self.gameElement.addEventListener("change", function() {
+            this.blur()
+            self.setGameVersion(this.value)
+        })
+        self.gameElement.title = "V"
+
+        self.modeElement = document.createElement("select")
+        Object.entries(self.mapOptions).forEach(function([key, value]) {
+            const element = document.createElement("option")
+            element.value = key
+            element.textContent = value.toUpperCase()
+            element.selected = key == self.mapMode
+            self.modeElement.appendChild(element)
+        })
+        self.modeElement.value = self.mapMode
+        self.modeElement.addEventListener("change", function() {
+            this.blur()
+            self.setMapMode(this.value)
+        })
+        self.modeElement.title = "G"
+
+        self.mainBar = gtadb.Bar({
+            buttons: [{element: self.modeElement}],  // FIXME: ugly
+            element: self.gameElement
+        })
+        self.mainBar.element.id = "mainBar"
+        self.listPanel.appendChild(self.mainBar.element)
 
         // Find
 
@@ -1486,7 +1537,7 @@ gtadb.Map = function() {
             element = document.querySelector("#item_" + self.l)
             if (element) {
                 element.classList.add("selected")
-                const top = 128, bottom = window.innerHeight - 64
+                const top = 160, bottom = window.innerHeight - 64
                 const y = element.getBoundingClientRect().y
                 if (y < top) {
                     self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
@@ -1989,7 +2040,10 @@ gtadb.Map = function() {
                         self.panGooglemaps(id)
                     }
                 }
+            } else if (e.key == "g") {
+                self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
             }
+
         } else if (self.focus == "dialog") {
 
             if (e.key == "Tab") {
@@ -2302,7 +2356,7 @@ gtadb.Map = function() {
         self.loadJSON([url]).then(function([landmarks]) {
             self.parseLandmarks(landmarks)
             document.title = "GTA " + {4: "IV", 5: "V", 6: "VI"}[self.v] + " Landmarks Map"
-            self.updateGameIcon()
+            self.updateGameElement()
             self.maps.set({
                 currentLandmarks: self.currentLandmarks,
                 googlemaps: self.googlemaps,
@@ -2383,6 +2437,16 @@ gtadb.Map = function() {
 
     // Updates /////////////////////////////////////////////////////////////////////////////////////
 
+    self.updateGameElement = function() {
+        // self.gameIcon.style.backgroundColor = self.gameColors[self.v]
+        // self.gameIcon.innerText = {4: "IV", 5: "V", 6: "VI"}[self.v]
+        self.gameElement.value = self.v
+    }
+
+    self.updateModeElement = function() {
+        self.modeElement.value = self.mapMode
+    }
+
     self.updateAddItemButton = function() {
         if (!self.addItemButton) {
             return
@@ -2433,11 +2497,6 @@ gtadb.Map = function() {
         self.userIcon.style.backgroundColor = "#" + self.profileColor
         self.userIcon.innerText = self.username[0]
         self.userIcon.title = self.sessionId ? `USER: ${self.username}` : ""
-    }
-
-    self.updateGameIcon = function() {
-        self.gameIcon.style.backgroundColor = self.gameColors[self.v]
-        self.gameIcon.innerText = {4: "IV", 5: "V", 6: "VI"}[self.v]
     }
 
     // User ////////////////////////////////////////////////////////////////////////////////////////
