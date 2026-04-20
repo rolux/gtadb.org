@@ -302,6 +302,7 @@ body.editing:not(.googlemaps) .marker.selected {
 }
 .clearButton {
     display: none;
+    margin-right: 8px;
 }
 #sortBar {
     left: 0;
