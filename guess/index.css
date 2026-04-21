@@ -52,6 +52,7 @@ td {
 }
 
 .mapPanel {
+    backdrop-filter: blur(4px);
     bottom: 0;
     position: absolute;
     top: 0;
