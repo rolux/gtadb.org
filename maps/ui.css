@@ -205,6 +205,7 @@ textarea:focus {
 }
 
 .dialog {
+    backdrop-filter: blur(4px);
     background-color: transparent;
     border-radius: 8px;
 }
