@@ -325,7 +325,7 @@ body.editing:not(.googlemaps) .marker.selected {
     bottom: 32px;
     left: 0;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
     position: absolute;
     top: 160px;
     width: 256px;
