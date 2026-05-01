@@ -1341,7 +1341,6 @@ gtadb.Map = function() {
             z: self.z,
             immediate: true,
         })
-
     }
 
     self.setHash = function() {
@@ -1519,7 +1518,7 @@ gtadb.Map = function() {
                 if (y < top) {
                     self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
                 } else if (y > bottom) {
-                    self.listBody.scrollTo (0, self.listBody.scrollTop + y - bottom)
+                    self.listBody.scrollTo(0, self.listBody.scrollTop + y - bottom)
                 }
             }
         }
