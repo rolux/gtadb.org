@@ -338,6 +338,7 @@ body.editing:not(.googlemaps) .marker.selected {
 }
 #listBody > .item div {
     overflow-x: hidden;
+    pointer-events: none;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
