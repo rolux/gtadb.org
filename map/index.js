@@ -1721,8 +1721,8 @@ gtadb.Map = function() {
             let found = self.find[0] == "!" ? !landmark.findString.includes(self.find.substr(1)) : landmark.findString.includes(self.find)
             return found && (
                 self.filter == "all" ||
-                self.filter == "igNameConfirmed" && landmark.igAddress && !landmark.igAddress.includes("?") && landmark.igAddress[0] != '"' ||
-                self.filter == "igNameUnconfirmed" && landmark.igAddress.includes("?") && landmark.igAddress[0] != "?" ||
+                self.filter == "igNameConfirmed" && landmark.igAddress && landmark.igAddress[0] != "?" && !landmark.igAddress.includes("?,") && landmark.igAddress[0] != '"' ||
+                self.filter == "igNameUnconfirmed" && landmark.igAddress[0] != "?" && landmark.igAddress.includes("?,") ||
                 self.filter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
                 self.filter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
                 self.filter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
