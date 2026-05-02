@@ -2625,12 +2625,10 @@ gtadb.Map = function() {
     self.getAddressSortString = function(address, mode) {
         let parts = address.replace(/\?/g, "ZZZ").split(", ")
         parts.forEach(function(part, p) {
-            let words = part.split(" ")
-            words.forEach(function(word, w) {
-                if (/^\d+$/.test(word)) {
-                    words[w] = word.length < 16 ? word.padStart(16, "0") : word
-                }
+            part = part.replace(/\d+/g, function(digits) {
+                return digits.length < 16 ? digits.padStart(16, "0") : digits
             })
+            let words = part.split(" ")
             if (/^\d+$/.test(words[0])) {
                 words = words.slice(1).concat(words[0])
             }
