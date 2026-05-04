@@ -343,9 +343,7 @@ gtadb.Map = function() {
             if (!e.detail || !("id" in e.detail)) {
                 return
             }
-            const id = e.detail.id
-            self.setLandmark(id)
-            self.selectLandmark(id)
+            self.selectLandmark(e.detail.id)
         })
         self.maps.addEventListener("edit", function(e) {
             self.editLandmark(e.detail.id, "ig_coordinates", e.detail.igCoordinates)
@@ -487,9 +485,9 @@ gtadb.Map = function() {
                 if (element) {
                     const id = element.id.replace("item_", "")
                     if (e.metaKey && element.classList.contains("selected")) {
-                        self.setLandmark(null)
+                        self.selectLandmark(null)
                     } else {
-                        self.setLandmark(id, true)
+                        self.selectLandmark(id, true)
                         self.panGooglemaps(id)
                     }
                 }
@@ -680,9 +678,7 @@ gtadb.Map = function() {
             this.blur()
             self.sortLandmarks(this.value)
             self.renderList()
-            if (self.l) {
-                self.selectLandmark(self.l)
-            }
+            self.scrollToLandmark()
         })
         self.sortBar = gtadb.Bar({
             buttons: [],
@@ -760,7 +756,7 @@ gtadb.Map = function() {
 
         self.closeItemButton = gtadb.Button({
             click: function() {
-                self.setLandmark(null)
+                self.selectLandmark(null)
             },
             text: "CLOSE",
             tooltip: "ESC"
@@ -1377,7 +1373,7 @@ gtadb.Map = function() {
                     landmarks: self.landmarks,
                     currentLandmarks: self.currentLandmarks,
                 })
-                self.setLandmark(ret.id)
+                self.selectLandmark(ret.id)
                 self.renderMarkers()
                 self.renderList()
                 self.renderStatus()
@@ -1444,7 +1440,7 @@ gtadb.Map = function() {
                     currentLandmarks: self.currentLandmarks,
                     selected: null,
                 })
-                self.setLandmark(null)
+                self.selectLandmark(null)
                 self.renderList()
                 self.renderStatus()
             } else {
@@ -1492,7 +1488,24 @@ gtadb.Map = function() {
         self.currentLandmarks = self.landmarks.slice()
     }
 
-    self.selectLandmark = function(id) {
+    self.selectLandmark = function(id, pan) {
+        if (id != self.l && self.editing) {
+            self.stopEditing()
+        }
+        self.l = id
+        if (pan) {
+            const landmark = self.landmarksById[id]
+            if (landmark.igCoordinates) {
+                self.targetX = landmark.igCoordinates[0]
+                self.targetY = landmark.igCoordinates[1]
+                self.targetZ = self.z
+            }
+        }
+        self.setHash()
+    }
+
+    self.setLandmark = function(id) {
+        // only called from setHash
         self.l = id
         self.setUserSettings()
         document.querySelectorAll(".marker.selected").forEach(function(element) {
@@ -1509,19 +1522,11 @@ gtadb.Map = function() {
         if (element) {
             element.classList.remove("selected")
         }
-        if (self.l) {
-            element = document.querySelector("#item_" + self.l)
-            if (element) {
-                element.classList.add("selected")
-                const top = 160, bottom = window.innerHeight - 64
-                const y = element.getBoundingClientRect().y
-                if (y < top) {
-                    self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
-                } else if (y > bottom) {
-                    self.listBody.scrollTo(0, self.listBody.scrollTop + y - bottom)
-                }
-            }
+        element = document.querySelector("#item_" + self.l)
+        if (element) {
+            element.classList.add("selected")
         }
+        self.scrollToLandmark()
         self.updateRemoveItemButton()
         self.renderItem()
         self.maps.set({
@@ -1532,20 +1537,22 @@ gtadb.Map = function() {
         }
     }
 
-    self.setLandmark = function(id, pan) {
-        if (id != self.l && self.editing) {
-            self.stopEditing()
+    self.scrollToLandmark = function() {
+        if (!self.l) {
+            return
         }
-        self.l = id
-        if (pan) {
-            const landmark = self.landmarksById[id]
-            if (landmark.igCoordinates) {
-                self.targetX = landmark.igCoordinates[0]
-                self.targetY = landmark.igCoordinates[1]
-                self.targetZ = self.z
-            }
+        element = document.querySelector("#item_" + self.l)
+        if (!element) {
+            return
         }
-        self.setHash()
+        element.classList.add("selected")
+        const top = 160, bottom = window.innerHeight - 64
+        const y = element.getBoundingClientRect().y
+        if (y < top) {
+            self.listBody.scrollTo(0, self.listBody.scrollTop + y - top)
+        } else if (y > bottom) {
+            self.listBody.scrollTo(0, self.listBody.scrollTop + y - bottom)
+        }
     }
 
     self.focusLandmark = function() {
@@ -1752,7 +1759,7 @@ gtadb.Map = function() {
         self.sortLandmarks(self.sort) // update indexById 
         self.renderList()
         self.renderStatus()
-        self.setLandmark(self.l) // scroll into view. calls renderItem
+        self.selectLandmark(self.l) // scroll into view. calls renderItem
     }
 
     // Event Handlers
@@ -1824,7 +1831,7 @@ gtadb.Map = function() {
                             self.clearFindButton.element.style.display = "block"
                             self.filterElement.value = "all"
                             self.clearFilterButton.element.style.display = "none"
-                            self.findAndFilterLandmarks(f, "all") // this calls setLandmark, which calls setHash
+                            self.findAndFilterLandmarks(f, "all") // this calls selectLandmark, which calls setHash
                         }
                     }
                 }
@@ -1833,7 +1840,7 @@ gtadb.Map = function() {
         if (l && self.currentLandmarksIndexById[l] === void 0) {
             // selected landmark is not in current find & filter
             self.clearFindAndFilter()
-            self.findAndFilterLandmarks("", "all") // this calls setLandmark, which calls setHash
+            self.findAndFilterLandmarks("", "all") // this calls selectLandmark, which calls setHash
         }
         if (l || f || values.length == 4) {
             values = values.slice(0, -1)
@@ -1870,7 +1877,7 @@ gtadb.Map = function() {
         self.findAndFilterLandmarks(self.find, self.filter)
         if (self.l != self.previousL) { // FIXME: ugly
             self.previousL = self.l
-            self.selectLandmark(l)
+            self.setLandmark(l)
         }
         if (!self.isAnimating) {
             self.animate()
@@ -1898,7 +1905,7 @@ gtadb.Map = function() {
                 self.togglePhotoDialog()
                 return
             } else if (e.key == "Escape" && self.l) {
-                self.setLandmark(null)
+                self.selectLandmark(null)
                 return
             } else if (e.key == "Tab") {
                 e.preventDefault()
@@ -1994,25 +2001,25 @@ gtadb.Map = function() {
                 if (e.key == "ArrowDown") {
                     if (index < self.currentLandmarks.length - 1) {
                         id = self.currentLandmarks[index + 1].id
-                        self.setLandmark(id, true)
+                        self.selectLandmark(id, true)
                         self.panGooglemaps(id)
                     }
                 } else if (e.key == "ArrowLeft") {
                     if (index > 0) {
                         id = self.currentLandmarks[0].id
-                        self.setLandmark(id, true)
+                        self.selectLandmark(id, true)
                         self.panGooglemaps(id)
                     }
                 } else if (e.key == "ArrowRight") {
                     if (index < self.currentLandmarks.length - 1) {
                         id = self.currentLandmarks[self.currentLandmarks.length - 1].id
-                        self.setLandmark(id, true)
+                        self.selectLandmark(id, true)
                         self.panGooglemaps(id)
                     }
                 } else if (e.key == "ArrowUp") {
                     if (index > 0) {
                         id = self.currentLandmarks[index - 1].id
-                        self.setLandmark(id, true)
+                        self.selectLandmark(id, true)
                         self.panGooglemaps(id)
                     }
                 }
@@ -2350,7 +2357,6 @@ gtadb.Map = function() {
                 z: self.z,
             })
             self.renderList()
-            self.selectLandmark(self.l)
             self.targetX = self.x
             self.targetY = self.y
             self.targetZ = self.z
