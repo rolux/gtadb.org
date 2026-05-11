@@ -865,7 +865,7 @@ gtadb.Map = function() {
         self.sourceCodeElement = document.createElement("div")
         self.sourceCodeElement.style.margin = "8px"
         self.sourceCodeElement.innerHTML = `<p>This website, including
-            the GTA VI map application, is free Open Source software
+            the GTA map application, is free Open Source software
             (MIT License), written in JavaScript and Python.</p>
             <p>You can get the source code on GitHub. That's also the
             best place to request features or report bugs.</p>
@@ -877,16 +877,11 @@ gtadb.Map = function() {
         self.landmarkDataElement = document.createElement("div")
         self.landmarkDataElement.style.margin = "8px"
         self.landmarkDataElement.innerHTML = `<p>You are welcome
-            to use the landmark data for your own purposes.</p>
+            to use the landmark data, photos and map tiles for your own
+            purposes.</p>
             <p>The latest versions (CC-BY 4.0) can always be found here:</p>
-            <p><a href="https://map.gtadb.org/data/4/landmarks.json"
-            target="_blank">https://map.gtadb.org/data/4/landmarks.json</a>
-            </p>
-            <p><a href="https://map.gtadb.org/data/5/landmarks.json"
-            target="_blank">https://map.gtadb.org/data/5/landmarks.json</a>
-            </p>
-            <p><a href="https://map.gtadb.org/data/6/landmarks.json"
-            target="_blank">https://map.gtadb.org/data/6/landmarks.json</a>
+            <p><a href="https://github.com/rolux/gtadb.org"
+            target="_blank">https://github.com/rolux/gtadb.org</a>
             </p>`
 
         self.keyboardShortcutsElement = document.createElement("div")
@@ -931,13 +926,13 @@ gtadb.Map = function() {
             <p>In principle, everything that is based on something in real life, including
             natural features. If a landmark contains other landmarks, it doesn't have to be
             added. For example, rather than adding "Key Lento", add buildings on Key Lento.
-            Beaches or parks with landmarks may be an exception.</p>
+            Potential exceptions are beaches or parks containing other landmarks, or
+            buildings with multiple businesses.</p>
             <p class="title">IDs</p>
-            <p>IDs are assigned sequentially and are not supposed to mean anything. Deleting
-            landmarks will create holes in the sequence of IDs (unless it's the most
-            recently added landmark), so delete sparingly. IDs are meant to be tied to the
-            in-game landmark – so if a marker is associated with the wrong landmark, don't
-            edit the address, but move the marker to the correct location.</p>
+            <p>IDs are assigned sequentially and are not supposed to mean anything. The
+            are meant to be tied to once specific in-game landmark – so if a marker is
+            associated with the wrong landmark, don't edit the address, but move the marker
+            to the correct location.</p>
             <p class="title">In-game addresses</p>
             <p>The standard format is "Name, Street Address, City". If there is no name, it
             can be left out. If the landmark is not in a specific city or town, use the
@@ -948,11 +943,12 @@ gtadb.Map = function() {
             <p>For now, they can be approximate, based on the most accurate map. Once there
             is an official map, markers can be moved to their precise in-game location.</p>
             <p class="title">In-game photos</p>
-            <p>For now, they are not needed, other than for disambiguation purposes. In
-            cases where we have no information for the landmark, it's a good idea to add a
-            photo to make it obvious what the marker is referring to. If you're adding a
-            screenshot from 2022, please add a 2022 tag to make sure the image is not
-            visible to the general public.</p>
+            <p>For now, they are not strictly needed, other than for disambiguation
+            purposes. In cases where we have no information for the landmark, it's a good
+            idea to add a photo to make it obvious what the marker is referring to. If
+            you're adding a screenshot from 2022, please add a 2022 tag to make sure the
+            image is not visible to the general public. Preferred aspect ratios are 16:9 or
+            1:1.</p>
             <p class="title">Real-life addresses</p>
             <p>The standard format is "Name, Street Address, FL 12345, USA". If there is no
             name, it can be left out. Generally, the address should be chosen so that Google
@@ -962,11 +958,12 @@ gtadb.Map = function() {
             then the original name from that period should be used.
             </p>
             <p class="title">Real-life coordinates</p>
-            <p>Currently, these are based on the real-life address and cannot be edited.
-            This may change in the future.</p>
+            <p>These are based on the real-life address and cannot be edited, since we want
+            addresses and coordinates to stay in sync.</p>
             <p class="title">Real-life photos</p>
-            <p>Again, these are not needed for now. Later on, the goal is to add matching
-            in-game and real-life photos that best convey the similarities.</p>
+            <p>Again, these are not strictly needed for now. Once the game has been released,
+            the goal is to add matching in-game and real-life photos that best convey the
+            similarities. Preferred aspect ratios are 16:9 or 1:1.</p>
             <p class="title">Tags</p>
             <p>Tags can be anything. Common tags are DEMOLISHED (for landmarks that no longer
             exist in real life), EVENTS (for places we only know of by way of the 2022 events
@@ -1006,7 +1003,7 @@ gtadb.Map = function() {
             content: self.aboutPanel.element,
             height: 544,
             layer: self.dialogLayer,
-            title: "GTA VI Landmarks Map",
+            title: "GTA Landmarks Map",
             width: 768
         })
         self.aboutDialog.element.id = "aboutDialog"
