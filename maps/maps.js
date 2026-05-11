@@ -612,6 +612,7 @@ gtadb.Maps = function(options) {
             })
 
             return self.googleMap
+
         })().catch(function(err) {
             self.googlemapsPromise = null
             throw err
