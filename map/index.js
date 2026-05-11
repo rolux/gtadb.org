@@ -880,9 +880,10 @@ gtadb.Map = function() {
             to use the landmark data, photos and map tiles for your own
             purposes.</p>
             <p>The latest versions (CC-BY 4.0) can always be found on
-            github.</p>
-            <p><tt>git clone https://github.com/rolux/gtadb.org<br/>
-            cd gtadb.org<<br/>
+            GitHub:</p>
+            <p><tt>git clone https://github.com/rolux/gtadb.org</tt></p>
+            <p>To update, simply:</p>
+            <p><tt>cd gtadb.org<br/>
             git pull</tt></p>`
 
         self.keyboardShortcutsElement = document.createElement("div")
