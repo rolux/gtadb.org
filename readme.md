@@ -6,6 +6,6 @@ This is the repository for [gtadb.org](https://gtadb.org).
 
 It includes the source code for [map.gtadb.org](https://map.gtadb.org) – a collaboratively editable map of landmarks found in Grand Theft Auto and their real-world counterparts. If you're looking for a vanilla JavaScript + Python map implementation – no third-party JS libraries other than the Google Maps API, and only Flask and Pillow for the backend –, then this may be it.
 
-You are welcome to use the [landmark data](https://github.com/rolux/gtadb.org/tree/main/map/data), [photos](https://github.com/rolux/gtadb.org/tree/main/map/photos) or [map tiles](https://github.com/rolux/gtadb.org/tree/main/maps/tiles) for your own purposes.
+You are welcome to use the [landmark data](https://github.com/rolux/gtadb.org/tree/main/map/data), [photos](https://github.com/rolux/gtadb.org/tree/main/map/photos) or [map tiles](https://github.com/rolux/gtadb.org/tree/main/maps/tiles) for your own purposes. Please do not fetch the live data or media from gtadb.org – simply `git pull` for updates.
 
 MIT (code) / CC BY 4.0 (data). Thanks to all contributors!
