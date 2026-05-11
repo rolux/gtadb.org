@@ -879,10 +879,11 @@ gtadb.Map = function() {
         self.landmarkDataElement.innerHTML = `<p>You are welcome
             to use the landmark data, photos and map tiles for your own
             purposes.</p>
-            <p>The latest versions (CC-BY 4.0) can always be found here:</p>
-            <p><a href="https://github.com/rolux/gtadb.org"
-            target="_blank">https://github.com/rolux/gtadb.org</a>
-            </p>`
+            <p>The latest versions (CC-BY 4.0) can always be found on
+            github.</p>
+            <p><tt>git clone https://github.com/rolux/gtadb.org<br/>
+            cd gtadb.org<<br/>
+            git pull</tt></p>`
 
         self.keyboardShortcutsElement = document.createElement("div")
         self.keyboardShortcutsElement.style.margin = "8px"
