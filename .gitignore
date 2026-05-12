@@ -1,5 +1,5 @@
 .DS_Store
-rsync.sh
+rsync-add-commit-push.sh
 guess/logo.py
 map/config.js
 map/api/__pycache__/
