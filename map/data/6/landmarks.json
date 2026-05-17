@@ -824,7 +824,7 @@
     "L823": ["?, Leonida", [], [1280, 720], "Congo River Golf, 4777 W Irlo Bronson Memorial Hwy, Kissimmee, FL 34746, USA", [28.3290732, -81.471272], [], ["duplicate-of-823"], "64af72", [1778448699, 1753679542, 0]],
     "L824": ["Park, Downtown, Vice City", [-310.3298288887748, -212.33310606671117], [], "Bayfront Park, 301 Biscayne Blvd, Miami, FL 33132, USA", [25.7752589, -80.18618889999999], [], ["public"], "093e69", [1778833363, 0, 0]],
     "L825": ["Bridge, Key Lento", [-2332.9521931045747, -4861.0999861972705], [424, 113], "Lake Surprise Viaduct, 5JH9+PRJ, North Key Largo, FL 33037, USA", [25.1793375, -80.3804844], [], ["transportation"], "6faa10", [1758319695, 1758319693, 1758319695]],
-    "L826": ["Bridge, Key Lento", [-1870.0549586215088, -5223.513724138444], [], "", [], [], ["transportation"], "0a5e4f", [1762507196, 0, 0]],
+    "L826": ["Bridge, Key Lento", [-1889.0716450854836, -5212.471736007761], [], "", [], [], ["transportation"], "0a5e4f", [1779041215, 0, 0]],
     "L827": ["Control Tower, Leonida Keys", [-6130.320851880399, -6879.720673332468], [408, 290], "H8FC+HFQ Naval Air Station Key West, Florida, USA", [24.5739625, -81.67876559999999], [1300, 654], ["government"], "404cbc", [1777624172, 1761659171, 1761659744]],
     "L828": ["Radar Tower, Leonida Keys", [-6181.7780109017995, -6648.4226922855305], [366, 294], "H8M6+V8G Naval Air Station Key West, Florida, USA", [24.5846875, -81.68917189999999], [1950, 1050], ["government"], "967c52", [1775402067, 1761659179, 1761659592]],
     "L829": ["Hangar, Leonida Keys", [-6369.857952275423, -6742.487406297687], [378, 300], "H7HX+2CM Naval Air Station Key West, Florida, USA", [24.5775875, -81.7014531], [1590, 718], ["government"], "b47da5", [1775402112, 1761659204, 1761659654]],
