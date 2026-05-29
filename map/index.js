@@ -1965,7 +1965,7 @@ gtadb.Map = function() {
                     self.focusLandmark()
                 }
             } else if (e.key == "a") {
-                if (self.sessionId && self.mapMode == "gta") {
+                if (self.sessionId && self.mapMode == "gta" && self.dimension == "2d") {
                     self.addLandmark()
                 }
             } else if (e.key == "D") {
@@ -2500,7 +2500,7 @@ gtadb.Map = function() {
             return
         }
         self.addItemButton.element.style.display = (
-            self.mapMode == "gta" && self.sessionId
+            self.mapMode == "gta" && self.dimension == "2d" && self.sessionId
         ) ? "block" : "none"
     }
 
