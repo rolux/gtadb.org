@@ -2643,7 +2643,7 @@ gtadb.Map = function() {
         self.updateSettingsPanel()
         self.updateUserIcon()
         // FIXME: shouldn't be necessary
-        if (self.l) {
+        if (self.l && self.removeItemButton) {
             self.removeItemButton.element.style.display = "block"
         }
     }
