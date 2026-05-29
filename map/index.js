@@ -2500,7 +2500,7 @@ gtadb.Map = function() {
             return
         }
         self.addItemButton.element.style.display = (
-            self.mapMode == "gta" && self.dimension == "2d" && self.sessionId
+            self.sessionId && self.mapMode == "gta" && self.dimension == "2d"
         ) ? "block" : "none"
     }
 
@@ -2509,7 +2509,7 @@ gtadb.Map = function() {
             return
         }
         self.removeItemButton.element.style.display = (
-            self.l && self.sessionId
+            self.sessionId && self.l
         ) ? "block" : "none"
     }
 
