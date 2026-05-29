@@ -777,7 +777,7 @@ gtadb.Map3D = function(options) {
         if (activeElement && activeElement.matches("input, textarea, [contenteditable]")) return;
         if ("0123456".includes(e.key)) {
             self.setTarget(self.target[0], self.target[1], parseInt(e.key), true);
-        } else if (["-", "=", "w", "W", "a", "A", "s", "S", "d", "D", "q", "Q", "e", "E", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
+        } else if (["-", "=", "w", "a", "s", "d", "q", "e", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"].includes(e.key)) {
             e.preventDefault();
             self.keys[e.key] = true;
             if (self.keyboardFrame === null) {
