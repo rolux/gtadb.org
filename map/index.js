@@ -1563,6 +1563,9 @@ gtadb.Map = function() {
         self.renderItem()
         self.maps.set({
             selected: self.l,
+            x: self.targetX,
+            y: self.targetY,
+            z: self.targetZ,
         })
         if (self.mapMode == "gta") {
             self.panGooglemaps(id)
