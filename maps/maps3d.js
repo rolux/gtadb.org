@@ -27,7 +27,7 @@ gtadb.Map3D = function(options) {
         zeroX: 16384,
         zeroY: 16384,
         tileSize: 256,
-        tileRoot: "https://maps.gtadb.org/tiles",
+        tileRoot: "/tiles",
         backgroundColors: {
             "original": [93, 124, 141],
             "elevation": [255, 234, 215],
