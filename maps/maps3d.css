@@ -1,0 +1,35 @@
+#map3d {
+    background: rgb(44, 103, 164);
+    bottom: 0;
+    cursor: default;
+    display: none;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#map3d.dragging {
+    cursor: grabbing;
+}
+
+#map3d.marker-hover {
+    cursor: pointer;
+}
+
+#map3dScene,
+#map3dOverlay {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    user-select: none;
+    width: 100%;
+}
+
+#map3dOverlay {
+    pointer-events: none;
+}

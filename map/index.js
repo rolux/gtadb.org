@@ -142,6 +142,8 @@ gtadb.Map = function() {
         },
         mapMode: "gta",
         mapModes: ["gta", "googlemaps"],
+        dimension: "2d",
+        dimensions: ["2d", "3d"],
         minX: -16000,
         maxX: 4000,
         minY: -8000,
@@ -166,6 +168,10 @@ gtadb.Map = function() {
             4: "GTA IV",
             5: "GTA V",
             6: "GTA VI"
+        },
+        dimensionOptions: {
+            "2d": "2D",
+            "3d": "3D"
         },
         mapOptions: {
             "gta": "Game Map",
@@ -299,6 +305,7 @@ gtadb.Map = function() {
                 ],
             },
             mapMode: "gta",
+            dimension: "2d",
             profileColor: "3f7703",
             theme: "light",
             tileOverlays: 0
@@ -331,6 +338,7 @@ gtadb.Map = function() {
             gta5: self.gta5,
             gta6: self.gta6,
             mapMode: self.mapMode,
+            dimension: self.dimension,
             parentElement: document.body,
             selected: self.l,
             tileOverlays: self.tileOverlays,
@@ -380,7 +388,8 @@ gtadb.Map = function() {
         self.maps.addEventListener("mapmodechange", function(e) {
             self.mapMode = e.detail.mapMode
             self.setUserSettings()
-            self.updateModeElement()
+            self.updateDimensionButton()
+            self.updateModeButton()
             self.updateAddItemButton()
         })
         self.maps.element.addEventListener("mousedown", function() {
@@ -568,23 +577,24 @@ gtadb.Map = function() {
         })
         self.gameElement.title = "V"
 
-        self.modeElement = document.createElement("select")
-        Object.entries(self.mapOptions).forEach(function([key, value]) {
-            const element = document.createElement("option")
-            element.value = key
-            element.textContent = value.toUpperCase()
-            element.selected = key == self.mapMode
-            self.modeElement.appendChild(element)
+        self.modeButton = gtadb.Button({
+            click: function() {
+                self.setMapMode(self.mapMode == "gta" ? "googlemaps" : "gta")
+            },
+            text: self.mapMode == "gta" ? "GOOGLE MAPS" : "GAME MAP",
+            tooltip: "G"
         })
-        self.modeElement.value = self.mapMode
-        self.modeElement.addEventListener("change", function() {
-            this.blur()
-            self.setMapMode(this.value)
+
+        self.dimensionButton = gtadb.Button({
+            click: function() {
+                self.setDimension(self.dimension == "2d" ? "3d" : "2d")
+            },
+            text: self.dimension == "2d" ? "3D" : "2D",
+            tooltip: "⇧ D"
         })
-        self.modeElement.title = "G"
 
         self.mainBar = gtadb.Bar({
-            buttons: [{element: self.modeElement}],  // FIXME: ugly
+            buttons: [self.modeButton, self.dimensionButton],
             element: self.gameElement
         })
         self.mainBar.element.id = "mainBar"
@@ -889,12 +899,20 @@ gtadb.Map = function() {
         self.keyboardShortcutsElement = document.createElement("div")
         self.keyboardShortcutsElement.style.margin = "8px"
         self.keyboardShortcutsElement.innerHTML = `<table>
-            <tr><td>← → ↑ ↓</td><td>Pan</td></tr>
+            <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
-            <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
+            <tr><td>WHEEL</td><td>Zoom</td></tr>
+            <tr><td>← → ↑ ↓</td><td>Pan (2D)</td></tr>
+            <tr><td>W A S D</td><td>Pan (3D)</td></tr>
+            <tr><td>← →</td><td>Rotate (3D)</td></tr>
+            <tr><td>↑ ↓</td><td>Pitch (3D)</td></tr>
+            <tr><td>DRAG</td><td>Move (3D)</td></tr>
+            <tr><td>CMD+DRAG</td><td>Rotate (3D)</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>V</td><td>Switch game version (GTA IV/V/VI)</td></tr>
-            <tr><td>G</td><td>Switch map mode (GTA / Google Maps)</td></tr>
+            <tr><td>G</td><td>Switch map mode (GTA/Google Maps)</td></tr>
+            <tr><td>⇧ D</td><td>Switch map view (2D/3D)</td></tr>
             <tr><td>T</td><td>Switch tile set (GTA) or map type (Google Maps)</td></tr>
             <tr><td>⇧ T</td><td>Toggle overlays (GTA VI)</td></tr>
             <tr><td>ESC</td><td>Exit StreetView</td></tr>
@@ -1129,6 +1147,21 @@ gtadb.Map = function() {
             self.setMapMode(this.value)
         })
         self.mapSettingsElement.appendChild(self.mapModeSelect)
+
+        self.mapDimensionSelect = document.createElement("select")
+        self.dimensions.forEach(function(dimension) {
+            const element = document.createElement("option")
+            element.value = dimension
+            element.textContent = "GTA MAP TYPE: " + dimension.toUpperCase()
+            element.selected = dimension == self.dimension
+            self.mapDimensionSelect.appendChild(element)
+        })
+        self.mapDimensionSelect.value = self.dimension
+        self.mapDimensionSelect.addEventListener("change", function() {
+            this.blur()
+            self.setDimension(this.value)
+        })
+        self.mapSettingsElement.appendChild(self.mapDimensionSelect)
 
         self.mapTypeSelect = document.createElement("select")
         self.defaults.googlemaps.mapTypes.forEach(function(mapType) {
@@ -1928,6 +1961,11 @@ gtadb.Map = function() {
                 if (self.sessionId && self.mapMode == "gta") {
                     self.addLandmark()
                 }
+            } else if (e.key == "D") {
+                if (self.mapMode == "gta") {
+                    e.preventDefault()
+                    self.setDimension(self.dimension == "2d" ? "3d" : "2d")
+                }
             } else if (e.key == "e") {
                 if (self.sessionId && self.l) {
                     self.editing ? self.stopEditing() : self.startEditing()
@@ -2315,6 +2353,17 @@ gtadb.Map = function() {
 
     // Setters /////////////////////////////////////////////////////////////////////////////////////
 
+    self.setDimension = function(dimension) {
+        self.dimension = dimension
+        if (self.dimension == "3d" && self.editing) {
+            self.stopEditing()
+        }
+        self.setUserSettings()
+        self.maps.set({dimension: self.dimension})
+        self.updateDimensionButton()
+        self.updateAddItemButton()
+    }
+
     self.setFocus = function(focus) {
         self.focus = focus
         if (self.maps) {
@@ -2424,8 +2473,19 @@ gtadb.Map = function() {
         self.gameElement.value = self.v
     }
 
-    self.updateModeElement = function() {
-        self.modeElement.value = self.mapMode
+    self.updateModeButton = function() {
+        if (!self.modeButton) {
+            return
+        }
+        self.modeButton.set({text: self.mapMode == "gta" ? "GOOGLE MAPS" : "GAME MAP"})
+    }
+
+    self.updateDimensionButton = function() {
+        if (!self.dimensionButton) {
+            return
+        }
+        self.dimensionButton.element.style.display = self.mapMode == "gta" ? "block" : "none"
+        self.dimensionButton.set({text: self.dimension == "2d" ? "3D" : "2D"})
     }
 
     self.updateAddItemButton = function() {
@@ -2520,6 +2580,7 @@ gtadb.Map = function() {
             gta6: self.gta6,
             googlemaps: self.googlemaps,
             mapMode: self.mapMode,
+            dimension: self.dimension,
             profileColor: self.profileColor,
             sessionId: self.sessionId,
             theme: self.theme,
@@ -2528,6 +2589,7 @@ gtadb.Map = function() {
         }}))
         if (self.mapModeSelect) {
             self.mapModeSelect.value = self.mapMode
+            self.mapDimensionSelect.value = self.dimension
             self.mapTypeSelect.value = self.googlemaps.mapType
             self.tileSetVSelect.value = self.gta5.tileSet
             self.tileSetVISelect.value = self.gta6.tileSet
@@ -2563,7 +2625,8 @@ gtadb.Map = function() {
             mapType: self.googlemaps.mapTypes.includes(v.googlemaps.mapType) ? v.googlemaps.mapType : self.defaults.googlemaps.mapType,
         }
         checked.mapMode = self.mapModes.includes(v.mapMode) ? v.mapMode : self.defaults.mapMode
-        checked.profileColor = /^[0-9A-Fa-f]{6}$/.test(v.profileColor) ? v.profileColor : self.defaults.profileColor,
+        checked.dimension = self.dimensions.includes(v.dimension) ? v.dimension : self.defaults.dimension
+        checked.profileColor = /^[0-9A-Fa-f]{6}$/.test(v.profileColor) ? v.profileColor : self.defaults.profileColor
         checked.sessionId = v.sessionId || ""
         checked.theme = self.themes.includes(v.theme) ? v.theme : self.defaults.theme
         checked.tileOverlays = v.tileOverlays ? 1 : 0

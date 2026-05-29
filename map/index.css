@@ -220,9 +220,6 @@ body.editing:not(.googlemaps) .marker.selected {
     left: 0;
     top: 0;
 }
-#titleBar .button:nth-child(2) {
-    margin-right: 8px;
-}
 #titleElement {
     margin: 0;
 }
@@ -272,11 +269,7 @@ body.editing:not(.googlemaps) .marker.selected {
     top: 32px;
 }
 #mainBar select {
-    width: 115px;
-}
-#mainBar select:last-child {
-    margin-left: 9px;
-    text-align: right;
+    width: 112px;
 }
 #findBar {
     left: 0;

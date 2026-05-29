@@ -10,6 +10,9 @@ gtadb.Maps = function(options) {
         vs: [4, 5, 6],
         mapMode: "gta",
         mapModes: ["gta", "googlemaps"],
+        dimension: "2d",
+        dimensions: ["2d", "3d"],
+        map3d: null,
         mapW: 32768,
         mapH: 32768,
         minX: -16000,
@@ -205,6 +208,8 @@ gtadb.Maps = function(options) {
             },
             mapMode: "gta",
             mapModes: ["gta", "googlemaps"],
+            dimension: "2d",
+            dimensions: ["2d", "3d"],
             parentElement: document.body,
             selected: null,
             tileOverlays: 0,
@@ -237,6 +242,7 @@ gtadb.Maps = function(options) {
             landmarks: self.landmarks,
             currentLandmarks: self.currentLandmarks,
             mapMode: self.mapMode,
+            dimension: self.dimension,
             parentElement: self.parentElement,
             selected: self.l,
             targetX: self.targetX,
@@ -319,6 +325,11 @@ gtadb.Maps = function(options) {
             self.setMapMode(options.mapMode)
         }
 
+        if ("dimension" in options && options.dimension != self.dimension) {
+            self.dimension = options.dimension
+            self.setMapMode(self.mapMode)
+        }
+
         const selected = "selected" in options ? options.selected : options.l
         if (selected !== void 0) {
             self.setLandmark(selected, options.pan)
@@ -334,6 +345,20 @@ gtadb.Maps = function(options) {
             } else {
                 self.renderMap()
             }
+        }
+
+        if (self.map3d) {
+            self.map3d.set({
+                focused: self.focused && self.mapMode == "gta" && self.dimension == "3d",
+                landmarks: self.landmarks,
+                currentLandmarks: self.currentLandmarks,
+                selected: self.l,
+                tileSet: self.tileSet,
+                v: self.v,
+                x: self.targetX,
+                y: self.targetY,
+                z: self.targetZ,
+            })
         }
 
         return that
@@ -397,6 +422,38 @@ gtadb.Maps = function(options) {
             }
         })
         self.element.appendChild(self.streetviewIcon)
+
+        if (gtadb.Map3D) {
+            self.map3d = gtadb.Map3D({
+                focused: self.focused,
+                landmarks: self.landmarks,
+                currentLandmarks: self.currentLandmarks,
+                parentElement: self.element,
+                selected: self.l,
+                tileSet: self.tileSet,
+                v: self.v,
+                x: self.targetX,
+                y: self.targetY,
+                z: self.targetZ,
+            })
+            self.map3d.addEventListener("select", function(e) {
+                self.setLandmark(e.detail.id)
+                self.element.dispatchEvent(new CustomEvent("select", {detail: e.detail}))
+            })
+            function syncMap3DState(e) {
+                const state = e.detail || self.map3d.get()
+                self.x = state.x
+                self.y = state.y
+                self.z = state.z
+                self.targetX = state.targetX
+                self.targetY = state.targetY
+                self.targetZ = state.targetZ
+                self.element.dispatchEvent(new CustomEvent(e.type, {detail: state}))
+            }
+            self.map3d.addEventListener("mapchange", syncMap3DState)
+            self.map3d.addEventListener("mapchangeend", syncMap3DState)
+            self.map3d.hide()
+        }
 
         self.parentElement.appendChild(self.element)
 
@@ -1261,6 +1318,15 @@ gtadb.Maps = function(options) {
                 self.selectLandmark(self.l)
             })
         }
+        const isGta = self.mapMode == "gta"
+        const is3d = isGta && self.dimension == "3d"
+        self.canvas.style.display = isGta && !is3d ? "block" : "none"
+        self.markersLayer.style.display = isGta && !is3d ? "block" : "none"
+        self.googlemapsLayer.style.display = self.mapMode == "googlemaps" ? "block" : "none"
+        if (self.map3d) {
+            if (is3d) self.map3d.show()
+            else self.map3d.hide()
+        }
     }
 
     self.setMapType = function(mapType) {
@@ -1275,7 +1341,6 @@ gtadb.Maps = function(options) {
     self.clamp = function(n, min, max) {
         return Math.min(Math.max(n, min), max)
     }
-
     self.getMppx = function(z=self.z) {
         return self.mapW / (1024 * Math.pow(2, z))
     }
