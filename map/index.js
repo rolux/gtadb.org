@@ -1567,9 +1567,6 @@ gtadb.Map = function() {
         self.renderItem()
         self.maps.set({
             selected: self.l,
-            x: self.targetX,
-            y: self.targetY,
-            z: self.targetZ,
         })
         if (self.mapMode == "gta") {
             self.panGooglemaps(id)
@@ -1913,13 +1910,13 @@ gtadb.Map = function() {
         }
         ;[self.targetX, self.targetY, self.targetZ] = values
         self.l = l
+        if (self.l != self.previousL || !self.isAnimating) {
+            self.animate()
+        }
         self.findAndFilterLandmarks(self.find, self.filter)
         if (self.l != self.previousL) { // FIXME: ugly
             self.previousL = self.l
             self.setLandmark(l)
-        }
-        if (!self.isAnimating) {
-            self.animate()
         }
     }
 
