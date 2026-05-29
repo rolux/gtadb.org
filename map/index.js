@@ -1372,7 +1372,11 @@ gtadb.Map = function() {
     }
 
     self.setHash = function() {
-        const hash = {4: "IV", 5: "V", 6: "VI"}[self.v] + "," + [self.targetX, self.targetY, self.targetZ].map(function (v) {
+        const hash = {
+            4: "IV", 5: "V", 6: "VI"
+        }[self.v] + "," + [
+            self.targetX, self.targetY, self.targetZ
+        ].map(function (v) {
             return v.toFixed(3)
         }).join(",") + (self.l ? "," + self.l : "")
         if (window.location.hash.slice(1) != hash) {
@@ -1562,7 +1566,10 @@ gtadb.Map = function() {
         self.updateRemoveItemButton()
         self.renderItem()
         self.maps.set({
-            selected: self.l
+            selected: self.l,
+            x: self.targetX,
+            y: self.targetY,
+            z: self.targetZ,
         })
         if (self.mapMode == "gta") {
             self.panGooglemaps(id)
