@@ -1910,11 +1910,14 @@ gtadb.Map = function() {
         }
         ;[self.targetX, self.targetY, self.targetZ] = values
         self.l = l
+        // animate sets maps x/y/z
+        // findAndFilterLandmarks can set maps l and call setHash
+        // animate first to avoid mapchange event with stale x y z
         if (self.l != self.previousL || !self.isAnimating) {
             self.animate()
         }
         self.findAndFilterLandmarks(self.find, self.filter)
-        if (self.l != self.previousL) { // FIXME: ugly
+        if (self.l != self.previousL) {
             self.previousL = self.l
             self.setLandmark(l)
         }
