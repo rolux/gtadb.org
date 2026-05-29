@@ -9,170 +9,134 @@
                 font-weight: normal;
                 font-style: normal;
             }
-            a {
-                color: rgb(128, 192, 255);
-                text-decoration: none
-            }
-            a:hover {
-                text-decoration: underline;
-            }
             body {
                 align-items: center;
-                //background-image: url(images/LibertyCityElevationMap.jpg);
                 background-image: url(images/PaletoBay.jpg);
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
-                display: flex;
-                flex-direction: column;
                 font-family: sans-serif;
+                font-size: 1em;
                 height: 100vh;
-                justify-content: center;
                 margin: 0;
             }
-            body::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: inherit;
-                //filter: brightness(0.75) sepia(0.75);
-                z-index: -1;
-            }
-            div {
-                color: white;
-                font-size: 1em;
-            }
             img {
-                height: auto;
-                max-width: 100%;
                 -webkit-user-drag: none;
             }
-            p {
+            div#title {
+                backdrop-filter: blur(4px);
+                background: rgba(0, 0, 0, 0.25);
+                border-radius: 12px;
                 color: white;
-                font-size: 1rem;
-                margin-bottom: 0.5em;
-                margin-top: 0.5em;
-                text-align: center;
+                height: 100px;
+                left: 16px;
+                padding: 12px;
+                position: absolute;
+                top: 16px;
             }
-            .title {
+            div.title {
                 font-family: Menlo;
                 font-size: 12.8px;
                 margin-top: -14px;
                 margin-bottom: 24px;
-                padding-left: 52px;
+                padding-left: 57px;
             }
-            .item {
-                align-items: center;
-                border-radius: 8px;
-                cursor: pointer;
+            div#desktop {
+                align-content: flex-end;   /* right */
                 display: flex;
-                font-size: 13px;
-                height: 64px;
-                justify-content: left;
-                margin: 8px 0;
-                padding: 8px;
-                text-align: left;
-                width: 256px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 16px;
+                inset: 0;
+                justify-content: flex-end; /* bottom */
+                padding: 32px;
+                position: absolute;
+                top: 16px;
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
             }
-            .item:hover {
-                background-color: rgba(255, 255, 255, 0.1)
+            div.icon {
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+                width: 160px;
             }
-            .item img {
-                border-radius: 4px;
+            div.icon img {
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(4px);
                 height: 64px;
-                margin: 8px;
                 width: 64px;
             }
-            .item img.square {
-                border-radius: 0;
-            }
-            .item div {
-                // color: rgb(255, 192, 128);
-                // color: rgb(242, 220, 182);
-                color: rgb(255, 255, 255);
-                font-weight: bold;
-                margin-left: 8px;
-            }
-            .copyright {
-                font-size: 10px;
-                margin-bottom: 0.5em;
-                margin-top: 2em;
-            }
-            #box {
+            div.icon div {
                 backdrop-filter: blur(4px);
-                background: rgba(0, 0, 0, 0.75);
-                border-radius: 12px;
-                padding: 32px;
-                position: relative;
-                text-align: center;
+                background: rgba(0, 0, 0, 0.5);
+                border-radius: 4px;
+                color: white;
+                font-size: 12px;
+                margin-top: 8px;
+                padding: 4px 8px;
             }
-            /*
-            :root {
-                --imgs: 4;
-                --ratio: 3.5555556;
-            }
-            #background {
-                animation: scroll 240s linear infinite;
-                display: flex;
-                filter: brightness(0.5);
-                height: 100vh;
-                left: 0;
-                overflow: hidden;
-                position: fixed;
-                top: 0;
-                width: auto;
-                z-index: -1;
-            }
-            #background img {
-                flex-shrink: 0;
-                height: 100vh;
-                object-fit: cover;
-                width: calc(100vh * var(--ratio));
-            }
-            @keyframes scroll {
-                from {
-                    transform: translateX(0);
-                }
-                to {
-                    transform: translateX(calc(-1 * var(--imgs) * 100vh * var(--ratio)));
-                }
-            }
-            */
-    </style>
+        </style>
     </head>
     <body>
-        <!--<div id="background">
-            <img src="images/Vice Beach.png"/>
-            <img src="images/Beach.png"/>
-            <img src="images/Venetian Islands.png"/>
-            <img src="images/Rooftop Party.png"/>
-            <img src="images/Vice Beach.png"/>
-        </div>-->
-        <div id="box">
+        <div id="title">
             <img src="gtadb.png" alt="GTADB">
             <div class="title">Grand Theft Auto Database</div>
-            <div class="item" id="IV"><img src="images/GTA4.png" class="icon"/><div>GTA IV Landmarks Map</div></div>
-            <div class="item" id="V"><img src="images/GTA5.png" class="icon"/><div>GTA V Landmarks Map</div></div>
-            <div class="item" id="VI"><img src="images/GTA6.png" class="icon"><div>GTA VI Landmarks Map</div></div>
-            <div class="item" id="G6G"><img src="images/gta6guessr.png" class="icon"><div>gta6guessr preview</div></div>
-            <div class="item" id="GML"><img src="images/gtamaplib.png" class="icon square"><div>gtamaplib v0.1.0</div></div>
-            <div class="item" id="GMLVC"><img src="images/gtamaplib-vc.png" class="icon square"><div>gtamaplib-vc v0.1.0</div></div>
-            <p class="copyright">No Copyright ( ) 2026 GTADB.ORG. No rights reserved.</p>
         </div>
+        <div id="desktop">
+            <div class="icon">
+                <a href="https://map.gtadb.org/#IV">
+                    <img src="images/GTA4.png" class="icon"/>
+                </a>
+                <a href="https://map.gtadb.org/#IV">
+                    <div>GTA IV Landmarks Map</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="https://map.gtadb.org/#V">
+                    <img src="images/GTA5.png" class="icon"/>
+                </a>
+                <a href="https://map.gtadb.org/#V">
+                    <div>GTA V Landmarks Map</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="https://map.gtadb.org/#VI">
+                    <img src="images/GTA6.png" class="icon"/>
+                </a>
+                <a href="https://map.gtadb.org/#VI">
+                    <div>GTA VI Landmarks Map</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="https:/guess.gtadb.org">
+                    <img src="images/gta6guessr.png" class="icon"/>
+                </a>
+                <a href="https:/guess.gtadb.org">
+                    <div>gta6guessr preview</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="https://github.com/rolux/gtamaplib">
+                    <img src="images/gtamaplib.png" class="icon"/>
+                </a>
+                <a href="https://github.com/rolux/gtamaplib">
+                    <div>gtamaplib v0.1.0</div>
+                </a>
+            </div>
+            <div class="icon">
+                <a href="https://github.com/rolux/gtamaplib-vc">
+                    <img src="images/gtamaplib-vc.png" class="icon"/>
+                </a>
+                <a href="https://github.com/rolux/gtamaplib-vc">
+                    <div>gtamaplib-vc v0.1.0</div>
+                </a>
+            </div>
+        </div>
+        <!--<div id="box">
+            <p class="copyright">No Copyright ( ) 2026 GTADB.ORG. No rights reserved.</p>
+        </div>-->
     </body>
-    <script>
-        document.addEventListener("click", function(e) {
-            const item = event.target.closest('.item')
-            if (item) {
-                window.location.href = {
-                    "IV": "https://map.gtadb.org/#IV",
-                    "V": "https://map.gtadb.org/#V",
-                    "VI": "https://map.gtadb.org/#VI",
-                    "G6G": "https://guess.gtadb.org",
-                    "GML": "https://github.com/rolux/gtamaplib",
-                    "GMLVC": "https://github.com/rolux/gtamaplib-vc"
-                }[item.id]
-            }
-        })
-    </script>
 </html>
