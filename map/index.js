@@ -1562,10 +1562,7 @@ gtadb.Map = function() {
         self.updateRemoveItemButton()
         self.renderItem()
         self.maps.set({
-            selected: self.l,
-            x: self.targetX,
-            y: self.targetY,
-            z: self.targetZ,
+            selected: self.l
         })
         if (self.mapMode == "gta") {
             self.panGooglemaps(id)
