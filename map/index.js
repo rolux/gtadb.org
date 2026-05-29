@@ -1912,7 +1912,7 @@ gtadb.Map = function() {
         self.l = l
         // animate sets maps x/y/z
         // findAndFilterLandmarks can set maps l and call setHash
-        // animate first to avoid mapchange event with stale x y z
+        // animate first to avoid mapchange event with stale x/y/z
         if (self.l != self.previousL || !self.isAnimating) {
             self.animate()
         }
