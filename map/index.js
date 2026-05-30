@@ -950,7 +950,7 @@ gtadb.Map = function() {
             buildings with multiple businesses.</p>
             <p class="title">IDs</p>
             <p>IDs are assigned sequentially and are not supposed to mean anything. Each ID
-            is tied to onme specific in-game landmark – so in case a marker is associated
+            is tied to one specific in-game landmark – so in case a marker is associated
             with the wrong landmark, don't edit the address, but move the marker to the
             correct location.</p>
             <p class="title">In-game addresses</p>
