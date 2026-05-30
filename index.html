@@ -20,7 +20,12 @@
                 height: 100vh;
                 margin: 0;
             }
+            a {
+                color: white;
+                text-decoration: none;
+            }
             img {
+                user-select: none;
                 -webkit-user-drag: none;
             }
             div#title {
@@ -34,31 +39,41 @@
                 position: absolute;
                 top: 16px;
             }
-            div.title {
+            div#title div.title {
                 font-family: Menlo;
                 font-size: 12.8px;
                 margin-top: -14px;
                 margin-bottom: 24px;
                 padding-left: 57px;
             }
-            div#desktop {
-                align-content: flex-end;   /* right */
+            div.box {
                 display: flex;
                 flex-direction: row;
-                flex-wrap: wrap;
                 gap: 16px;
-                inset: 0;
-                justify-content: flex-end; /* bottom */
                 position: absolute;
+            }
+            div.box#map {
+                bottom: 16px;
+                flex-direction: column;
+                left: 16px;
+            }
+            div.box#gtamaplib {
+                right: 16px;
                 top: 16px;
+            }
+            div.box#gtaguessr {
+                bottom: 16px;
+                left: 192px;
+            }
+            div.box#misc {
                 bottom: 16px;
                 right: 16px;
-                left: 16px;
             }
             div.icon {
                 align-items: center;
                 display: flex;
                 flex-direction: column;
+                height: 96px;
                 text-align: center;
                 width: 160px;
             }
@@ -77,6 +92,58 @@
                 margin-top: 8px;
                 padding: 4px 8px;
             }
+            div.dialog {
+                backdrop-filter: blur(4px);
+                background: rgba(0, 0, 0, 0.5);
+                border-radius: 12px;
+                display: none;
+                flex-direction: column;
+                height: 240px;
+                left: 50%;
+                position: absolute;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 640px;
+            }
+            div.dialog .bar {
+                align-items: center;
+                background: rgba(0, 0, 0, 0.5);
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+                display: flex;
+                height: 32px;
+                justify-content: space-between;
+            }
+            div.dialog .title {
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+                margin-left: 12px;
+            }
+            div.dialog .close {
+                color: white;
+                cursor: pointer;
+                font-size: 12px;
+                margin-right: 12px;
+                user-select: none;
+            }
+            div.dialog .content {
+                align-items: center;
+                display: flex;
+                flex: 1;
+                flex-direction: row;
+                justify-content: center;
+                gap: 16px;
+            }
+            div.dialog div.icon {
+                height: auto;
+            }
+            div.dialog div.icon img {
+                border-radius: 4px;
+            }
+            div.dialog div.icon div {
+                background: rgba(0, 0, 0, 0.1);
+            }
         </style>
     </head>
     <body>
@@ -84,7 +151,7 @@
             <img src="gtadb.png" alt="GTADB">
             <div class="title">Grand Theft Auto Database</div>
         </div>
-        <div id="desktop">
+        <div class="box" id="map">
             <div class="icon">
                 <a href="https://map.gtadb.org/#IV">
                     <img src="images/GTA4.png" class="icon"/>
@@ -109,6 +176,8 @@
                     <div>GTA VI Landmarks Map</div>
                 </a>
             </div>
+        </div>
+        <div class="box" id="gtaguessr">
             <div class="icon">
                 <a href="https:/guess.gtadb.org">
                     <img src="images/gta6guessr.png" class="icon"/>
@@ -117,25 +186,79 @@
                     <div>gta6guessr preview</div>
                 </a>
             </div>
+        </div>
+        <div class="box" id="gtamaplib">
             <div class="icon">
-                <a href="https://github.com/rolux/gtamaplib">
+                <a href="https://github.com/rolux/gtamaplib" target="_blank">
                     <img src="images/gtamaplib.png" class="icon"/>
                 </a>
-                <a href="https://github.com/rolux/gtamaplib">
+                <a href="https://github.com/rolux/gtamaplib" target="_blank">
                     <div>gtamaplib v0.1.0</div>
                 </a>
             </div>
             <div class="icon">
-                <a href="https://github.com/rolux/gtamaplib-vc">
+                <a href="https://github.com/rolux/gtamaplib-vc" target="_blank">
                     <img src="images/gtamaplib-vc.png" class="icon"/>
                 </a>
-                <a href="https://github.com/rolux/gtamaplib-vc">
+                <a href="https://github.com/rolux/gtamaplib-vc" target="_blank">
                     <div>gtamaplib-vc v0.1.0</div>
                 </a>
+            </div>
+        </div>
+        <div class="box" id="misc">
+            <div class="icon">
+                <a href="#files">
+                    <img src="images/LosSantosElevationMap.png" class="icon"/>
+                </a>
+                <a href="#files">
+                    <div>Files</div>
+                </a>
+            </div>
+        </div>
+        <div class="dialog">
+            <div class="bar">
+                <div class="title">Files</div>
+                <div class="close"><a href="#" onclick="history.replaceState(null, '', window.location.pathname); onHashchange(); return false;">CLOSE</a></div>
+            </div>
+            <div class="content">
+                <div class="icon">
+                    <a href="files/LosSantosPopulationDensityMap.png">
+                        <img src="images/LosSantosPopulationDensityMap.png" class="icon"/>
+                    </a>
+                    <a href="files/LosSantosPopulationDensityMap.png">
+                        <div>Los Santos<br/>Population Density Map<br/>(Snapmatic 2014)</div>
+                    </a>
+                </div>
+                <div class="icon">
+                    <a href="files/LosSantosElevationMap.png">
+                        <img src="images/LosSantosElevationMap.png" class="icon"/>
+                    </a>
+                    <a href="files/LosSantosElevationMap.png">
+                        <div>Los Santos<br/>Elevation Map<br/>(Snapmatic 2014)</div>
+                    </a>
+                </div>
+                <div class="icon">
+                    <a href="files/LosSantosAreaMap.png">
+                        <img src="images/LosSantosAreaMap.png" class="icon"/>
+                    </a>
+                    <a href="files/LosSantosAreaMap.png">
+                        <div>Los Santos<br/>Area Map<br/>(Snapmatic 2014)</div>
+                    </a>
+                </div>
             </div>
         </div>
         <!--<div id="box">
             <p class="copyright">No Copyright ( ) 2026 GTADB.ORG. No rights reserved.</p>
         </div>-->
+        <script>
+            console.log(window.location.hash)
+            window.addEventListener("hashchange", onHashchange)
+            function onHashchange() {
+                document.querySelectorAll(".dialog").forEach(function(element) {
+                    element.style.display = window.location.hash == "#files" ? "flex" : "none"
+                })
+            }
+            onHashchange()
+        </script>
     </body>
 </html>
