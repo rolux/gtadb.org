@@ -1048,6 +1048,36 @@ gtadb.Map = function() {
         })
         self.mapSettingsElement.appendChild(self.gameVersionSelect) 
 
+        self.mapModeSelect = document.createElement("select")
+        self.mapModes.forEach(function(mapMode) {
+            const element = document.createElement("option")
+            element.value = mapMode
+            element.textContent = ("MAP MODE: " + mapMode.replace("googlemaps", "google maps")).toUpperCase()
+            element.selected = mapMode == self.mapMode
+            self.mapModeSelect.appendChild(element)
+        })
+        self.mapModeSelect.value = self.mapMode
+        self.mapModeSelect.addEventListener("change", function() {
+            this.blur()
+            self.setMapMode(this.value)
+        })
+        self.mapSettingsElement.appendChild(self.mapModeSelect)
+
+        self.mapDimensionSelect = document.createElement("select")
+        self.dimensions.forEach(function(dimension) {
+            const element = document.createElement("option")
+            element.value = dimension
+            element.textContent = "GTA MAP TYPE: " + dimension.toUpperCase()
+            element.selected = dimension == self.dimension
+            self.mapDimensionSelect.appendChild(element)
+        })
+        self.mapDimensionSelect.value = self.dimension
+        self.mapDimensionSelect.addEventListener("change", function() {
+            this.blur()
+            self.setDimension(this.value)
+        })
+        self.mapSettingsElement.appendChild(self.mapDimensionSelect)
+
         self.tileSetIVSelect = document.createElement("select")
         self.defaults.gta4.tileSets.forEach(function(tileSet) {
             const element = document.createElement("option")
@@ -1132,36 +1162,6 @@ gtadb.Map = function() {
             })
         })
         self.mapSettingsElement.appendChild(self.tileOverlaysSelect)
-
-        self.mapModeSelect = document.createElement("select")
-        self.mapModes.forEach(function(mapMode) {
-            const element = document.createElement("option")
-            element.value = mapMode
-            element.textContent = ("MAP MODE: " + mapMode.replace("googlemaps", "google maps")).toUpperCase()
-            element.selected = mapMode == self.mapMode
-            self.mapModeSelect.appendChild(element)
-        })
-        self.mapModeSelect.value = self.mapMode
-        self.mapModeSelect.addEventListener("change", function() {
-            this.blur()
-            self.setMapMode(this.value)
-        })
-        self.mapSettingsElement.appendChild(self.mapModeSelect)
-
-        self.mapDimensionSelect = document.createElement("select")
-        self.dimensions.forEach(function(dimension) {
-            const element = document.createElement("option")
-            element.value = dimension
-            element.textContent = "GTA MAP TYPE: " + dimension.toUpperCase()
-            element.selected = dimension == self.dimension
-            self.mapDimensionSelect.appendChild(element)
-        })
-        self.mapDimensionSelect.value = self.dimension
-        self.mapDimensionSelect.addEventListener("change", function() {
-            this.blur()
-            self.setDimension(this.value)
-        })
-        self.mapSettingsElement.appendChild(self.mapDimensionSelect)
 
         self.mapTypeSelect = document.createElement("select")
         self.defaults.googlemaps.mapTypes.forEach(function(mapType) {
