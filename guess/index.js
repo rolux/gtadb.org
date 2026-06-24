@@ -39,7 +39,7 @@ gtadb.Guess = function() {
                 y: 2000,
                 z: 1,
                 screenshotId: null,
-                tileSet: "yanis,12",
+                tileSet: "yanis,13",
             },
             guesses: {},
         },
