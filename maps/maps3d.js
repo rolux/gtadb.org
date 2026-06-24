@@ -42,6 +42,7 @@ gtadb.Map3D = function(options) {
             "yanis,10": [44, 103, 164],
             "yanis,11": [44, 103, 164],
             "yanis,12": [44, 103, 164],
+            "yanis,13": [44, 103, 164],
             "dupzor,51": [44, 103, 164],
         },
         tileSetRanges: {
@@ -53,7 +54,7 @@ gtadb.Map3D = function(options) {
             "roadmap": {0: [[1, 0], [2, 2]], 1: [[2, 1], [5, 4]], 2: [[5, 3], [11, 9]], 3: [[10, 7], [22, 19]], 4: [[20, 15], [45, 39]], 5: [[41, 31], [90, 79]], 6: [[83, 62], [180, 159]]},
             "radar": {0: [[1, 0], [2, 2]], 1: [[2, 1], [5, 5]], 2: [[5, 3], [10, 10]], 3: [[11, 7], [20, 20]], 4: [[23, 15], [41, 41]], 5: [[47, 31], [83, 83]], 6: [[95, 62], [166, 167]]},
             "dupzor,51": {0: [[0, 0], [2, 2]], 1: [[0, 1], [4, 5]], 2: [[0, 2], [9, 11]], 3: [[0, 4], [19, 23]], 4: [[0, 8], [38, 47]], 5: [[0, 17], [77, 94]], 6: [[1, 34], [155, 188]]},
-            "yanis,12": {0: [[0, 0], [2, 2]], 1: [[0, 1], [4, 5]], 2: [[0, 2], [9, 11]], 3: [[0, 4], [19, 23]], 4: [[0, 8], [38, 47]], 5: [[0, 17], [77, 95]], 6: [[0, 34], [155, 190]]}
+            "yanis,13": {0: [[0, 0], [2, 2]], 1: [[0, 1], [4, 5]], 2: [[0, 2], [9, 11]], 3: [[0, 4], [19, 23]], 4: [[0, 8], [38, 47]], 5: [[0, 17], [77, 95]], 6: [[0, 34], [155, 190]]}
         },
         defaults: {
             currentLandmarks: null,
@@ -61,7 +62,7 @@ gtadb.Map3D = function(options) {
             landmarks: [],
             parentElement: document.body,
             selected: null,
-            tileSet: "yanis,12",
+            tileSet: "yanis,13",
             v: 6,
             x: -4000,
             y: 2000,
@@ -407,7 +408,7 @@ gtadb.Map3D = function(options) {
         return texture;
     }
     function updateBackgroundColor() {
-        self.backgroundColor = self.backgroundColors[self.tileSet] || self.backgroundColors["yanis,12"];
+        self.backgroundColor = self.backgroundColors[self.tileSet] || self.backgroundColors["yanis,13"];
         self.element.style.backgroundColor = `rgb(${self.skyColor.join(", ")})`;
     }
     function tileUrl(z, x, y) {
