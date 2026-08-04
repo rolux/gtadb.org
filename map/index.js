@@ -286,10 +286,10 @@ gtadb.Map = function() {
                 find: "",
                 filter: "all",
                 sort: "igAddress",
-                tileSet: "yanis,13",
+                tileSet: "yanis,14",
                 tileSets: [
                     "dupzor,51",
-                    "yanis,13",
+                    "yanis,14",
                 ]
             },
             googlemaps: {
