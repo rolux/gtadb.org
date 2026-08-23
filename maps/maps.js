@@ -106,7 +106,6 @@ gtadb.Maps = function(options) {
                 5: [[0, 17], [77, 95]],
                 6: [[0, 34], [155, 190]]
             },
-            /*
             "yanis,15": {
                 0: [[0, 0], [2, 2]],
                 1: [[0, 1], [4, 5]],
@@ -116,7 +115,6 @@ gtadb.Maps = function(options) {
                 5: [[0, 17], [77, 95]],
                 6: [[0, 34], [155, 190]]
             },
-            */
             "yanis,16":  {
                 0: [[0, 0], [2, 3]],
                 1: [[1, 1], [4, 6]],
@@ -224,6 +222,7 @@ gtadb.Maps = function(options) {
                 tileSets: [
                     "dupzor,51",
                     "yanis,14",
+                    "yanis,15",
                     "yanis,16",
                 ]
             },
@@ -821,7 +820,7 @@ gtadb.Maps = function(options) {
         const offsetY = self.canvas.height / 2 - cY
         const tileSize = self.tileSize * Math.pow(2, self.z - zInt)
 
-        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self.tileSet][zInt]
+        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self["gta" + self.v].tileSet][zInt]
 
         const minTx = Math.floor(-offsetX / tileSize)
         const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)

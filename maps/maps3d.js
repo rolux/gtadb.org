@@ -44,6 +44,8 @@ gtadb.Map3D = function(options) {
             "yanis,12": [44, 103, 164],
             "yanis,13": [44, 103, 164],
             "yanis,14": [44, 103, 164],
+            "yanis,15": [44, 103, 164],
+            "yanis,16": [78, 167, 196],
             "dupzor,51": [44, 103, 164],
         },
         tileSetRanges: {
