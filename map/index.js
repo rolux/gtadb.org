@@ -1123,7 +1123,7 @@ gtadb.Map = function() {
         self.mapSettingsElement.appendChild(self.tileSetVSelect)
 
         self.tileSetVISelect = document.createElement("select")
-        self.getAvailableTilesets().forEach(function(tileSet) {
+        self.getAvailableTileSets().forEach(function(tileSet) {
             const element = document.createElement("option")
             element.value = tileSet
             element.textContent = ("GTA VI TILE SET: " + tileSet.replace(",", " V")).toUpperCase()
@@ -2716,7 +2716,7 @@ gtadb.Map = function() {
         return parts.join("\n")
     }
 
-    self.getAvailableTilesets = function() {
+    self.getAvailableTileSets = function() {
         return self.defaults.gta6.tileSets.filter(function(tileSet) {
             return self.sessionId || tileSet != "yanis,16"
         })
