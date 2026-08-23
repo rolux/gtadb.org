@@ -290,6 +290,7 @@ gtadb.Map = function() {
                 tileSets: [
                     "dupzor,51",
                     "yanis,14",
+                    "yanis,16",
                 ]
             },
             googlemaps: {
