@@ -1125,7 +1125,7 @@ gtadb.Map = function() {
         self.tileSetVISelect = document.createElement("select")
         self.getAvailableTilesets().forEach(function(tileSet) {
             const element = document.createElement("option")
-            element.value = tileset
+            element.value = tileSet
             element.textContent = ("GTA VI TILE SET: " + tileSet.replace(",", " V")).toUpperCase()
             element.selected = tileSet == self.gta6.tileSet
             self.tileSetVISelect.appendChild(element)
