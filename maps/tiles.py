@@ -25,6 +25,8 @@ maps = [
     ("dupzor", 51, 0.558, (9037, 6693), (0, 0, 0)),
     # ("yanis", 7, 1.000, (16341, 12139), (24, 97, 173)),
     ("yanis", 14, 1.000, (16500, 12000), (44, 103, 164)),
+    ("yanis", 15, 1.000, (16500, 12000), (44, 103, 164)),
+    ("yanis", 16, 0.177424, (1902.278, 1721.760), (78, 167, 196))
 ]
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
@@ -129,11 +131,11 @@ def render_tiles(
 tile_ranges = {}
 
 for map_name, map_version, map_scale, map_zero, map_color in maps:
-    tile_ranges[map_name] = render_tiles(map_name, map_version, map_scale, map_zero, map_color)
+    tile_ranges[f"{map_name},{map_version}"] = render_tiles(map_name, map_version, map_scale, map_zero, map_color)
 
 for map_name, map_version, map_scale, map_zero in overlays:
     for base_map_name, base_map_version, base_map_scale, base_map_zero, base_map_color in maps:
-        tile_ranges[map_name] = render_tiles(
+        tile_ranges[f"{map_name},{map_version}"] = render_tiles(
             map_name, map_version, map_scale, map_zero, map_color, base_map_name, base_map_version
         )
 
