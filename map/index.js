@@ -1123,7 +1123,7 @@ gtadb.Map = function() {
         self.mapSettingsElement.appendChild(self.tileSetVSelect)
 
         self.tileSetVISelect = document.createElement("select")
-        getAvailableTilesets().forEach(function(tileset) {
+        self.getAvailableTilesets().forEach(function(tileset) {
             const element = document.createElement("option")
             element.value = tileSet
             element.textContent = ("GTA VI TILE SET: " + tileSet.replace(",", " V")).toUpperCase()
@@ -1741,7 +1741,7 @@ gtadb.Map = function() {
 
     self.hasBothPhotos = function(landmark) {
         return landmark.igPhotoSize && landmark.rlPhotoSize && (
-            self.sessionId || !hasSpecialTag(landmark)
+            self.sessionId || !self.hasSpecialTag(landmark)
         )
     }
 
@@ -2198,7 +2198,7 @@ gtadb.Map = function() {
                     self.itemIgPhoto.style.height = height + "px"
                     let img = document.createElement("img")
                     img.src = `photos/${self.v}/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
-                    img.classList[hasSpecialTag(landmark) ? "add" : "remove"]("auth")
+                    img.classList[self.hasSpecialTag(landmark) ? "add" : "remove"]("auth")
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
