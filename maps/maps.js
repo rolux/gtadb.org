@@ -224,6 +224,7 @@ gtadb.Maps = function(options) {
                 tileSets: [
                     "dupzor,51",
                     "yanis,14",
+                    "yanis,16",
                 ]
             },
             mapMode: "gta",
