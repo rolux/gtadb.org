@@ -821,7 +821,7 @@ gtadb.Maps = function(options) {
         const offsetY = self.canvas.height / 2 - cY
         const tileSize = self.tileSize * Math.pow(2, self.z - zInt)
 
-        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self["gta" + self.v].tileSet][zInt]
+        const [[x0, y0], [x1, y1]] = self.tileSetRanges[self.tileSet][zInt]
 
         const minTx = Math.floor(-offsetX / tileSize)
         const maxTx = Math.ceil((self.canvas.width - offsetX) / tileSize)
