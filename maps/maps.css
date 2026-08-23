@@ -38,8 +38,12 @@ canvas.yanis-10,
 canvas.yanis-11,
 canvas.yanis-12,
 canvas.yanis-13,
-canvas.yanis-14 {
+canvas.yanis-14,
+canvas.yanis-15 {
     background-color: rgb(44, 103, 164);
+}
+canvas.yanis-16 {
+    background-color: rgb(78, 167, 196);
 }
 
 #map, #canvas, #markers {

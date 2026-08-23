@@ -966,9 +966,9 @@ gtadb.Map = function() {
             <p>For now, they are not strictly needed, other than for disambiguation
             purposes. In cases where we have no information for the landmark, it's a good
             idea to add a photo to make it obvious what the marker is referring to. If
-            you're adding a screenshot from 2022, please add a 2022 tag to make sure the
-            image is not visible to the general public. Preferred aspect ratios are 16:9 or
-            1:1.</p>
+            you're adding a screenshot from an inofficial source, please add a tag (L1, L2
+            L3, L4, L5) to make sure the image is not visible to the general public.
+            Preferred aspect ratios are 16:9 or 1:1.</p>
             <p class="title">Real-life addresses</p>
             <p>The standard format is "Name, Street Address, FL 12345, USA". If there is no
             name, it can be left out. Generally, the address should be chosen so that Google
@@ -1123,7 +1123,7 @@ gtadb.Map = function() {
         self.mapSettingsElement.appendChild(self.tileSetVSelect)
 
         self.tileSetVISelect = document.createElement("select")
-        self.defaults.gta6.tileSets.forEach(function(tileSet) {
+        getAvailableTilesets().forEach(function(tileset) {
             const element = document.createElement("option")
             element.value = tileSet
             element.textContent = ("GTA VI TILE SET: " + tileSet.replace(",", " V")).toUpperCase()
@@ -1741,7 +1741,7 @@ gtadb.Map = function() {
 
     self.hasBothPhotos = function(landmark) {
         return landmark.igPhotoSize && landmark.rlPhotoSize && (
-            self.sessionId || !landmark.tags.includes("2022")
+            self.sessionId || !hasSpecialTag(landmark)
         )
     }
 
@@ -1997,7 +1997,7 @@ gtadb.Map = function() {
                 e.preventDefault()
                 if (self.mapMode == "gta") {
                     const key = "gta" + self.v
-                    const tileSets = self.defaults[key].tileSets
+                    const tileSets = self.v == 6 ? getAvailableTileSets() : self.defaults[key].tileSets
                     self[key].tileSet = tileSets[(tileSets.indexOf(self[key].tileSet) + 1) % tileSets.length]
                     self.tileSet = self[key].tileSet
                     self.setUserSettings()
@@ -2198,7 +2198,7 @@ gtadb.Map = function() {
                     self.itemIgPhoto.style.height = height + "px"
                     let img = document.createElement("img")
                     img.src = `photos/${self.v}/${landmark.id},ig.jpg?v=${landmark.edited[1]}`
-                    img.classList[landmark.tags.includes("2022") ? "add" : "remove"]("auth")
+                    img.classList[hasSpecialTag(landmark) ? "add" : "remove"]("auth")
                     img.style.width = width + "px"
                     img.style.height = height + "px"
                     img.addEventListener("click", function() {
@@ -2716,6 +2716,12 @@ gtadb.Map = function() {
         return parts.join("\n")
     }
 
+    self.getAvailableTilesets = function() {
+        return self.defaults.gta6.tileSets.filter(function(tileSet) {
+            return self.sessionId || tileSet != "yanis,16"
+        })
+    }
+
     self.getIdSortString = function(id) {
         return "0".repeat(10 - id.length) + id.slice(1)
     }
@@ -2726,6 +2732,10 @@ gtadb.Map = function() {
         ) + "\n" + (
             landmark.rlAddress.split(", ")[0] || "?"
         )
+    }
+
+    self.hasSpecialTag = function(landmark) {
+        return /^L\d+$/.test(landmark.tags) || landmark.tags.includes("2022")
     }
 
     self.loadJSON = async function(urls) {
