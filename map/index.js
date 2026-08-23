@@ -1997,7 +1997,7 @@ gtadb.Map = function() {
                 e.preventDefault()
                 if (self.mapMode == "gta") {
                     const key = "gta" + self.v
-                    const tileSets = self.v == 6 ? getAvailableTileSets() : self.defaults[key].tileSets
+                    const tileSets = self.v == 6 ? self.getAvailableTileSets() : self.defaults[key].tileSets
                     self[key].tileSet = tileSets[(tileSets.indexOf(self[key].tileSet) + 1) % tileSets.length]
                     self.tileSet = self[key].tileSet
                     self.setUserSettings()
