@@ -1276,7 +1276,7 @@ gtadb.Maps = function(options) {
                 }
             }))
             self.wheelTimeout = null
-        }, 100)
+        }, 500)
     }
 
     self.setGameVersion = function(gameVersion) {
