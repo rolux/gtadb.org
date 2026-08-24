@@ -1381,8 +1381,8 @@ gtadb.Map = function() {
             return v.toFixed(3)
         }).join(",") + (self.l ? "," + self.l : "")
         if (window.location.hash.slice(1) != hash) {
-            // history.replaceState(null, "", "#" + hash)
-            window.location.hash = hash
+            history.replaceState(null, "", "#" + hash)
+            // window.location.hash = hash
         }
     }
 
