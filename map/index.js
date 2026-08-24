@@ -2736,7 +2736,9 @@ gtadb.Map = function() {
     }
 
     self.hasSpecialTag = function(landmark) {
-        return /^L\d+$/.test(landmark.tags) || landmark.tags.includes("2022")
+        return landmark.tags.some(function(tag) {
+            return /^L\d+$/.test(tag)
+        })
     }
 
     self.loadJSON = async function(urls) {
