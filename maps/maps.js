@@ -451,6 +451,9 @@ gtadb.Maps = function(options) {
                 self.element.dispatchEvent(new CustomEvent("select", {detail: e.detail}))
             })
             function syncMap3DState(e) {
+                if (self.dimension != "3d") {
+                    return
+                }
                 const state = e.detail || self.map3d.get()
                 self.x = state.x
                 self.y = state.y
@@ -1276,7 +1279,7 @@ gtadb.Maps = function(options) {
                 }
             }))
             self.wheelTimeout = null
-        }, 500)
+        }, 250)
     }
 
     self.setGameVersion = function(gameVersion) {
