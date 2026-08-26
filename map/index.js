@@ -2737,7 +2737,7 @@ gtadb.Map = function() {
 
     self.hasSpecialTag = function(landmark) {
         return landmark.tags.some(function(tag) {
-            return /^L\d+$/.test(tag)
+            return /^L\d+$/i.test(tag)
         })
     }
 
