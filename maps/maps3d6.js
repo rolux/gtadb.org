@@ -580,6 +580,7 @@ gtadb.Map3D6 = function(options) {
     function loadImage(path) {
         return new Promise(function(resolve, reject) {
             const image = new Image();
+            image.crossOrigin = "anonymous";
             image.onload = function() { resolve(image); };
             image.onerror = function() { reject(new Error(`Could not load ${path}`)); };
             image.src = assetUrl(path);
