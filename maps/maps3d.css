@@ -1,4 +1,5 @@
-#map3d {
+#map3d,
+#map3d6 {
     background: rgb(44, 103, 164);
     bottom: 0;
     cursor: default;
@@ -10,16 +11,20 @@
     top: 0;
 }
 
-#map3d.dragging {
+#map3d.dragging,
+#map3d6.dragging {
     cursor: grabbing;
 }
 
-#map3d.marker-hover {
+#map3d.marker-hover,
+#map3d6.marker-hover {
     cursor: pointer;
 }
 
 #map3dScene,
-#map3dOverlay {
+#map3dOverlay,
+#map3d6Scene,
+#map3d6Overlay {
     bottom: 0;
     height: 100%;
     left: 0;
@@ -30,6 +35,29 @@
     width: 100%;
 }
 
-#map3dOverlay {
+#map3dOverlay,
+#map3d6Overlay {
     pointer-events: none;
+}
+
+.map3d6-loading {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    bottom: 0;
+    color: white;
+    display: flex;
+    font: 14px sans-serif;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.map3d6-loading[hidden] {
+    display: none;
+}
+
+.map3d6-loading.error {
+    color: rgb(255, 128, 128);
 }

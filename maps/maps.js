@@ -13,6 +13,7 @@ gtadb.Maps = function(options) {
         dimension: "2d",
         dimensions: ["2d", "3d"],
         map3d: null,
+        map3d6: null,
         mapW: 32768,
         mapH: 32768,
         minX: -16000,
@@ -97,6 +98,15 @@ gtadb.Maps = function(options) {
                 5: [[0, 17], [77, 94]],
                 6: [[1, 34], [155, 188]]
             },
+            "yanis,0":  {
+                0: [[0, 0], [2, 3]],
+                1: [[1, 1], [4, 6]],
+                2: [[2, 3], [9, 12]],
+                3: [[5, 6], [19, 24]],
+                4: [[11, 13], [39, 48]],
+                5: [[22, 26], [79, 97]],
+                6: [[44, 52], [158, 194]]
+            },
             "yanis,15": {
                 0: [[0, 0], [2, 2]],
                 1: [[0, 1], [4, 5]],
@@ -106,14 +116,14 @@ gtadb.Maps = function(options) {
                 5: [[0, 17], [77, 95]],
                 6: [[0, 34], [155, 190]]
             },
-            "yanis,16":  {
+            "yanis,16": {
                 0: [[0, 0], [2, 3]],
-                1: [[1, 1], [4, 6]],
-                2: [[2, 3], [9, 12]],
-                3: [[5, 6], [19, 24]],
-                4: [[11, 13], [39, 48]],
-                5: [[22, 26], [79, 97]],
-                6: [[44, 52], [158, 194]]
+                1: [[0, 1], [4, 6]],
+                2: [[0, 2], [9, 12]],
+                3: [[0, 5], [19, 24]],
+                4: [[0, 10], [39, 49]],
+                5: [[0, 21], [79, 99]],
+                6: [[0, 42], [159, 198]]
             }
         },
         tileOverlayRanges: {
@@ -213,6 +223,7 @@ gtadb.Maps = function(options) {
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",
+                    "yanis,0",
                     "yanis,16",
                 ]
             },
@@ -357,19 +368,7 @@ gtadb.Maps = function(options) {
             }
         }
 
-        if (self.map3d) {
-            self.map3d.set({
-                focused: self.focused && self.mapMode == "gta" && self.dimension == "3d",
-                landmarks: self.landmarks,
-                currentLandmarks: self.currentLandmarks,
-                selected: self.l,
-                tileSet: self.tileSet,
-                v: self.v,
-                x: self.targetX,
-                y: self.targetY,
-                z: self.targetZ,
-            })
-        }
+        self.updateMap3dVisibility()
 
         return that
     }
@@ -433,28 +432,37 @@ gtadb.Maps = function(options) {
         })
         self.element.appendChild(self.streetviewIcon)
 
-        if (gtadb.Map3D) {
-            self.map3d = gtadb.Map3D({
-                focused: self.focused,
-                landmarks: self.landmarks,
-                currentLandmarks: self.currentLandmarks,
-                parentElement: self.element,
-                selected: self.l,
-                tileSet: self.tileSet,
-                v: self.v,
-                x: self.targetX,
-                y: self.targetY,
-                z: self.targetZ,
-            })
-            self.map3d.addEventListener("select", function(e) {
+        function initMap3d(Map3d) {
+            if (!Map3d) {
+                return null
+            }
+            let map3d
+            try {
+                map3d = Map3d({
+                    focused: self.focused,
+                    landmarks: self.landmarks,
+                    currentLandmarks: self.currentLandmarks,
+                    parentElement: self.element,
+                    selected: self.l,
+                    tileSet: self.tileSet,
+                    v: self.v,
+                    x: self.targetX,
+                    y: self.targetY,
+                    z: self.targetZ,
+                })
+            } catch (error) {
+                console.warn(error)
+                return null
+            }
+            map3d.addEventListener("select", function(e) {
                 self.setLandmark(e.detail.id)
                 self.element.dispatchEvent(new CustomEvent("select", {detail: e.detail}))
             })
-            function syncMap3DState(e) {
-                if (self.dimension != "3d") {
+            function syncMap3dState(e) {
+                if (self.dimension != "3d" || map3d != self.getActiveMap3d()) {
                     return
                 }
-                const state = e.detail || self.map3d.get()
+                const state = e.detail || map3d.get()
                 self.x = state.x
                 self.y = state.y
                 self.z = state.z
@@ -463,9 +471,17 @@ gtadb.Maps = function(options) {
                 self.targetZ = state.targetZ
                 self.element.dispatchEvent(new CustomEvent(e.type, {detail: state}))
             }
-            self.map3d.addEventListener("mapchange", syncMap3DState)
-            self.map3d.addEventListener("mapchangeend", syncMap3DState)
-            self.map3d.hide()
+            map3d.addEventListener("mapchange", syncMap3dState)
+            map3d.addEventListener("mapchangeend", syncMap3dState)
+            map3d.hide()
+            return map3d
+        }
+
+        if (gtadb.Map3D) {
+            self.map3d = initMap3d(gtadb.Map3D)
+        }
+        if (gtadb.Map3D6) {
+            self.map3d6 = initMap3d(gtadb.Map3D6)
         }
 
         self.parentElement.appendChild(self.element)
@@ -1336,10 +1352,41 @@ gtadb.Maps = function(options) {
         self.canvas.style.display = isGta && !is3d ? "block" : "none"
         self.markersLayer.style.display = isGta && !is3d ? "block" : "none"
         self.googlemapsLayer.style.display = self.mapMode == "googlemaps" ? "block" : "none"
-        if (self.map3d) {
-            if (is3d) self.map3d.show()
-            else self.map3d.hide()
+        self.updateMap3dVisibility()
+    }
+
+    self.getActiveMap3d = function() {
+        if (
+            self.map3d6
+            && gtadb.Map3D6.supports(self.v, self.tileSet)
+        ) {
+            return self.map3d6
         }
+        return self.map3d
+    }
+
+    self.updateMap3dVisibility = function() {
+        const active = self.mapMode == "gta" && self.dimension == "3d"
+            ? self.getActiveMap3d()
+            : null
+        ;[self.map3d, self.map3d6].filter(Boolean).forEach(function(map3d) {
+            if (map3d != active) {
+                map3d.hide()
+                return
+            }
+            map3d.set({
+                focused: self.focused,
+                landmarks: self.landmarks,
+                currentLandmarks: self.currentLandmarks,
+                selected: self.l,
+                tileSet: self.tileSet,
+                v: self.v,
+                x: self.targetX,
+                y: self.targetY,
+                z: self.targetZ,
+            })
+            map3d.show()
+        })
     }
 
     self.setMapType = function(mapType) {

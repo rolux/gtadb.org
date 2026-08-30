@@ -290,6 +290,7 @@ gtadb.Map = function() {
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",
+                    "yanis,0",
                     "yanis,16",
                 ]
             },
@@ -2719,7 +2720,7 @@ gtadb.Map = function() {
 
     self.getAvailableTileSets = function() {
         return self.defaults.gta6.tileSets.filter(function(tileSet) {
-            return self.sessionId || tileSet != "yanis,16"
+            return self.sessionId || (tileSet != "yanis,0" && tileSet != "yanis,16")
         })
     }
 
