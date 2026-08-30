@@ -150,6 +150,8 @@ gtadb.Map3D6 = function(options) {
         uniform highp usampler2D u_height;
         uniform mat4 u_matrix;
         uniform ivec2 u_mesh_size;
+        uniform vec2 u_height_world_min;
+        uniform vec2 u_height_world_size;
         uniform vec2 u_world_min;
         uniform vec2 u_world_size;
         uniform vec2 u_texel;
@@ -188,18 +190,19 @@ gtadb.Map3D6 = function(options) {
         void main() {
             int column = gl_VertexID / 2;
             int row = gl_InstanceID + gl_VertexID % 2;
-            vec2 uv = vec2(
+            vec2 meshUv = vec2(
                 float(column) / float(u_mesh_size.x - 1),
                 float(row) / float(u_mesh_size.y - 1)
             );
-            float elevation = elevationAt(uv);
-            float left = elevationAt(uv - vec2(u_texel.x, 0.0));
-            float right = elevationAt(uv + vec2(u_texel.x, 0.0));
-            float south = elevationAt(uv - vec2(0.0, u_texel.y));
-            float north = elevationAt(uv + vec2(0.0, u_texel.y));
+            vec2 world = u_world_min + meshUv * u_world_size;
+            vec2 heightUv = (world - u_height_world_min) / u_height_world_size;
+            float elevation = elevationAt(heightUv);
+            float left = elevationAt(heightUv - vec2(u_texel.x, 0.0));
+            float right = elevationAt(heightUv + vec2(u_texel.x, 0.0));
+            float south = elevationAt(heightUv - vec2(0.0, u_texel.y));
+            float north = elevationAt(heightUv + vec2(0.0, u_texel.y));
             float dx = (right - left) / (2.0 * u_pixel_meters);
             float dy = (north - south) / (2.0 * u_pixel_meters);
-            vec2 world = u_world_min + uv * u_world_size;
             vec3 position = vec3(world.x, elevation, -world.y);
 
             v_normal = normalize(vec3(-dx, 1.0, dy));
@@ -256,6 +259,8 @@ gtadb.Map3D6 = function(options) {
         elevationOffset: gl.getUniformLocation(terrainProgram, "u_elevation_offset"),
         eye: gl.getUniformLocation(terrainProgram, "u_eye"),
         height: gl.getUniformLocation(terrainProgram, "u_height"),
+        heightWorldMin: gl.getUniformLocation(terrainProgram, "u_height_world_min"),
+        heightWorldSize: gl.getUniformLocation(terrainProgram, "u_height_world_size"),
         matrix: gl.getUniformLocation(terrainProgram, "u_matrix"),
         meshSize: gl.getUniformLocation(terrainProgram, "u_mesh_size"),
         metersPerValue: gl.getUniformLocation(terrainProgram, "u_meters_per_value"),
@@ -646,6 +651,21 @@ gtadb.Map3D6 = function(options) {
             width: image.naturalWidth,
             height: image.naturalHeight,
         };
+        const surface = self.surfaceDefinition;
+        surface.minX = -surface.zero[0] / surface.scale;
+        surface.maxX = (surface.width - surface.zero[0]) / surface.scale;
+        surface.minY = (surface.zero[1] - surface.height) / surface.scale;
+        surface.maxY = surface.zero[1] / surface.scale;
+        surface.meshMinX = Math.min(height.minX, surface.minX);
+        surface.meshMaxX = Math.max(height.maxX, surface.maxX);
+        surface.meshMinY = Math.min(height.minY, surface.minY);
+        surface.meshMaxY = Math.max(height.maxY, surface.maxY);
+        surface.meshWidth = Math.ceil(
+            (surface.meshMaxX - surface.meshMinX) / height.pixelMeters
+        ) + 1;
+        surface.meshHeight = Math.ceil(
+            (surface.meshMaxY - surface.meshMinY) / height.pixelMeters
+        ) + 1;
     }
     function ensureLoaded() {
         if (self.loaded) return Promise.resolve();
@@ -862,9 +882,15 @@ gtadb.Map3D6 = function(options) {
             gl.disable(gl.CULL_FACE);
             gl.useProgram(terrainProgram);
             gl.uniformMatrix4fv(uniforms.matrix, false, matrix);
-            gl.uniform2i(uniforms.meshSize, height.width, height.height);
-            gl.uniform2f(uniforms.worldMin, height.minX, height.minY);
-            gl.uniform2f(uniforms.worldSize, height.sizeX, height.sizeY);
+            gl.uniform2i(uniforms.meshSize, definition.meshWidth, definition.meshHeight);
+            gl.uniform2f(uniforms.heightWorldMin, height.minX, height.minY);
+            gl.uniform2f(uniforms.heightWorldSize, height.sizeX, height.sizeY);
+            gl.uniform2f(uniforms.worldMin, definition.meshMinX, definition.meshMinY);
+            gl.uniform2f(
+                uniforms.worldSize,
+                definition.meshMaxX - definition.meshMinX,
+                definition.meshMaxY - definition.meshMinY
+            );
             gl.uniform2f(uniforms.texel, 1 / height.width, 1 / height.height);
             gl.uniform1f(uniforms.metersPerValue, height.metersPerValue);
             gl.uniform1f(uniforms.elevationOffset, height.elevationOffset);
@@ -891,8 +917,8 @@ gtadb.Map3D6 = function(options) {
             gl.drawArraysInstanced(
                 gl.TRIANGLE_STRIP,
                 0,
-                height.width * 2,
-                height.height - 1
+                definition.meshWidth * 2,
+                definition.meshHeight - 1
             );
             gl.bindVertexArray(null);
             renderMarkers(matrix, eye);
