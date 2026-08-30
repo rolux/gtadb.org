@@ -888,7 +888,7 @@ gtadb.Map = function() {
         self.landmarkDataElement = document.createElement("div")
         self.landmarkDataElement.style.margin = "8px"
         self.landmarkDataElement.innerHTML = `<p>You are welcome
-            to use the landmark data, photos and map tiles for your own
+            to use the landmarks data, photos and map tiles for your own
             purposes.</p>
             <p>The latest versions (CC-BY 4.0) can always be found on
             GitHub:</p>
