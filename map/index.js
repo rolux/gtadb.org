@@ -184,6 +184,8 @@ gtadb.Map = function() {
             "igNameConfirmed": "IG name confirmed",
             "igNameUnconfirmed": "IG name unconfirmed",
             "igNameUnknown": "IG name unknown",
+            "igAddressConfirmed": "IG address confirmed",
+            "igAddressUnknown": "IG address unknown",
             "igLatLngConfirmed": "IG latlng confirmed",
             "igLatLngUnconfirmed": "IG latlng unconfirmed",
             "igLatLngUnknown": "IG latlng unknown",
@@ -195,8 +197,6 @@ gtadb.Map = function() {
             "rlLatLngMissing": "RL latlng missing",
             "rlWithPhoto": "with RL photo",
             "rlWithoutPhoto": "without RL photo",
-            "mapIncluded": "included on the map",
-            "mapNotIncluded": "not included on the map"
         },
         sort: "igAddress",
         sortOptions: {
@@ -1769,6 +1769,8 @@ gtadb.Map = function() {
                 self.filter == "igNameConfirmed" && landmark.igAddress && landmark.igAddress[0] != "?" && !landmark.igAddress.includes("?,") && landmark.igAddress[0] != '"' ||
                 self.filter == "igNameUnconfirmed" && landmark.igAddress[0] != "?" && landmark.igAddress.includes("?,") ||
                 self.filter == "igNameUnknown" && (landmark.igAddress[0] == "?" || landmark.igAddress[0] == '"') ||
+                self.filter == "igAddressConfirmed" && self.hasStreetName(landmark.igAddress) ||
+                self.filter == "igAddressUnknown" && !self.hasStreetName(landmark.igAddress) ||
                 self.filter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
                 self.filter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
                 self.filter == "igLatLngUnknown" && landmark.igCoordinates === null ||
@@ -1779,9 +1781,7 @@ gtadb.Map = function() {
                 self.filter == "rlLandmarkUnknown" && landmark.rlStatus == "unknown" ||
                 self.filter == "rlLatLngMissing" && landmark.rlAddress[0] != "?" && landmark.rlCoordinates === null ||
                 self.filter == "rlWithPhoto" && landmark.rlPhotoRatio ||
-                self.filter == "rlWithoutPhoto" && !landmark.rlPhotoRatio ||
-                self.filter == "mapIncluded" && parseInt(landmark.id.slice(1)) <= 344 ||
-                self.filter == "mapNotIncluded" && parseInt(landmark.id.slice(1)) > 344
+                self.filter == "rlWithoutPhoto" && !landmark.rlPhotoRatio
             )
         })
         // FIXME: duplicated
@@ -2741,6 +2741,10 @@ gtadb.Map = function() {
             return /^L\d+$/i.test(tag)
         })
     }
+
+    self.hasStreetName = function(address) {
+        return /\s(?:Ave|Blvd|Ct|Dr|Hwy|Ln|Pkwy|Pl|Rd|St|Way),/g.test(address)
+    } 
 
     self.loadJSON = async function(urls) {
         const fetchURL = async function(url) {
