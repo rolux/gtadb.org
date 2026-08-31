@@ -8,4 +8,4 @@ It includes the source code for [map.gtadb.org](https://map.gtadb.org) – a col
 
 You are welcome to use the [landmark data](https://github.com/rolux/gtadb.org/tree/main/map/data), [photos](https://github.com/rolux/gtadb.org/tree/main/map/photos) or [map tiles](https://github.com/rolux/gtadb.org/tree/main/maps/tiles) for your own purposes. Please do not fetch live data or media from gtadb.org – simply `git pull` for updates. Alternatively, try `git sparse-checkout set map/data/6 map/photos/6 maps/tiles/6`.
 
-MIT (code) / CC BY 4.0 (data). Thanks to all contributors!
+MIT (code) / CC BY 4.0 (data). Attribution: gtadb.org and all contributors.
