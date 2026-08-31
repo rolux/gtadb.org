@@ -278,6 +278,9 @@
             <p class="copyright">No Copyright ( ) 2026 GTADB.ORG. No rights reserved.</p>
         </div>-->
         <script>
+            document.body.style.backgroundImage = "url(images/" + (
+                Math.random() < 0.5 ? "PaletoBay" : "Vice Beach"
+            ) + ".jpg)"
             let dialogLayer = document.getElementById("dialogLayer")
             let timeout
             dialogLayer.addEventListener("mousedown", function(e) {
