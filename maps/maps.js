@@ -1,3 +1,5 @@
+const _root_ = new URL(".", document.currentScript.src)
+
 gtadb.Maps = function(options) {
 
     if (!(this instanceof gtadb.Maps)) {
@@ -383,6 +385,47 @@ gtadb.Maps = function(options) {
         return that
     }
 
+    that.getElevation = function(x, y) {
+
+        if (arguments.length === 0) {
+           return self.initElevation()
+        }
+        if (!self.elevation) {
+            return false  // still loading
+        }
+
+        const elevation = self.elevation
+        const heightmapX = elevation.zero[0] + x * elevation.scaleXY
+        const heightmapY = elevation.zero[1] - y * elevation.scaleXY
+        if (
+            heightmapX < 0 || heightmapX > elevation.width - 1 ||
+            heightmapY < 0 || heightmapY > elevation.height - 1
+        ) {
+            return null  // out of bounds
+        }
+
+        const x0 = Math.floor(heightmapX)
+        const y0 = Math.floor(heightmapY)
+        const x1 = Math.min(x0 + 1, elevation.width - 1)
+        const y1 = Math.min(y0 + 1, elevation.height - 1)
+        const tx = heightmapX - x0
+        const ty = heightmapY - y0
+
+        function getValue(x, y) {
+            return elevation.pixels[y * elevation.width + x]
+        }
+        const top = getValue(x0, y0) * (1 - tx) + getValue(x1, y0) * tx
+        const bottom = getValue(x0, y1) * (1 - tx) + getValue(x1, y1) * tx
+        const value = top * (1 - ty) + bottom * ty
+
+        if (value === 0) {
+            return null  // out of bounds
+        }
+
+        return value / elevation.scaleZ + elevation.offset
+
+    }
+
     that.panGooglemaps = function(lat, lng) {
         return self.initGooglemaps().then(function(googleMap) {
             googleMap.panTo({lat: lat, lng: lng})
@@ -432,6 +475,8 @@ gtadb.Maps = function(options) {
         })
         self.element.appendChild(self.streetviewIcon)
 
+        self.initElevation()
+
         function initMap3d(Map3d) {
             if (!Map3d) {
                 return null
@@ -440,6 +485,7 @@ gtadb.Maps = function(options) {
             try {
                 map3d = Map3d({
                     focused: self.focused,
+                    getElevation: that.getElevation,
                     landmarks: self.landmarks,
                     currentLandmarks: self.currentLandmarks,
                     parentElement: self.element,
@@ -454,6 +500,11 @@ gtadb.Maps = function(options) {
                 console.warn(error)
                 return null
             }
+            map3d.addEventListener("mapmousemove", function(e) {
+                self.element.dispatchEvent(new CustomEvent("mapmousemove", {
+                    detail: e.detail
+                }))
+            })
             map3d.addEventListener("select", function(e) {
                 self.setLandmark(e.detail.id)
                 self.element.dispatchEvent(new CustomEvent("select", {detail: e.detail}))
@@ -539,6 +590,7 @@ gtadb.Maps = function(options) {
         document.addEventListener("keydown", self.onKeydown)
         document.addEventListener("keyup", self.onKeyup)
         self.markersLayer.addEventListener("mousedown", self.onMousedown)
+        self.markersLayer.addEventListener("mousemove", self.onMousemove)
         window.addEventListener("resize", self.onResize)
         self.markersLayer.addEventListener("wheel", self.onWheel, {passive: false})
 
@@ -570,6 +622,43 @@ gtadb.Maps = function(options) {
         }).forEach(function(landmark) {
             self.addMarker(landmark)
         })
+    }
+
+    self.elevationPromise = null
+
+    self.initElevation = function() {
+
+        if (self.elevationPromise) {
+            return self.elevationPromise
+        }
+
+        self.elevationPromise = fetch(new URL("data/6/elevation.bin", _root_)).then(
+            function(response) {
+                if (!response.ok) {
+                    throw new Error("Could not load elevation data")
+                }
+                return response.arrayBuffer()
+            }
+        ).then(
+            function(buffer) {
+                if (buffer.byteLength != 1536 * 1748 * 2) {
+                    throw new Error("Unexpected elevation data size")
+                }
+                self.elevation = {
+                    pixels: new Uint16Array(buffer),
+                    width: 1536,
+                    height: 1748,
+                    scaleXY: 0.083188,
+                    scaleZ: 92.466616,
+                    zero: [1108.532445611, 938.090772693],
+                    offset: -303.1033271360121
+                }
+                return self.elevation
+            }
+        )
+
+        return self.elevationPromise
+
     }
 
     self.googlemapsPromise = null
@@ -1258,6 +1347,23 @@ gtadb.Maps = function(options) {
             self.mouseTimeout = null
         }, 250)
         document.addEventListener("mouseup", onMouseup)
+    }
+
+    self.onMousemove = function(e) {
+        if (self.mapMode != "gta" || self.dimension != "2d") {
+            return
+        }
+        const rect = self.canvas.getBoundingClientRect()
+        const mppx = self.getMppx()
+        const x = self.x + (e.clientX - rect.left - rect.width / 2) * mppx
+        const y = self.y - (e.clientY - rect.top - rect.height / 2) * mppx
+        self.element.dispatchEvent(new CustomEvent("mapmousemove", {
+            detail: {
+                x: x,
+                y: y,
+                z: that.getElevation(x, y),
+            }
+        }))
     }
 
     self.onResize = function(render=true) {
