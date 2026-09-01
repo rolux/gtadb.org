@@ -2510,7 +2510,7 @@ gtadb.Map = function() {
         ]("light")
         self.coordinatesElement.innerHTML =
             self.coordinates[2] === false ? "loading elevation data"
-            : self.coordinates[2] === null ? "out of bounds"
+            : self.coordinates[2] === null ? ""  // "out of bounds"
             : `${self.coordinates[0].toFixed(3)}, ${self.coordinates[1].toFixed(3)}, ${self.coordinates[2].toFixed(3)}`
     }
 
