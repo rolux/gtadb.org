@@ -103,11 +103,20 @@ gtadb.Map3D6 = function(options) {
     self.overlay.id = "map3d6Overlay";
     self.loading = document.createElement("div");
     self.loading.className = "map3d6-loading";
-    self.loading.textContent = "Loading terrain";
+    self.loading.textContent = "LOADING TERRAIN";
     self.element.appendChild(self.scene);
     self.element.appendChild(self.overlay);
     self.element.appendChild(self.loading);
     self.parentElement.appendChild(self.element);
+
+    function updateBackground() {
+        const color = self.textureDefinitions[self.tileSet].background;
+        const value = `rgb(${color.join(", ")})`;
+        self.element.style.backgroundColor = value;
+        self.loading.style.backgroundColor = value;
+    }
+
+    updateBackground();
 
     const gl = self.scene.getContext("webgl2", {
         alpha: false,
@@ -804,6 +813,7 @@ gtadb.Map3D6 = function(options) {
         if ("v" in values) self.v = values.v;
         if ("tileSet" in values && values.tileSet !== self.tileSet) {
             self.tileSet = values.tileSet;
+            updateBackground();
             if (self.loaded && self.textureDefinitions[self.tileSet]) {
                 loadSurfaceTexture().then(that.render);
             }
