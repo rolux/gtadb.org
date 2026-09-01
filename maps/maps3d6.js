@@ -110,8 +110,9 @@ gtadb.Map3D6 = function(options) {
     self.parentElement.appendChild(self.element);
 
     function updateBackground() {
-        const color = self.textureDefinitions[self.tileSet].background;
-        const value = `rgb(${color.join(", ")})`;
+        const definition = self.textureDefinitions[self.tileSet];
+        if (!definition) return;
+        const value = `rgb(${definition.background.join(", ")})`;
         self.element.style.backgroundColor = value;
         self.loading.style.backgroundColor = value;
     }
