@@ -2189,9 +2189,19 @@ gtadb.Map = function() {
 
             self.itemIgCoordinates.innerHTML = ""
             self.itemIgCoordinatesLink = document.createElement("span")
-            self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", [
-                ...landmark.igCoordinates, self.maps.getElevation(...landmark.igCoordinates)
-            ])
+            const coordinates = landmark.igCoordinates
+            const elevation = coordinates && self.maps.getElevation(...coordinates)
+            const values = Number.isFinite(elevation)
+                ? [...coordinates, elevation]
+                : coordinates
+            self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", values)
+            if (elevation === false) {
+                self.maps.getElevation().then(function() {
+                    if (self.l == landmark.id) {
+                        self.renderItem()
+                    }
+                })
+            }
             if (landmark.igCoordinates) {
                 self.itemIgCoordinatesLink.classList.add("link")
                 self.itemIgCoordinatesLink.addEventListener("mousedown", function() {
