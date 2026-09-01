@@ -127,6 +127,9 @@ body.hidden #uiIcon {
 div {
     scrollbar-width: none;
 }
+div.light {
+    opacity: 0.5
+}
 p {
     font-size: 13px;
     line-height: 18px;
@@ -277,6 +280,7 @@ body.editing:not(.googlemaps) .marker.selected {
 }
 #findBar input {
     margin: 3px 3px;
+    text-transform: uppercase;
     width: 188px;
 }
 #findBar .button {
@@ -361,6 +365,7 @@ body.editing:not(.googlemaps) .marker.selected {
     margin-right: 8px;
 }
 #itemPanel {
+    bottom: 32px;
     display: none;
     font-size: 13px;
     right: 0
@@ -375,7 +380,7 @@ body.editing:not(.googlemaps) .marker.selected {
 }
 #itemBody {
     border-right: 8px solid transparent;
-    bottom: 32px;
+    bottom: 0;
     left: 0;
     overflow-x: hidden;
     overflow-y: auto;
@@ -470,16 +475,13 @@ itemBody > div > div.coordinates > a,
     */
 
 
-#itemStatus {
-    float: left;
-    font-size: 12px;
-    margin: 2px 8px 2px 8px;
-    text-transform: uppercase;
-}
+
 #itemEdited {
     float: left;
     font-size: 12px;
-    padding: 2px 8px 8px 8px;
+    margin: 4px;
+    opacity: 0.5;
+    // padding: 2px 8px 8px 0px;
     text-transform: uppercase;
 }
 #editItemBody {
@@ -496,13 +498,24 @@ itemBody > div > div.coordinates > a,
     margin-left: -4px;
 }
 
-#itemStatusBar {
+#coordinatesPanel {
+    height: 32px;
+    right: 0;
+    top: auto;
+}
+#coordinatesPanel.rounded {
+    border-top-left-radius: 8px;
+}
+#coordinatesBar {
     bottom: 0;
     right: 0;
 }
-#itemStatusElement {
+#coordinatesElement {
     font-size: 12px;
+    text-align: left;
+    text-transform: uppercase;
 }
+
 #aboutDialog .content img {
     height: 256px;
     margin: 96px 96x;

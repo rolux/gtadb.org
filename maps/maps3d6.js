@@ -40,7 +40,8 @@ gtadb.Map3D6 = function(options) {
         currentLandmarks: null,
         distance: 17000,
         focused: false,
-        height: map3d6Height,
+        getElevation: null,
+        height: {...map3d6Height, zero: [...map3d6Height.zero]},
         landmarks: [],
         maxPitch: 1.5,
         maxX: 4000,
@@ -82,17 +83,22 @@ gtadb.Map3D6 = function(options) {
     self.keys = {};
     self.keyboardFrame = null;
     self.keyboardTimestamp = null;
+    self.mousemoveFrame = null;
+    self.mousePosition = null;
     self.wheelEndTimer = null;
     self.visibleMarkers = [];
 
     const height = self.height;
-    height.minX = -height.zero[0] / height.scale;
-    height.maxX = (height.width - height.zero[0]) / height.scale;
-    height.minY = (height.zero[1] - height.height) / height.scale;
-    height.maxY = height.zero[1] / height.scale;
-    height.sizeX = height.maxX - height.minX;
-    height.sizeY = height.maxY - height.minY;
-    height.pixelMeters = 1 / height.scale;
+    function updateHeightBounds() {
+        height.minX = -height.zero[0] / height.scale;
+        height.maxX = (height.width - height.zero[0]) / height.scale;
+        height.minY = (height.zero[1] - height.height) / height.scale;
+        height.maxY = height.zero[1] / height.scale;
+        height.sizeX = height.maxX - height.minX;
+        height.sizeY = height.maxY - height.minY;
+        height.pixelMeters = 1 / height.scale;
+    }
+    updateHeightBounds();
 
     self.element = document.createElement("div");
     self.element.id = "map3d6";
@@ -549,7 +555,7 @@ gtadb.Map3D6 = function(options) {
         self.pitch = previous.pitch;
         return false;
     }
-    function groundPoint(clientX, clientY) {
+    function screenRay(clientX, clientY) {
         const rect = self.scene.getBoundingClientRect();
         if (!rect.width || !rect.height) return null;
         const ndcX = ((clientX - rect.left) / rect.width) * 2 - 1;
@@ -565,10 +571,84 @@ gtadb.Map3D6 = function(options) {
             add(forward, scale(right, ndcX * tangent * self.width / self.height)),
             scale(up, ndcY * tangent)
         ));
+        return {eye, direction};
+    }
+    function groundPoint(clientX, clientY) {
+        const ray = screenRay(clientX, clientY);
+        if (!ray) return null;
+        const {eye, direction} = ray;
         if (Math.abs(direction[1]) < 1e-6) return null;
         const distance = (self.target[1] - eye[1]) / direction[1];
         if (distance <= 0) return null;
         return add(eye, scale(direction, distance));
+    }
+    function terrainPoint(clientX, clientY) {
+        if (!self.loaded || typeof self.getElevation !== "function") return null;
+        const ray = screenRay(clientX, clientY);
+        if (!ray) return null;
+        const {eye, direction} = ray;
+        let near = 0;
+        let far = 120000;
+        function clip(origin, delta, minimum, maximum) {
+            if (Math.abs(delta) < 1e-9) {
+                return origin >= minimum && origin <= maximum;
+            }
+            let first = (minimum - origin) / delta;
+            let last = (maximum - origin) / delta;
+            if (first > last) [first, last] = [last, first];
+            near = Math.max(near, first);
+            far = Math.min(far, last);
+            return near <= far;
+        }
+        if (
+            !clip(eye[0], direction[0], height.minX, height.maxX)
+            || !clip(eye[2], direction[2], -height.maxY, -height.minY)
+            || far <= 0
+        ) return null;
+        near = Math.max(0, near);
+        const horizontalRate = Math.hypot(direction[0], direction[2]);
+        const step = height.pixelMeters / Math.max(horizontalRate, 1e-3);
+        let previous = null;
+        let distance = near;
+        while (true) {
+            const point = add(eye, scale(direction, distance));
+            const elevation = self.getElevation(point[0], -point[2]);
+            if (elevation === false) return null;
+            if (elevation === null) {
+                previous = null;
+            } else {
+                const delta = point[1] - elevation;
+                if (delta <= 0) {
+                    if (previous) {
+                        let low = previous.distance;
+                        let high = distance;
+                        for (let i = 0; i < 12; i++) {
+                            const middle = (low + high) / 2;
+                            const middlePoint = add(eye, scale(direction, middle));
+                            const middleElevation = self.getElevation(
+                                middlePoint[0],
+                                -middlePoint[2]
+                            );
+                            if (middleElevation !== null && middleElevation !== false
+                                && middlePoint[1] > middleElevation) {
+                                low = middle;
+                            } else {
+                                high = middle;
+                            }
+                        }
+                        distance = high;
+                    }
+                    const hit = add(eye, scale(direction, distance));
+                    const hitElevation = self.getElevation(hit[0], -hit[2]);
+                    if (hitElevation === null || hitElevation === false) return null;
+                    return {x: hit[0], y: -hit[2], z: hitElevation};
+                }
+                previous = {distance, delta};
+            }
+            if (distance >= far) break;
+            distance = Math.min(distance + step, far);
+        }
+        return null;
     }
     function panBy(dx, dz) {
         const right = [Math.cos(self.yaw), 0, -Math.sin(self.yaw)];
@@ -602,13 +682,24 @@ gtadb.Map3D6 = function(options) {
         });
     }
     async function loadHeight() {
-        const response = await fetch(assetUrl(height.url));
-        if (!response.ok) throw new Error(`Could not load ${height.url}`);
-        const buffer = await response.arrayBuffer();
-        if (buffer.byteLength !== height.width * height.height * 2) {
+        if (typeof self.getElevation !== "function") {
+            throw new Error("Elevation service unavailable");
+        }
+        const elevation = await self.getElevation();
+        if (!elevation || !(elevation.pixels instanceof Uint16Array)) {
+            throw new Error("Could not load elevation data");
+        }
+        if (elevation.pixels.length !== elevation.width * elevation.height) {
             throw new Error("Unexpected elevation data size");
         }
-        return new Uint16Array(buffer);
+        height.width = elevation.width;
+        height.height = elevation.height;
+        height.scale = elevation.scaleXY;
+        height.zero = [...elevation.zero];
+        height.metersPerValue = 1 / elevation.scaleZ;
+        height.elevationOffset = elevation.offset;
+        updateHeightBounds();
+        return elevation.pixels;
     }
     function createHeightTexture(pixels) {
         const texture = gl.createTexture();
@@ -1030,10 +1121,28 @@ gtadb.Map3D6 = function(options) {
     };
     self.onMousemove = function(event) {
         if (self.element.classList.contains("dragging")) return;
-        self.element.classList.toggle(
-            "marker-hover",
-            Boolean(that.markerAt(event.clientX, event.clientY))
-        );
+        self.mousePosition = [event.clientX, event.clientY];
+        if (self.mousemoveFrame !== null) return;
+        self.mousemoveFrame = requestAnimationFrame(function() {
+            self.mousemoveFrame = null;
+            if (!self.mousePosition) return;
+            const [clientX, clientY] = self.mousePosition;
+            self.element.classList.toggle(
+                "marker-hover",
+                Boolean(that.markerAt(clientX, clientY))
+            );
+            const point = terrainPoint(clientX, clientY);
+            self.element.dispatchEvent(new CustomEvent("mapmousemove", {
+                detail: point || {x: null, y: null, z: null},
+            }));
+        });
+    };
+    self.onMouseleave = function() {
+        self.mousePosition = null;
+        self.element.classList.remove("marker-hover");
+        self.element.dispatchEvent(new CustomEvent("mapmousemove", {
+            detail: {x: null, y: null, z: null},
+        }));
     };
     self.updateKeyboardNavigation = function(timestamp) {
         if (self.keyboardFrame === null) return;
@@ -1103,6 +1212,7 @@ gtadb.Map3D6 = function(options) {
     document.addEventListener("keydown", self.onKeydown);
     document.addEventListener("keyup", self.onKeyup);
     self.element.addEventListener("mousedown", self.onMousedown);
+    self.element.addEventListener("mouseleave", self.onMouseleave);
     self.element.addEventListener("mousemove", self.onMousemove);
     self.element.addEventListener("wheel", self.onWheel, {passive: false});
     clampTarget();

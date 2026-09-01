@@ -399,6 +399,10 @@ gtadb.Map = function() {
                 self.setFocus("map")
             }
         })
+        self.maps.addEventListener("mapmousemove", function(e) {
+            self.coordinates = [e.detail.x, e.detail.y, e.detail.z]
+            self.updateCoordinatesElement()
+        })
         self.maps.element.addEventListener("wheel", function() {
             if (self.focus != "dialog") {
                 self.setFocus("map")
@@ -841,19 +845,26 @@ gtadb.Map = function() {
         self.itemTags.id = "itemTags"
         self.itemBody.appendChild(self.itemTags)
 
-        self.itemStatus = document.createElement("div")
-        self.itemStatus.id = "itemStatus"
-        self.itemBody.appendChild(self.itemStatus)
-
-        self.itemStatusElement = document.createElement("div")
-        self.itemStatusElement.id = "itemStatusElement"
+        self.itemEdited = document.createElement("div")
+        self.itemEdited.id = "itemEdited"
+        self.itemBody.appendChild(self.itemEdited)
  
-        self.itemStatusBar = gtadb.Bar({
+        // Coordinates
+
+        self.coordinatesPanel = document.createElement("div")
+        self.coordinatesPanel.id = "coordinatesPanel"
+        self.coordinatesPanel.className = "mapPanel rounded"
+        self.maps.element.appendChild(self.coordinatesPanel)
+
+        self.coordinatesElement = document.createElement("div")
+        self.coordinatesElement.id = "coordinatesElement"
+
+        self.coordinatesBar = gtadb.Bar({
             border: "top",
-            element: self.itemStatusElement
+            element: self.coordinatesElement
         })
-        self.itemStatusBar.element.id = "itemStatusBar"
-        self.itemPanel.appendChild(self.itemStatusBar.element)
+        self.coordinatesBar.element.id = "coordinatesBar"
+        self.coordinatesPanel.appendChild(self.coordinatesBar.element)
 
         // Dialog Layer
 
@@ -921,6 +932,7 @@ gtadb.Map = function() {
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>F</td><td>Find</td></tr>
             <tr><td>⇧ F</td><td>Clear find</td></tr>
+            <tr><td>C</td><td>Copy coordinates to clipboard</td></tr>
             <tr><td>ENTER</td><td>Focus on selected landmark</td></tr>
             <tr><td>↑ ↓</td><td>Select previous / next landmark</td></tr>
             <tr><td>← →</td><td>Select first / last landmark</td></tr>
@@ -1970,6 +1982,13 @@ gtadb.Map = function() {
                 if (self.sessionId && self.mapMode == "gta" && self.dimension == "2d") {
                     self.addLandmark()
                 }
+            } else if (e.key == "c") {
+                if (self.coordinates && self.coordinates[2] !== false && self.coordinates[2] !== null) {
+                    const text = self.coordinates.map(function(value) {
+                        return value.toFixed(3)
+                    }).join(", ")
+                    navigator.clipboard.writeText(text)
+                }
             } else if (e.key == "D") {
                 if (self.mapMode == "gta") {
                     e.preventDefault()
@@ -2170,7 +2189,9 @@ gtadb.Map = function() {
 
             self.itemIgCoordinates.innerHTML = ""
             self.itemIgCoordinatesLink = document.createElement("span")
-            self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", landmark.igCoordinates)
+            self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", [
+                ...landmark.igCoordinates, self.maps.getElevation(...landmark.igCoordinates)
+            ])
             if (landmark.igCoordinates) {
                 self.itemIgCoordinatesLink.classList.add("link")
                 self.itemIgCoordinatesLink.addEventListener("mousedown", function() {
@@ -2315,13 +2336,16 @@ gtadb.Map = function() {
                 self.itemTags.addEventListener("blur", self.onBlur)
             } 
 
-            self.itemStatusElement.innerText = "LAST EDITED: " + self.formatDate(landmark.edited[0])
+            self.itemEdited.innerText = "LAST EDITED: " + self.formatDate(landmark.edited[0])
+
             if (self.ui) {
                 self.itemPanel.style.display = "block"
+                self.coordinatesPanel.classList.remove("rounded")
             }
 
         } else {
             self.itemPanel.style.display = "none"
+            self.coordinatesPanel.classList.add("rounded")
         }
 
     }
@@ -2470,11 +2494,25 @@ gtadb.Map = function() {
         }
         if (self.l) {
             self.itemPanel.style.display = self.ui ? "block" : "none"
+            self.coordinatesPanel.style.display = self.ui ? "block" : "none"
         }
         document.body.classList[self.ui ? "remove" : "add"]("hidden")
     }
 
     // Updates /////////////////////////////////////////////////////////////////////////////////////
+
+    self.updateCoordinatesElement = function() {
+        if (!self.coordinatesElement) {
+            return
+        }
+        self.coordinatesElement.classList[
+            self.coordinates[2] === false || self.coordinates[2] === null ? "add" : "remove"
+        ]("light")
+        self.coordinatesElement.innerHTML =
+            self.coordinates[2] === false ? "loading elevation data"
+            : self.coordinates[2] === null ? "out of bounds"
+            : `${self.coordinates[0].toFixed(3)}, ${self.coordinates[1].toFixed(3)}, ${self.coordinates[2].toFixed(3)}`
+    }
 
     self.updateGameElement = function() {
         // self.gameIcon.style.backgroundColor = self.gameColors[self.v]
@@ -2691,7 +2729,7 @@ gtadb.Map = function() {
     self.formatCoordinates = function(key, coordinates) {
         return coordinates ? coordinates.map(function(value) {
             return value.toFixed(key == "ig" ? 3 : 7)
-        }).join(",") : "?"
+        }).join(", ") : "?"
     }
 
     self.formatDate = function(timestamp) {
