@@ -2194,7 +2194,7 @@ gtadb.Map = function() {
             const values = Number.isFinite(elevation)
                 ? [...coordinates, elevation]
                 : coordinates
-            self.itemIgCoordinatesLink.innerText = self.formatCoordinates("ig", values)
+            self.itemIgCoordinatesLink.innerText = self.formatCoordinates(values, 3)
             if (elevation === false) {
                 self.maps.getElevation().then(function() {
                     if (self.l == landmark.id) {
@@ -2269,7 +2269,7 @@ gtadb.Map = function() {
 
             self.itemRlCoordinates.innerHTML = ""
             self.itemRlCoordinatesLink = document.createElement("span")
-            self.itemRlCoordinatesLink.innerText = self.formatCoordinates("rl", landmark.rlCoordinates)
+            self.itemRlCoordinatesLink.innerText = self.formatCoordinates(landmark.rlCoordinates, 7)
             if (landmark.rlCoordinates) {
                 self.itemRlCoordinatesLink.classList.add("link")
                 self.itemRlCoordinatesLink.addEventListener("mousedown", function() {
@@ -2378,8 +2378,8 @@ gtadb.Map = function() {
             const rlElement = document.createElement("div")
             rlElement.className = "rl"
             rlElement.innerText = self.sort.includes("Address") ? (landmark.rlAddress || "?")
-                    : self.sort.includes("igL") ? self.formatCoordinates("ig", landmark.igCoordinates)
-                    : self.sort.includes("rlL") ? self.formatCoordinates("rl", landmark.rlCoordinates)
+                    : self.sort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates, 3)
+                    : self.sort.includes("rlL") ? self.formatCoordinates(landmark.rlCoordinates, 7)
                     : self.sort == "tags" ? (landmark.tags.join(", ").toUpperCase() || "NONE")
                     : self.sort == "id" ? landmark.id
                     : self.formatDate(landmark.edited[0])
@@ -2521,7 +2521,7 @@ gtadb.Map = function() {
         self.coordinatesElement.innerHTML =
             self.coordinates[2] === false ? "loading elevation data"
             : self.coordinates[2] === null ? ""  // "out of bounds"
-            : `${self.coordinates[0].toFixed(3)}, ${self.coordinates[1].toFixed(3)}, ${self.coordinates[2].toFixed(3)}`
+            : self.formatCoordinates(self.coordinates, 1)
     }
 
     self.updateGameElement = function() {
@@ -2736,9 +2736,9 @@ gtadb.Map = function() {
         return address
     }
 
-    self.formatCoordinates = function(key, coordinates) {
+    self.formatCoordinates = function(coordinates, decimals) {
         return coordinates ? coordinates.map(function(value) {
-            return value.toFixed(key == "ig" ? 3 : 7)
+            return value.toFixed(decimals)
         }).join(", ") : "?"
     }
 
