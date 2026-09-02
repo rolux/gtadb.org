@@ -394,7 +394,7 @@ gtadb.Maps = function(options) {
             return false  // still loading
         }
 
-        const elevation = self.elevation
+        const elevation = self.elevation[self.v]
         const heightmapX = elevation.zero[0] + x * elevation.scaleXY
         const heightmapY = elevation.zero[1] - y * elevation.scaleXY
         if (
@@ -528,11 +528,11 @@ gtadb.Maps = function(options) {
             return map3d
         }
 
+        if (gtadb.Map3DFlat) {
+            self.map3dflat = initMap3d(gtadb.Map3DFlat)
+        }
         if (gtadb.Map3D) {
             self.map3d = initMap3d(gtadb.Map3D)
-        }
-        if (gtadb.Map3D6) {
-            self.map3d6 = initMap3d(gtadb.Map3D6)
         }
 
         self.parentElement.appendChild(self.element)
@@ -625,6 +625,7 @@ gtadb.Maps = function(options) {
     }
 
     self.elevationPromise = null
+    self.elevation = null
 
     self.initElevation = function() {
 
@@ -632,30 +633,60 @@ gtadb.Maps = function(options) {
             return self.elevationPromise
         }
 
-        self.elevationPromise = fetch(new URL("data/6/elevation.bin", _root_)).then(
-            function(response) {
-                if (!response.ok) {
-                    throw new Error("Could not load elevation data")
-                }
-                return response.arrayBuffer()
+        const definitions = {
+            4: {
+                width: 540,
+                height: 360,
+                scaleXY: 0.1,
+                scaleZ: 152.1501888179339,
+                zero: [240, 239],
+                offset: -41.10032245323038
+            },
+            5: {
+                width: 930,
+                height: 1300,
+                scaleXY: 0.1,
+                scaleZ: 79.45671558620576,
+                zero: [410, 839],
+                offset: -29.447885468611716
+            },
+            6: {
+                width: 1536,
+                height: 1748,
+                scaleXY: 0.083188297074,
+                scaleZ: 92.466616,
+                zero: [1108.532445611, 938.090772693],
+                offset: -303.1033271360121
             }
-        ).then(
-            function(buffer) {
-                if (buffer.byteLength != 1536 * 1748 * 2) {
-                    throw new Error("Unexpected elevation data size")
-                }
-                self.elevation = {
-                    pixels: new Uint16Array(buffer),
-                    width: 1536,
-                    height: 1748,
-                    scaleXY: 0.083188,
-                    scaleZ: 92.466616,
-                    zero: [1108.532445611, 938.090772693],
-                    offset: -303.1033271360121
-                }
-                return self.elevation
-            }
-        )
+        }
+
+        self.elevationPromise = Promise.all(
+            Object.keys(definitions).map(function(v) {
+                const definition = definitions[v]
+                return fetch(new URL(`data/${v}/elevation.bin`, _root_)).then(
+                    function(response) {
+                        if (!response.ok) {
+                            throw new Error(`Could not load GTA ${v} elevation data`)
+                        }
+                        return response.arrayBuffer()
+                    }
+                ).then(function(buffer) {
+                    if (buffer.byteLength != definition.width * definition.height * 2) {
+                        throw new Error(`Unexpected GTA ${v} elevation data size`)
+                    }
+                    return [v, {
+                        ...definition,
+                        pixels: new Uint16Array(buffer)
+                    }]
+                })
+            })
+        ).then(function(results) {
+            self.elevation = {}
+            results.forEach(function(result) {
+                self.elevation[result[0]] = result[1]
+            })
+            return self.elevation
+        })
 
         return self.elevationPromise
 
@@ -1461,40 +1492,6 @@ gtadb.Maps = function(options) {
         self.updateMap3dVisibility()
     }
 
-    self.getActiveMap3d = function() {
-        if (
-            self.map3d6
-            && gtadb.Map3D6.supports(self.v, self.tileSet)
-        ) {
-            return self.map3d6
-        }
-        return self.map3d
-    }
-
-    self.updateMap3dVisibility = function() {
-        const active = self.mapMode == "gta" && self.dimension == "3d"
-            ? self.getActiveMap3d()
-            : null
-        ;[self.map3d, self.map3d6].filter(Boolean).forEach(function(map3d) {
-            if (map3d != active) {
-                map3d.hide()
-                return
-            }
-            map3d.set({
-                focused: self.focused,
-                landmarks: self.landmarks,
-                currentLandmarks: self.currentLandmarks,
-                selected: self.l,
-                tileSet: self.tileSet,
-                v: self.v,
-                x: self.targetX,
-                y: self.targetY,
-                z: self.targetZ,
-            })
-            map3d.show()
-        })
-    }
-
     self.setMapType = function(mapType) {
         self.googlemaps.mapType = mapType
         if (self.googleMap) {
@@ -1520,6 +1517,37 @@ gtadb.Maps = function(options) {
             const [lat, lng] = self.landmarksById[id].rlCoordinates
             self.googleMap.panTo({lat: lat, lng: lng})
         }
+    }
+
+    self.getActiveMap3d = function() {
+        if (self.map3d && gtadb.Map3D.supports(self.v, self.tileSet)) {
+            return self.map3d
+        }
+        return self.map3dflat
+    }
+
+    self.updateMap3dVisibility = function() {
+        const active = self.mapMode == "gta" && self.dimension == "3d"
+            ? self.getActiveMap3d()
+            : null
+        ;[self.map3dflat, self.map3d].filter(Boolean).forEach(function(map3d) {
+            if (map3d != active) {
+                map3d.hide()
+                return
+            }
+            map3d.set({
+                focused: self.focused,
+                landmarks: self.landmarks,
+                currentLandmarks: self.currentLandmarks,
+                selected: self.l,
+                tileSet: self.tileSet,
+                v: self.v,
+                x: self.targetX,
+                y: self.targetY,
+                z: self.targetZ,
+            })
+            map3d.show()
+        })
     }
 
     that._debug = function() {
