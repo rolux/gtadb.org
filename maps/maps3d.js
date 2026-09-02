@@ -31,13 +31,13 @@ const map3d6Heights = {
 const map3d6Textures = {
     4: {
         "original": {
-            url: "data/4/original.png",
+            url: "data/4/original.jpg",
             scale: [0.7111111111111111, 0.7111111111111111],
             zero: [1706.6666666666667, 1705.9555555555555],
             background: [93, 124, 141],
         },
         "elevation": {
-            url: "data/4/elevation.png",
+            url: "data/4/elevation.jpg",
             scale: [0.7111111111111111, 0.7111111111111111],
             zero: [1706.6666666666667, 1705.9555555555555],
             background: [255, 234, 215],
@@ -45,31 +45,31 @@ const map3d6Textures = {
     },
     5: {
         "hybrid": {
-            url: "data/5/hybrid.png",
+            url: "data/5/hybrid.jpg",
             scale: [0.30862592168045255, 0.3087651764259517],
             zero: [1760.1684375, 2590.61671875],
             background: [10, 30, 54],
         },
         "roadmap": {
-            url: "data/5/roadmap.png",
+            url: "data/5/roadmap.jpg",
             scale: [0.30862592168045255, 0.3087651764259517],
             zero: [1760.1684375, 2590.61671875],
             background: [24, 97, 173],
         },
         "radar": {
-            url: "data/5/radar.png",
+            url: "data/5/radar.jpg",
             scale: [0.28409090909090906, 0.28409090909090906],
             zero: [1177.5, 2389.375],
             background: [56, 73, 80],
         },
         "satellite": {
-            url: "data/5/satellite.png",
+            url: "data/5/satellite.jpg",
             scale: [0.28409090909090906, 0.28409090909090906],
             zero: [1177.5, 2389.375],
             background: [13, 43, 79],
         },
         "terrain": {
-            url: "data/5/terrain.png",
+            url: "data/5/terrain.jpg",
             scale: [0.28409090909090906, 0.28409090909090906],
             zero: [1177.5, 2389.375],
             background: [78, 177, 208],
@@ -77,13 +77,13 @@ const map3d6Textures = {
     },
     6: {
         "yanis,0": {
-            url: "data/6/yanis,0.png",
+            url: "data/6/yanis,0.jpg",
             scale: [0.177424, 0.177424],
             zero: [1902.278, 1721.760],
             background: [78, 167, 196],
         },
         "yanis,16": {
-            url: "data/6/yanis,16.png",
+            url: "data/6/yanis,16.jpg",
             scale: [0.2, 0.2],
             zero: [3400, 2200],
             background: [44, 103, 164],
