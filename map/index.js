@@ -216,6 +216,7 @@ gtadb.Map = function() {
         },
         landmarkTypes: [
             "agriculture",
+            "construction",
             "government",
             "hotel",
             "industrial",
@@ -1013,8 +1014,8 @@ gtadb.Map = function() {
             list), REUSED (for duplicated building assets) and UNCONFIRMED (for speculative
             real-life matches).
             Tags can also be used for a taxonomy of landmark types. A good set of types
-            may be AGRICULTURE, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK, LEISURE, MIXED,
-            NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION,
+            may be AGRICULTURE, CONSTRUCTION, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK, LEISURE,
+            MIXED, NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION,
             UTILITIES, OTHER. But this is not set in stone.</p>`
 
         self.aboutPanel = gtadb.Panel({
