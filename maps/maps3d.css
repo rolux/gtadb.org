@@ -21,9 +21,9 @@
     cursor: pointer;
 }
 
-#map3dScene,
+#map3dFlatScene,
 #map3dOverlay,
-#map3d6Scene,
+#map3dScene,
 #map3d6Overlay {
     bottom: 0;
     height: 100%;
@@ -60,4 +60,8 @@
 
 .map3d6-loading.error {
     color: rgb(255, 128, 128);
+}
+
+.map3d6-loading.grayscale {
+    filter: grayscale(1);
 }

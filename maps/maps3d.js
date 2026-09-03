@@ -175,7 +175,7 @@ gtadb.Map3D = function(options) {
     self.element.id = "map3d6";
     that.element = self.element;
     self.scene = document.createElement("canvas");
-    self.scene.id = "map3d6Scene";
+    self.scene.id = "map3dScene";
     self.overlay = document.createElement("canvas");
     self.overlay.id = "map3d6Overlay";
     self.loading = document.createElement("div");
@@ -321,6 +321,7 @@ gtadb.Map3D = function(options) {
         uniform vec3 u_background;
         uniform vec3 u_eye;
         uniform float u_ambient;
+        uniform float u_grayscale;
         uniform float u_specular;
 
         in vec3 v_normal;
@@ -342,6 +343,8 @@ gtadb.Map3D = function(options) {
                 1.0 - pixel.y / (u_surface_size.y - 1.0)
             );
             vec3 base = inside ? texture(u_surface, uv).rgb : u_background;
+            float luminance = dot(base, vec3(0.2126, 0.7152, 0.0722));
+            base = mix(base, vec3(luminance), u_grayscale);
             vec3 normal = normalize(v_normal);
             vec3 lightDirection = normalize(vec3(0.0, 0.82, 0.57));
             float diffuse = max(dot(normal, lightDirection), 0.0);
@@ -361,6 +364,7 @@ gtadb.Map3D = function(options) {
         background: gl.getUniformLocation(terrainProgram, "u_background"),
         elevationOffset: gl.getUniformLocation(terrainProgram, "u_elevation_offset"),
         eye: gl.getUniformLocation(terrainProgram, "u_eye"),
+        grayscale: gl.getUniformLocation(terrainProgram, "u_grayscale"),
         height: gl.getUniformLocation(terrainProgram, "u_height"),
         heightWorldMin: gl.getUniformLocation(terrainProgram, "u_height_world_min"),
         heightWorldSize: gl.getUniformLocation(terrainProgram, "u_height_world_size"),
@@ -1027,6 +1031,10 @@ gtadb.Map3D = function(options) {
         values = values || {};
         const previousVersion = self.v;
         const previousTileSet = self.tileSet;
+        if ("colorScheme" in values) {
+            self.colorScheme = values.colorScheme;
+            self.loading.classList.toggle("grayscale", self.colorScheme == "grayscale");
+        }
         if ("focused" in values) self.focused = values.focused;
         if ("landmarks" in values) self.landmarks = values.landmarks;
         if ("currentLandmarks" in values) {
@@ -1108,8 +1116,19 @@ gtadb.Map3D = function(options) {
             const eye = cameraEye();
             const definition = self.surfaceDefinition;
             const background = definition.background;
+            const grayscale = self.colorScheme == "grayscale" ? 1 : 0;
+            const backgroundLuminance = (
+                background[0] * 0.2126
+                + background[1] * 0.7152
+                + background[2] * 0.0722
+            ) / 255;
             gl.viewport(0, 0, self.width, self.height);
-            gl.clearColor(background[0] / 255, background[1] / 255, background[2] / 255, 1);
+            gl.clearColor(
+                grayscale ? backgroundLuminance : background[0] / 255,
+                grayscale ? backgroundLuminance : background[1] / 255,
+                grayscale ? backgroundLuminance : background[2] / 255,
+                1
+            );
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.enable(gl.DEPTH_TEST);
             gl.disable(gl.CULL_FACE);
@@ -1143,6 +1162,7 @@ gtadb.Map3D = function(options) {
             );
             gl.uniform3fv(uniforms.eye, eye);
             gl.uniform1f(uniforms.ambient, self.ambient);
+            gl.uniform1f(uniforms.grayscale, grayscale);
             gl.uniform1f(uniforms.specular, self.specular);
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, self.heightTexture);

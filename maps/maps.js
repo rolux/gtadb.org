@@ -330,8 +330,9 @@ gtadb.Maps = function(options) {
         }
 
         if ("tileSet" in options && options.tileSet != self.tileSet) {
+            self.canvas.classList.remove(self.tileSet.replace(",", "-"))
             self.tileSet = options.tileSet
-            self.canvas.className = self.tileSet.replace(",", "-")
+            self.canvas.classList.add(self.tileSet.replace(",", "-"))
             self.renderMap()
         }
 
@@ -351,6 +352,11 @@ gtadb.Maps = function(options) {
         if ("dimension" in options && options.dimension != self.dimension) {
             self.dimension = options.dimension
             self.setMapMode(self.mapMode)
+        }
+
+        if ("colorScheme" in options) {
+            self.colorScheme = options.colorScheme
+            self.canvas.classList.toggle("grayscale", self.colorScheme == "grayscale")
         }
 
         const selected = "selected" in options ? options.selected : options.l
@@ -1436,6 +1442,7 @@ gtadb.Maps = function(options) {
     }
 
     self.setGameVersion = function(gameVersion) {
+        self.canvas.classList.remove(self.tileSet.replace(",", "-"))
         self.v = gameVersion
         const key = "gta" + self.v
         ;["x", "y", "z", "tileSet"].forEach(function(key) {
@@ -1444,7 +1451,7 @@ gtadb.Maps = function(options) {
         self.targetX = self.x
         self.targetY = self.y
         self.targetZ = self.z
-        self.canvas.className = self.tileSet.replace(",", "-")
+        self.canvas.classList.add(self.tileSet.replace(",", "-"))
         self.initMarkers()
         if (self.googleMap) {
             self.removeGooglemapsMarkers()
@@ -1536,6 +1543,7 @@ gtadb.Maps = function(options) {
                 return
             }
             map3d.set({
+                colorScheme: self.colorScheme,
                 focused: self.focused,
                 landmarks: self.landmarks,
                 currentLandmarks: self.currentLandmarks,
