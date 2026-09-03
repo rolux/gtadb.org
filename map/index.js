@@ -191,6 +191,8 @@ gtadb.Map = function() {
             "igLatLngUnknown": "IG latlng unknown",
             "igWithPhoto": "with IG photo",
             "igWithoutPhoto": "without IG photo",
+            "igClassified": "IG classified",
+            "igUnclassified": "IG unclassified",
             "rlLandmarkConfirmed": "RL landmark confirmed",
             "rlLandmarkUnconfirmed": "RL landmark unconfirmed",
             "rlLandmarkUnknown": "RL landmark unknown",
@@ -224,11 +226,12 @@ gtadb.Map = function() {
             "office",
             "other",
             "public",
-            "restaurant",
             "residential",
+            "restaurant",
             "retail",
             "transportation",
-            "utilities"
+            "utilities",
+            "other"
         ],
         ui: true,
         themes: [
@@ -1803,6 +1806,8 @@ gtadb.Map = function() {
                 self.filter == "igLatLngUnknown" && landmark.igCoordinates === null ||
                 self.filter == "igWithPhoto" && landmark.igPhotoRatio ||
                 self.filter == "igWithoutPhoto" && !landmark.igPhotoRatio ||
+                self.filter == "igClassified" && landmark.tags.some(function(tag) { return self.landmarkTypes.includes(tag)}) ||
+                self.filter == "igUnclassified" && !landmark.tags.some(function(tag) { return self.landmarkTypes.includes(tag)}) ||
                 self.filter == "rlLandmarkConfirmed" && landmark.rlStatus == "confirmed" ||
                 self.filter == "rlLandmarkUnconfirmed" && landmark.rlStatus == "unconfirmed" ||
                 self.filter == "rlLandmarkUnknown" && landmark.rlStatus == "unknown" ||
@@ -2410,12 +2415,6 @@ gtadb.Map = function() {
     }
 
     // Setters /////////////////////////////////////////////////////////////////////////////////////
-
-    self.setColorScheme = function() {
-        self.maps.set({
-            colorScheme: self.colorScheme
-        })
-    }
 
     self.setDimension = function(dimension) {
         self.dimension = dimension
