@@ -101,7 +101,7 @@ gtadb.Map3DFlat = function(options) {
     self.element.id = "map3d";
     that.element = self.element;
     self.scene = document.createElement("canvas");
-    self.scene.id = "map3dScene";
+    self.scene.id = "map3dFlatScene";
     self.overlay = document.createElement("canvas");
     self.overlay.id = "map3dOverlay";
     self.element.appendChild(self.scene);
@@ -150,6 +150,10 @@ gtadb.Map3DFlat = function(options) {
     };
     that.set = function(options) {
         options = options || {};
+        if ("colorScheme" in options) {
+            self.colorScheme = options.colorScheme;
+            self.scene.classList.toggle("grayscale", self.colorScheme == "grayscale");
+        }
         if ("focused" in options) self.focused = options.focused;
         if ("landmarks" in options) {
             self.landmarks = options.landmarks;

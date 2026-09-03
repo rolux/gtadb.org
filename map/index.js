@@ -240,6 +240,10 @@ gtadb.Map = function() {
             "tracey",
             "trevor"
         ],
+        colorSchemes: [
+            "rgb",
+            "grayscale"
+        ],
         markers: {},
         focus: "map",
         api: gtadb.API("api"),
@@ -310,6 +314,7 @@ gtadb.Map = function() {
             dimension: "2d",
             profileColor: "3f7703",
             theme: "light",
+            colorScheme: "rgb",
             tileOverlays: 0
         },
     }
@@ -432,6 +437,7 @@ gtadb.Map = function() {
                 self.setTheme()
                 self.initUI(self.landmarksData[self.v])
                 self.maps.set({
+                    colorScheme: self.colorScheme,
                     currentLandmarks: self.currentLandmarks,
                     focused: self.focus == "map",
                     googlemaps: self.googlemaps,
@@ -1106,9 +1112,7 @@ gtadb.Map = function() {
             self.gta4.tileSet = this.value
             if (self.v == 4) { // FIXME: shouldn't be needed
                 self.tileSet = self.gta4.tileSet
-                self.maps.set({
-                    tileSet: self.tileSet,
-                })
+                self.maps.set({tileSet: self.tileSet})
             }
             self.setUserSettings()
         })
@@ -1128,9 +1132,7 @@ gtadb.Map = function() {
             self.gta5.tileSet = this.value
             if (self.v == 5) { // FIXME: shouldn't be needed
                 self.tileSet = self.gta5.tileSet
-                self.maps.set({
-                    tileSet: self.tileSet,
-                })
+                self.maps.set({tileSet: self.tileSet})
             }
             self.setUserSettings()
         })
@@ -1150,9 +1152,7 @@ gtadb.Map = function() {
             self.gta6.tileSet = this.value
             if (self.v == 6) { // FIXME: shouldn't be needed
                 self.tileSet = self.gta6.tileSet
-                self.maps.set({
-                    tileSet: self.tileSet,
-                })
+                self.maps.set({tileSet: self.tileSet})
             }
             self.setUserSettings()
         })
@@ -1171,9 +1171,7 @@ gtadb.Map = function() {
             this.blur()
             self.tileOverlays = this.value
             self.setUserSettings()
-            self.maps.set({
-                tileOverlays: self.tileOverlays,
-            })
+            self.maps.set({tileOverlays: self.tileOverlays})
         })
         self.mapSettingsElement.appendChild(self.tileOverlaysSelect)
 
@@ -1195,22 +1193,39 @@ gtadb.Map = function() {
         self.appearanceElement = document.createElement("div")
         self.appearanceElement.style.margin = "8px"
 
-        self.appearanceSelect = document.createElement("select")
+        self.themeSelect = document.createElement("select")
         self.themes.forEach(function(theme) {
             const element = document.createElement("option")
             element.value = theme
             element.textContent = ("Theme: " + theme).toUpperCase()
             element.selected = theme == self.theme
-            self.appearanceSelect.appendChild(element)
+            self.themeSelect.appendChild(element)
         })
-        self.appearanceSelect.value = self.theme
-        self.appearanceSelect.addEventListener("change", function() {
+        self.themeSelect.value = self.theme
+        self.themeSelect.addEventListener("change", function() {
             this.blur()
             self.theme = this.value
             self.setUserSettings()
             self.setTheme()
         })
-        self.appearanceElement.appendChild(self.appearanceSelect)
+        self.appearanceElement.appendChild(self.themeSelect)
+
+        self.colorSchemeSelect = document.createElement("select")
+        self.colorSchemes.forEach(function(colorScheme) {
+            const element = document.createElement("option")
+            element.value = colorScheme
+            element.textContent = ("Color Scheme: " + colorScheme).toUpperCase()
+            element.selected = colorScheme == self.colorScheme
+            self.colorSchemeSelect.appendChild(element)
+        })
+        self.colorSchemeSelect.value = self.colorScheme
+        self.colorSchemeSelect.addEventListener("change", function() {
+            this.blur()
+            self.colorScheme = this.value
+            self.setUserSettings()
+            self.maps.set({colorScheme: self.colorScheme})
+        })
+        self.appearanceElement.appendChild(self.colorSchemeSelect)
 
         self.createAccountForm = gtadb.Form({
             buttonText: "CREATE ACCOUNT",
@@ -2396,6 +2411,12 @@ gtadb.Map = function() {
 
     // Setters /////////////////////////////////////////////////////////////////////////////////////
 
+    self.setColorScheme = function() {
+        self.maps.set({
+            colorScheme: self.colorScheme
+        })
+    }
+
     self.setDimension = function(dimension) {
         self.dimension = dimension
         if (self.dimension == "3d" && self.editing) {
@@ -2641,6 +2662,7 @@ gtadb.Map = function() {
             profileColor: self.profileColor,
             sessionId: self.sessionId,
             theme: self.theme,
+            colorScheme: self.colorScheme,
             tileOverlays: self.tileOverlays,
             username: self.username
         }}))
@@ -2686,6 +2708,7 @@ gtadb.Map = function() {
         checked.profileColor = /^[0-9A-Fa-f]{6}$/.test(v.profileColor) ? v.profileColor : self.defaults.profileColor
         checked.sessionId = v.sessionId || ""
         checked.theme = self.themes.includes(v.theme) ? v.theme : self.defaults.theme
+        checked.colorScheme = self.colorSchemes.includes(v.colorScheme) ? v.colorScheme : self.defaults.colorScheme
         checked.tileOverlays = v.tileOverlays ? 1 : 0
         checked.username = v.username || ""
         return checked
