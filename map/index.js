@@ -231,8 +231,7 @@ gtadb.Map = function() {
             "restaurant",
             "retail",
             "transportation",
-            "utilities",
-            "other"
+            "utilities"
         ],
         ui: true,
         themes: [
