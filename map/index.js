@@ -1473,9 +1473,7 @@ gtadb.Map = function() {
                 })
                 self.renderList()
                 self.renderStatus()
-                if (!self.itemBody.contains(document.activeElement)) {
-                    self.renderItem()
-                }
+                self.renderItem()
                 if (self.mapMode == "googlemaps") {
                     self.panGooglemaps(id)
                 }
@@ -2198,7 +2196,9 @@ gtadb.Map = function() {
             self.itemBody.classList[self.editing ? "add" : "remove"]("editing")
             self.itemBody.style.borderRightColor = "#" + landmark.color
 
-            self.itemIgAddress.innerText = landmark.igAddress || "?"
+            if (document.activeElement != self.itemIgAddress) {
+                self.itemIgAddress.innerText = landmark.igAddress || "?"
+            }
             self.itemIgAddress.dataset.landmarkId = self.l
             if (!self.editing) {
                 self.itemIgAddress.removeAttribute("contenteditable")
@@ -2278,7 +2278,9 @@ gtadb.Map = function() {
             self.itemIgPhoto.style.display = !self.editing ? "block" : "none"
             self.editItemIgPhoto.element.style.display = !self.editing ? "none" : "block"
 
-            self.itemRlAddress.innerText = landmark.rlAddress || "?"
+            if (document.activeElement != self.itemRlAddress) {
+                self.itemRlAddress.innerText = landmark.rlAddress || "?"
+            }
             self.itemRlAddress.dataset.landmarkId = self.l
             if (!self.editing) {
                 self.itemRlAddress.removeAttribute("contenteditable")
@@ -2363,7 +2365,9 @@ gtadb.Map = function() {
                 self.itemTags.removeEventListener("paste", self.onPaste)
                 self.itemTags.removeEventListener("blur", self.onBlur)
             } else {
-                self.itemTags.innerText = landmark.tags.join(", ")
+                if (document.activeElement != self.itemTags) {
+                    self.itemTags.innerText = landmark.tags.join(", ")
+                }
                 self.itemTags.contentEditable = "true"
                 self.itemTags.addEventListener("paste", self.onPaste)
                 self.itemTags.addEventListener("blur", self.onBlur)
