@@ -1473,7 +1473,9 @@ gtadb.Map = function() {
                 })
                 self.renderList()
                 self.renderStatus()
-                self.renderItem()
+                if (!self.itemBody.contains(document.activeElement)) {
+                    self.renderItem()
+                }
                 if (self.mapMode == "googlemaps") {
                     self.panGooglemaps(id)
                 }
