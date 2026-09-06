@@ -451,7 +451,7 @@ gtadb.Maps = function(options) {
             colFloat -= col
             rowFloat -= row
         }
-        return parts[0] + parts[1] + "+" + parts[2]
+        return parts[0] + "+" + parts[1] + parts[2]
     }
 
     that.panGooglemaps = function(lat, lng) {
