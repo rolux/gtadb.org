@@ -409,6 +409,7 @@ gtadb.Map = function() {
         })
         self.maps.addEventListener("mapmousemove", function(e) {
             self.coordinates = [e.detail.x, e.detail.y, e.detail.z]
+            self.plusCode = e.detail.plusCode
             self.updateCoordinatesElement()
         })
         self.maps.element.addEventListener("wheel", function() {
@@ -2541,7 +2542,7 @@ gtadb.Map = function() {
         self.coordinatesElement.innerHTML =
             self.coordinates[2] === false ? "loading elevation data"
             : self.coordinates[2] === null ? ""  // "out of bounds"
-            : self.formatCoordinates(self.coordinates, 1)
+            : self.formatCoordinates(self.coordinates, 1) + " &nbsp; " + self.plusCode
     }
 
     self.updateGameElement = function() {

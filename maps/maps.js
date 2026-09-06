@@ -432,6 +432,28 @@ gtadb.Maps = function(options) {
 
     }
 
+    that.getPlusCode = function(x, y) {
+        if (
+            !Number.isFinite(x) || !Number.isFinite(y) ||
+            x < -13000 || x >= 13000 || y > 13000 || y <= -13000
+        ) {
+            return null
+        }
+        let colFloat = (x + 13000) / 26000
+        let rowFloat = (y + 13000) / 26000
+        let parts = []
+        for (let level = 0; level < 3; level++) {
+            colFloat *= 26
+            rowFloat *= 26
+            const col = Math.floor(colFloat)
+            const row = Math.floor(rowFloat)
+            parts.push(String.fromCharCode(65 + col) + (row + 1))
+            colFloat -= col
+            rowFloat -= row
+        }
+        return parts[0] + parts[1] + "+" + parts[2]
+    }
+
     that.panGooglemaps = function(lat, lng) {
         return self.initGooglemaps().then(function(googleMap) {
             googleMap.panTo({lat: lat, lng: lng})
@@ -507,8 +529,9 @@ gtadb.Maps = function(options) {
                 return null
             }
             map3d.addEventListener("mapmousemove", function(e) {
+                const {x, y, z} = e.detail
                 self.element.dispatchEvent(new CustomEvent("mapmousemove", {
-                    detail: e.detail
+                    detail: {x, y, z, plusCode: that.getPlusCode(x, y)}
                 }))
             })
             map3d.addEventListener("select", function(e) {
@@ -1399,6 +1422,7 @@ gtadb.Maps = function(options) {
                 x: x,
                 y: y,
                 z: that.getElevation(x, y),
+                plusCode: that.getPlusCode(x, y)
             }
         }))
     }
