@@ -16,8 +16,8 @@ const map3d6Heights = {
         height: 1300,
         scale: 0.1,
         zero: [410, 839],
-        metersPerValue: 0.012585468611713004,
-        elevationOffset: -29.447885468611716,
+        metersPerValue: 0.019189090736326995,
+        elevationOffset: -462.2172786903457,
     },
     6: {
         width: 1536,
