@@ -61,7 +61,7 @@ body.dark .mapPanel {
     background-color: rgba(0, 0, 0, 0.75);
 }
 body.dark #listBody > .item.selected {
-    background-color: rgb(96, 96, 96);
+    background-color: rgb(64, 64, 64);
 }
 body.dark #itemBody > div.photo {
     background-color: rgba(224, 224, 224, 0.25);
