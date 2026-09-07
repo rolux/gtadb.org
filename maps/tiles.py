@@ -8,6 +8,7 @@ It also allows to render overlays without duplicating any tiles.
 
 import math
 import os
+import sys
 from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = None
@@ -25,10 +26,11 @@ maps = [
     ("dupzor", 51, 0.558, (9037, 6693), (0, 0, 0)),
     ("yanis", 0, 0.177424, (1902.278, 1721.760), (78, 167, 196)),
     # ("yanis", 7, 1.000, (16341, 12139), (24, 97, 173)),
-    # ("yanis", 14, 1.000, (16500, 12000), (44, 103, 164)),
     ("yanis", 15, 1.000, (16500, 12000), (44, 103, 164)),
-    ("yanis", 16, 1.000, (17000, 11000), (44, 103, 164)),
+    ("yanis", 16, 1.000, (11000, 11000), (44, 103, 164)),
 ]
+if len(sys.argv) > 1 and sys.argv[1] == "--latest":
+    maps = maps[-1:]
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
     ("martipk", 5, 0.558, (2232, -2232)),
