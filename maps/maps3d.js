@@ -85,7 +85,7 @@ const map3d6Textures = {
         "yanis,16": {
             url: "data/6/yanis,16.jpg",
             scale: [0.2, 0.2],
-            zero: [3400, 2200],
+            zero: [2200, 2200],
             background: [44, 103, 164],
         },
     },
