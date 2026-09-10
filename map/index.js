@@ -2457,6 +2457,7 @@ gtadb.Map = function() {
         self.loadJSON([url]).then(function([landmarks]) {
             self.parseLandmarks(landmarks)
             document.title = "GTA " + {4: "IV", 5: "V", 6: "VI"}[self.v] + " Landmarks Map"
+            document.querySelector("link[rel='icon']").href = "https://gtadb.org/images/icon" + self.v + ".png"
             self.updateGameElement()
             self.maps.set({
                 currentLandmarks: self.currentLandmarks,
