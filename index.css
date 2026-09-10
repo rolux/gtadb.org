@@ -203,10 +203,9 @@ body.map h2 {
     margin-top: 16px;
 }
 body.map img {
-    height: 248px;
-    border: 4px solid rgb(0, 64, 128);
+    height: 256px;
     margin-top: 16px;
-    width: 248px;
+    width: 256px;
 }
 body.map #main {
     backdrop-filter: blur(2px);
