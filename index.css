@@ -1,3 +1,19 @@
+@font-face {
+    font-family: "Helvetica";
+    src: url("fonts/Helvetica.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Helvetica-Bold";
+    src: url("fonts/Helvetica-Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+
 a {
     all: unset;
     cursor: pointer;
@@ -11,6 +27,7 @@ a.link:hover {
 }
 body {
     background-color: rgb(255, 255, 255);
+    font-family: Helvetica, sans-serif;
     height: 100%;
     margin: 0;
     overflow: hidden;
@@ -22,7 +39,7 @@ div {
 h1, h2, h3 {
     all: unset;
     display: block;
-    font-family: sans-serif;
+    font-family: Helvetica Bold, sans-serif;
     font-weight: bold;
     height: fit-content;
     margin: 8px 0;
