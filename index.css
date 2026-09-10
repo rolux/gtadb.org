@@ -1,0 +1,355 @@
+a {
+    all: unset;
+    cursor: pointer;
+}
+a.link {
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+}
+a.link:hover {
+    text-decoration: underline;
+}
+body {
+    background-color: rgb(255, 255, 255);
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+div {
+    font-family: sans-serif;
+    font-size: 14px;
+}
+h1, h2, h3 {
+    all: unset;
+    display: block;
+    font-family: sans-serif;
+    font-weight: bold;
+    height: fit-content;
+    margin: 8px 0;
+    padding: 4px 8px;
+    width: fit-content;
+}
+h1 {
+    font-size: 35px;
+}
+h2 {
+    margin-top: 24px;
+    font-size: 21px;
+}
+h3 {
+    font-size: 14px;
+}
+h2.arrow {
+    clip-path: polygon(
+        0 0,
+        calc(100% - 16px) 0,
+        100% 50%,
+        calc(100% - 16px) 100%,
+        0 100%
+    );
+    padding-right: 20px;
+}
+#banner h3.arrow {
+    clip-path: polygon(
+        12px 0,
+        100% 0,
+        100% 100%,
+        12px 100%,
+        0 50%
+    );
+    padding-left: 16px;
+}
+#main h3.arrow {
+    clip-path: polygon(
+        0 0,
+        calc(100% - 12px) 0,
+        100% 50%,
+        calc(100% - 12px) 100%,
+        0 100%
+    );
+    padding-right: 16px
+}
+img {
+    all: unset;
+}
+p {
+    all: unset;
+    display: block;
+    font-family: sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 8px 0 8px 2px;
+}
+pre {
+    background-color: rgb(240, 240, 240);
+    //background-color: rgb(40, 40, 40);
+    border: 1px dashed rgb(128, 128, 128);
+    font-size: 14px;
+    font-weight: bold;
+    overflow-x: auto;
+    padding: 8px;
+    width: 982px;
+}
+span.gtadb {
+    font-weight: bold;
+}
+#banner {
+    background-position: center;
+    background-size: cover;
+    box-sizing: border-box;
+    height: 20%;
+    min-height: 128px;
+    position: fixed;
+    padding: 8px;
+    text-align: right;
+    width: 100%;
+    z-index: 10;
+}
+#banner h1 {
+    left: 16px;
+    bottom: 16px;
+    margin: 0;
+    position: absolute;
+}
+#banner h3 {
+    margin: 0;
+    right: 16px;
+    top: 16px;
+    position: absolute;
+}
+#main {
+    border-right-width: 8px;
+    border-right-style: solid;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+    padding: 16px 30% 32px 16px;
+    position: absolute;
+    right: 0;
+    top: max(20%, 128px);
+}
+
+
+
+body.gtadb h1, body.gtadb h2, body.gtadb h3 {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+body.gtadb #banner {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    font-family: sans-serif;
+    font-weight: bold;
+    height: 100%;
+    min-width: 256px;
+    position: fixed;
+    text-align: right;
+    width: 20%;
+    z-index: 10;
+}
+body.gtadb #main {
+    border-right-color: rgb(0, 0, 0);
+    bottom: 0;
+    left: max(20%, 256px);
+    padding-top: 8px;
+    right: 0;
+    top: 0;
+}
+body.gtadb #banner h1, body.gtadb #banner h2, body.gtadb #banner h3 {
+    margin: 8px 8px 8px auto;
+    position: static;
+}
+body.gtadb #banner h3.arrow {
+    top: calc(100% - 54px);
+    bottom: 16px;
+    opacity: 0.5;
+    position: absolute;
+}
+body.gtadb #main h2 {
+    margin-left: 0;
+}
+
+
+
+body.map {
+    background-image: url(https://gtadb.org/images/PaletoBay.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+body.map h1, body.map h2, body.map h3 {
+    background-color: rgb(0, 64, 128);
+    color: rgb(192, 224, 255);
+}
+body.map h2 {
+    margin-top: 16px;
+}
+body.map img {
+    height: 248px;
+    border: 4px solid rgb(0, 64, 128);
+    margin-top: 16px;
+    width: 248px;
+}
+body.map #main {
+    backdrop-filter: blur(2px);
+    background-color: rgba(255, 255, 255, 0.5);
+    border-color: rgb(0, 64, 128);
+}
+body.map #maps {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, 272px);
+    width: fit-content;
+}
+body.map #maps div {
+    display: inline-block;
+    height: 272px;
+    margin: 0;
+    width: 272px;
+}
+
+
+
+body.maps h1, body.maps h2, body.maps h3 {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    opacity: 0.5;
+}
+body.maps #banner h3:last-child {
+    margin-top: 32px;
+}
+body.maps #main {
+    background: repeating-linear-gradient(
+        135deg,
+        transparent,
+        transparent 32px,
+        rgba(0, 0, 0, 0.05) 32px,
+        rgba(0, 0, 0, 0.05) 64px
+        );
+    border-color: rgba(0, 0, 0, 0.75);
+}
+
+
+
+body.api h1, body.api h2, body.api h3 {
+    background-color: rgb(255, 255, 0);
+    color: rgb(0, 0, 0);
+}
+body.api #main {
+    border-color: rgb(255, 255, 0);
+}
+
+
+
+body.software h1, body.software h2, body.software h3 {
+    background-color: rgb(255, 0, 0);
+    color: rgb(255, 255, 255);
+}
+body.software h2 {
+    margin-top: 8px;
+}
+body.software img {
+    height: 64px;
+    margin-top: 16px;
+    width: 64px;
+}
+body.software #main {
+    border-color: rgb(255, 0, 0);
+}
+
+
+
+body.guess h1, body.guess h2, body.guess h3 {
+    background-color: rgb(192, 224, 128);
+    color: rgb(255, 255, 255);
+}
+body.guess #main {
+    border-color: rgb(192, 224, 128);
+}
+body.guess #images {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(5, 128px);
+    margin-top: 16px;
+    width: fit-content;
+}
+body.guess #images img {
+    display: inline-block;
+    height: 126px;
+    margin: 0;
+    width: 126px;
+}
+
+
+
+body.files h1, body.files h2, body.files h3 {
+    background-color: rgb(32, 32, 32);
+    color: rgb(0, 255, 0);
+}
+body.files p {
+    color: rgb(0, 255, 0)
+}
+body.files #banner {
+    border-bottom: 0.5px dashed rgb(0, 255, 0);
+}
+body.files #main {
+    border-color: rgb(32, 32, 32);
+    background-color: rgb(0, 0, 0);
+    padding-right: 0
+}
+body.files #files {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: repeat(5, 192px);
+    margin-top: 16px;
+    width: fit-content;
+}
+body.files #files img {
+    border: 0.5px dashed rgb(0, 255, 0);
+    display: inline-block;
+    height: 191px;
+    margin: 0;
+    width: 191px;
+}
+body.files #files div {
+    display: inline-block;
+}
+body.files #files div div {
+    border-bottom: 0.5px dashed rgb(0, 255, 0);
+    border-left: 0.5px dashed rgb(0, 255, 0);
+    border-right: 0.5px dashed rgb(0, 255, 0);
+    color: rgb(0, 255, 0);
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 8px;
+    text-align: center;
+    width: 175px;
+}
+
+
+
+body.links h1, body.links h2, body.links h3 {
+    background-color: rgba(224, 240, 255, 0.75);
+    color: rgb(32, 80, 128);
+}
+body.links #banner {
+    // border-bottom: 0.5px dotted rgba(224, 240, 255, 0.75);
+}
+body.links #main {
+    background-color: rgb(32, 80, 128);
+    border-color: rgba(224, 240, 255, 0.75);
+}
+
+
+
+body.faq h1, body.faq h2, body.faq h3 {
+    background-color: rgb(255, 224, 192);
+    color: rgb(64, 64, 64);
+}
+body.faq #main {
+    border-color: rgb(64, 64, 64);
+}
+body.faq #main h2 {
+    //border: 1px solid rgb(0, 0, 0);
+}
