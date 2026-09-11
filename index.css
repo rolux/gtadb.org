@@ -89,6 +89,9 @@ h2.arrow {
 img {
     all: unset;
 }
+li {
+    line-height: 20px;
+}
 p {
     all: unset;
     display: block;
@@ -299,6 +302,7 @@ body.guess #images img {
 
 
 
+
 body.files h1, body.files h2, body.files h3 {
     background-color: rgb(32, 32, 32);
     color: rgb(0, 255, 0);
@@ -307,6 +311,7 @@ body.files p {
     color: rgb(0, 255, 0)
 }
 body.files #banner {
+    background-color: rgb(0, 0, 0);
     border-bottom: 0.5px dashed rgb(0, 255, 0);
 }
 body.files #main {
@@ -350,7 +355,7 @@ body.links h1, body.links h2, body.links h3 {
     color: rgb(32, 80, 128);
 }
 body.links #banner {
-    // border-bottom: 0.5px dotted rgba(224, 240, 255, 0.75);
+    background-color: rgb(32, 80, 128);
 }
 body.links #main {
     background-color: rgb(32, 80, 128);
