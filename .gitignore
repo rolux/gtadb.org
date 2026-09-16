@@ -10,6 +10,7 @@ api/venv/
 api/pymp-*
 api/gtadb-geo-api.service
 api/install-service.sh
+upload-api-data.sh
 map/data/*.json
 map/data/*/*.jsonl
 map/trash/
