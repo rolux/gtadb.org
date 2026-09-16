@@ -4,6 +4,12 @@ guess/logo.py
 map/config.js
 map/api/__pycache__/
 map/api/venv/
+api/__pycache__/
+api/venv/
+/api/data/
+api/pymp-*
+api/gtadb-geo-api.service
+api/install-service.sh
 map/data/*.json
 map/data/*/*.jsonl
 map/trash/
