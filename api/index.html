@@ -1,0 +1,129 @@
+<html>
+    <head>
+        <title>api.gtadb.org - map and geo APIs for GTA</title>
+        <link rel="icon" href="https://gtadb.org/index_new.png"/>
+        <link rel="stylesheet" href="https://gtadb.org/index.css"/>
+        <meta charset="utf-8"/>
+        <meta name="description" content="A suite of geo APIs for GTA IV, V and IV"/>
+        <meta property="og:title" content="api.gtadb.org"/>
+        <meta property="og:description" content="A suite of geo APIs for GTA IV, V and IV"/>
+        <meta property="og:image" content="https://gtadb.org/index.png"/>
+        <meta property="og:url" content="https://api.gtadb.org"/>
+        <meta property="og:type" content="website"/>
+    </head>
+    <body class="api">
+        <div id="banner">
+            <h3 class="arrow"><a href="https://gtadb.org">gtadb.org</a></h3>
+            <h1>api.gtadb.org</h1>
+        </div>
+        <div id="main">
+            <h2>Overview</h2>
+            <p>This is a collection of map APIs for GTA IV, V and VI.</p>
+            <p>Current status: experimental.</p>
+            <h2>GTADB Elevation API</h2>
+            <p>Get the elevation at a given point:</p>
+            <p><pre><code>https://api.gtadb.org/elevation?gta=6&x=-3778.98&amp;y=712.94&key=API_KEY</code></pre></p>
+            <p><pre><code class="language-json">{
+    "results": [
+        {
+            "elevation": 3.246,
+            "location": [-3778.98, 712.94]
+        }
+    ]
+    "status": "OK"
+}</code></pre></p>
+            <h2>GTADB Geocoding API</h2>
+            <p>Get structured geodata for a given point:</p>
+            <p><pre><code>https://api.gtadb.org/geocode?gta=6&x=-700&y=1200&key=API_KEY</code></pre></p>
+            <p><pre><code>{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "name": "Jack of Hearts",
+                    "types": ["establishment", "point of interest"]
+                },
+                {
+                    "name": "Miramar Dr",
+                    "types": ["route"]
+                },
+                {
+                    "name": "Crosstown",
+                    "types": ["neighborhood", "political"]
+                },
+                {
+                    "name": "Vice City",
+                    "types": ["locality", "political"]
+                },
+                {
+                    "name": "Vice-Dale County",
+                    "types": ["administrative_area_level_2", "political"]
+                },
+                {
+                    "name": "LE",
+                    "types": ["administrative_area_level_1", "political"]
+                },
+                {
+                    "name": "USA",
+                    "types": ["country", "political"]
+                }
+            ],
+            "formatted_address": "Jack of Hearts, Miramar Dr, Crosstown, Vice City, Vice-Dale County, LE, USA",
+            "gtadb_id": "L172",
+            "geometry": {
+                "bounds": {
+                    "northeast": [-585.939, 1294.937],
+                    "southwest": [-785.939, 1094.937]
+                },
+                "location": [-685.939, 1194.937]
+            }
+        }
+    ],
+    "status": "OK"
+}</code></pre></p>
+            <h2>GTADB Landmarks API</h2>
+            <p>Get all landmarks:</p>
+            <p><pre><code>https://api.gtadb.org/landmarks?gta=6&key=API_KEY</code></pre>
+            <p><pre><code>{
+    "results": [
+        {"id": "L1", "ig_coordinates": [1409.401, 2803.214], "types": ["hotel"]},
+        {"id": "L2", "ig_coordinates": [1491.645, 2633.302], "types": ["residential"]},
+        {"id": "L3", "ig_coordinates": [1541.925, 2562.866], "types": ["hotel"]},
+        [...]
+    ],
+    "status": "OK"
+}<code></pre></p>
+            <p>Get data for a given landmark:</p>
+            <p><pre><code>https://api.gtadb.org/landmarks?gta=6&id=L25&key=API_KEY</code></pre>
+            <p><pre><code>{
+    "results": [
+        {
+            "ig_address": "Dominion Hotel, Shore Dr, Ocean Beach, Vice Beach, Vice-Dale County, LE, USA",
+            "ig_coordinates": [2007.5, 907],
+            "ig_photo": "https://raw.githubusercontent.com/rolux/gtadb.org/main/map/photos/6/L25,ig.jpg",
+            "rl_address": "Cardozo South Beach, 1300 Ocean Dr, Miami Beach, FL 33139, USA",
+            "rl_coordinates": [25.7842292, -80.1302691],
+            "rl_photo": "https://raw.githubusercontent.com/rolux/gtadb.org/main/map/photos/6/L25,rl.jpg",
+            "types": ["hotel"]
+        }
+    ],
+    "status": "OK"
+}</code></pre></p>
+            <h2>GTADB Maps JavaScript API</h2>
+            <p>Coming soon.</p>
+            <h2>GTADB Static Maps API</h2>
+            <p>Get a static map image with a given center, size and scale:</p>
+            <p><pre><code>https://api.gtadb.org/staticmap?gta=6&x=0&y=0&w=1000&h=1000&scale=0.5&key=API_KEY</code></pre></p>
+            <p><img src="images/staticmap.jpg"></p>
+            <h2>GTADB Routes API</h2>
+            <p>Coming soon.</p>
+            <h2>Authentication</h2>
+            <p>Currently none.</p>
+            <h2>Rate limits</h2>
+            <p>Currently none.</p>
+            <h2>Terms of Service</h2>
+            <p>Currently none.</p>
+        </div>
+        <script src="https://gtadb.org/index.js"></script>
+    </body>
+</html>
