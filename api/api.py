@@ -56,15 +56,15 @@ for gta in GTA_VERSIONS:
     with open(f"../map/data/{gta}/landmarks.json") as f:
         LANDMARKS_DATA[gta] = json.load(f)
 PHOTO_URL = "https://raw.githubusercontent.com/rolux/gtadb.org/main/map/photos/{}/{},{}.jpg"
-SECTIONS_DATA = {}
+REGIONS_DATA = {}
 gta = 6
-with open(f"{DATA_DIR}/{gta}/sections.json") as f:
-    SECTIONS_DATA[gta] = json.load(f)
+with open(f"{DATA_DIR}/{gta}/regions.json") as f:
+    REGIONS_DATA[gta] = json.load(f)
     keys = ["name", "municipality", "county", "state"]
-    for i, section in enumerate(SECTIONS_DATA[gta]):
-        parts = [section[key] for key in keys if section[key]]
+    for i, region in enumerate(REGIONS_DATA[gta]):
+        parts = [region[key] for key in keys if region[key]]
         parts = list(dict.fromkeys(parts))
-        SECTIONS_DATA[gta][i]["address"] = ", ".join(parts)
+        REGIONS_DATA[gta][i]["address"] = ", ".join(parts)
 with open(f"{DATA_DIR}/street_types.json") as f:
     STREET_TYPES = json.load(f)
 with open(f"{DATA_DIR}/tags.json") as f:
@@ -92,8 +92,8 @@ def format_address(gta, address, x, y):
         return address
     if address.endswith(", Leonida"):
         return f"{address[:-9]}, LE, USA"
-    section = get_section(gta, x, y)
-    county = section["county"]
+    region = get_region(gta, x, y)
+    county = region["county"]
     if address.endswith(f", {county}"):
         return f"{address}, LE, USA"
     return f"{address}, {county}, LE, USA"
@@ -138,7 +138,7 @@ def get_address_components(gta, address):
             components.append((name[:-len(street_type)] + STREET_TYPES[street_type], name, ["route"]))
         elif re.match(r"(?:^|\s)Bridge|Tunnel", name):
             components.append((name, name, ["route"]))
-        elif section := next((x for x in SECTIONS_DATA[gta] if x["name"] == name), None):
+        elif region := next((x for x in REGIONS_DATA[gta] if x["name"] == name), None):
             components.append((name, name, "natural_feature" if name in [
                 "Atlantic Ocean", "Lake Leonida", "Leonida Straits", "Gulf of Leonida"
             ] else ["colloquial area"]))
@@ -226,10 +226,10 @@ def get_landmark(gta, x, y, max_d=100):
         "distance": round(best_d, 3),
     }
 
-def get_section(gta, x, y):
-    for section in SECTIONS_DATA[gta]:
-        if is_in_polygon(x, y, section["points"]):
-            return section
+def get_region(gta, x, y):
+    for region in REGIONS_DATA[gta]:
+        if is_in_polygon(x, y, region["points"]):
+            return region
 
 def has_l_tag(landmark):
     return any(re.match(r"^L\d+$", tag) for tag in landmark["tags"])
@@ -240,13 +240,13 @@ def is_in_polygon(x, y, points):
     for curr_x, curr_y in points:
         crosses_y = (curr_y > y) != (prev_y > y)
         if crosses_y:
-            intersection_x = (
+            interregion_x = (
                 (prev_x - curr_x)
                 * (y - curr_y)
                 / (prev_y - curr_y)
                 + curr_x
             )
-            if x < intersection_x:
+            if x < interregion_x:
                 is_inside = not is_inside
         prev_x, prev_y = curr_x, curr_y
     return is_inside
@@ -326,13 +326,13 @@ def geocode():
         bounds = get_bounds([location])
         address = format_address(gta, landmark["ig_address"], *location)
     else:
-        section = get_section(gta, x, y)
-        if not section:
+        region = get_region(gta, x, y)
+        if not region:
             return zero_results
         gtadb_id = "S0"
-        location = get_center(section["points"])
-        bounds = get_bounds(section["points"])
-        address = format_address(gta, section["address"], *location)
+        location = get_center(region["points"])
+        bounds = get_bounds(region["points"])
+        address = format_address(gta, region["address"], *location)
     address_components = get_address_components(gta, address)
     return jsonify({
         "results": [
