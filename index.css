@@ -369,7 +369,7 @@ body.faq h1, body.faq h2, body.faq h3 {
     color: rgb(64, 64, 64);
 }
 body.faq #main {
-    border-color: rgb(64, 64, 64);
+    border-color: rgb(255, 224, 192);
 }
 body.faq #main h2 {
     //border: 1px solid rgb(0, 0, 0);
