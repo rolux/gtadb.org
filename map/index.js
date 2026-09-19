@@ -1010,10 +1010,12 @@ gtadb.Map = function() {
             the goal is to add matching in-game and real-life photos that best convey the
             similarities. Preferred aspect ratios are 16:9 or 1:1.</p>
             <p class="title">Tags</p>
-            <p>Tags can be anything. Common tags are DEMOLISHED (for landmarks that no longer
-            exist in real life), EVENTS (for places we only know of by way of the 2022 events
-            list), REUSED (for duplicated building assets) and UNCONFIRMED (for speculative
-            real-life matches).
+            <p>Tags can be anything. Common tags are CLOSED (for real-life businesses that were
+            shut down since the 2015 scouting period), DEMOLISHED (for structures that no longer
+            exist in real life), ENTERABLE (for in-game buildings with interiors), EVENTS (for places
+            we only know of by way of the 2022 events list), REUSED (for duplicated building assets),
+            RESTRICTED (for areas that are not freely accessible in game) and UNCONFIRMED (for
+            speculative real-life matches).
             Tags can also be used for a taxonomy of landmark types. A good set of types
             may be AGRICULTURE, CONSTRUCTION, GOVERNMENT, HOTEL, INDUSTRIAL, LANDMARK, LEISURE,
             MIXED, NATURAL, OFFICE, PUBLIC, RESIDENTIAL, RESTAURANT, RETAIL, TRANSPORTATION,
@@ -1671,7 +1673,7 @@ gtadb.Map = function() {
                 } else if (self.sort == "rlLongitude") {
                     return v.rlCoordinates ? v.rlCoordinates[1] : 1e6
                 } else if (self.sort == "tags") {
-                    return [v.tags.join(", ")].concat(v.igAddress.split(", ").reverse()).join(", ")
+                    return [self.getVisibleTags(v).join(", ")].concat(v.igAddress.split(", ").reverse()).join(", ")
                 } else if (self.sort == "id") {
                     return v.idSortString
                 } else if (self.sort == "edited") {
@@ -2341,9 +2343,10 @@ gtadb.Map = function() {
 
             self.itemTags.dataset.landmarkId = self.l
             if (!self.editing) {
-                if (landmark.tags.length) {
+                const visibleTags = self.getVisibleTags(landmark)
+                if (visibleTags.length) {
                     self.itemTags.innerText = "TAGS: "
-                    landmark.tags.forEach(function(tag, i) {
+                    visibleTags.forEach(function(tag, i) {
                         let span = document.createElement("span")
                         span.classList.add("link")
                         span.innerText = tag
@@ -2408,7 +2411,7 @@ gtadb.Map = function() {
             rlElement.innerText = self.sort.includes("Address") ? (landmark.rlAddress || "?")
                     : self.sort.includes("igL") ? self.formatCoordinates(landmark.igCoordinates, 3)
                     : self.sort.includes("rlL") ? self.formatCoordinates(landmark.rlCoordinates, 7)
-                    : self.sort == "tags" ? (landmark.tags.join(", ").toUpperCase() || "NONE")
+                    : self.sort == "tags" ? (self.getVisibleTags(landmark).join(", ").toUpperCase() || "NONE")
                     : self.sort == "id" ? landmark.id
                     : self.formatDate(landmark.edited[0])
             itemElement.appendChild(rlElement)
@@ -2813,6 +2816,12 @@ gtadb.Map = function() {
         ) + "\n" + (
             landmark.rlAddress.split(", ")[0] || "?"
         )
+    }
+
+    self.getVisibleTags = function(landmark) {
+        return self.sessionId ? landmark.tags : landmark.tags.filter(function(tag) {
+            return !/^\/\//.test(tag) && !/^L\d+$/i.test(tag)
+        })
     }
 
     self.hasSpecialTag = function(landmark) {
