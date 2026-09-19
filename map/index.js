@@ -2802,7 +2802,7 @@ gtadb.Map = function() {
 
     self.getAvailableTileSets = function() {
         return self.defaults.gta6.tileSets.filter(function(tileSet) {
-            return self.sessionId || (tileSet != "yanis,0" && tileSet != "yanis,16")
+            return self.sessionId || tileSet != "yanis,0"
         })
     }
 
