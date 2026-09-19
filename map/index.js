@@ -2356,7 +2356,7 @@ gtadb.Map = function() {
                             self.findElement.dispatchEvent(new Event("change", {bubbles: true}))
                         })
                         self.itemTags.appendChild(span)
-                        if (i < landmark.tags.length - 1) {
+                        if (i < visibleTags.length - 1) {
                             span = document.createElement("span")
                             span.innerText = ", "
                             self.itemTags.appendChild(span)
