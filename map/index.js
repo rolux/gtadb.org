@@ -941,7 +941,7 @@ gtadb.Map = function() {
             <tr><td>ESC</td><td>Exit StreetView</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>F</td><td>Find</td></tr>
-            <tr><td>F \ ENTER</td><td>Hide all markers</td></tr>
+            <tr><td>F \\ ENTER</td><td>Hide all markers</td></tr>
             <tr><td>⇧ F</td><td>Clear find</td></tr>
             <tr><td>C</td><td>Copy coordinates to clipboard</td></tr>
             <tr><td>ENTER</td><td>Focus on selected landmark</td></tr>
