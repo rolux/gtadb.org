@@ -2,6 +2,7 @@ var gtadb = window.gtadb || {};
 window.gtadb = gtadb;
 
 const map3d6AssetRoot = new URL(".", document.currentScript.src).href;
+const map3d6DataRoot = "https://api.gtadb.org/data";
 const map3d6Heights = {
     4: {
         width: 540,
@@ -31,13 +32,13 @@ const map3d6Heights = {
 const map3d6Textures = {
     4: {
         "original": {
-            url: "data/4/original.jpg",
+            url: `${map3d6DataRoot}/4/original.jpg`,
             scale: [0.7111111111111111, 0.7111111111111111],
             zero: [1706.6666666666667, 1705.9555555555555],
             background: [93, 124, 141],
         },
         "elevation": {
-            url: "data/4/elevation.jpg",
+            url: `${map3d6DataRoot}/4/elevation.jpg`,
             scale: [0.7111111111111111, 0.7111111111111111],
             zero: [1706.6666666666667, 1705.9555555555555],
             background: [255, 234, 215],
@@ -45,31 +46,31 @@ const map3d6Textures = {
     },
     5: {
         "hybrid": {
-            url: "data/5/hybrid.jpg",
+            url: `${map3d6DataRoot}/5/hybrid.jpg`,
             scale: [0.30862592168045255, 0.3087651764259517],
             zero: [1760.1684375, 2590.61671875],
             background: [10, 30, 54],
         },
         "roadmap": {
-            url: "data/5/roadmap.jpg",
+            url: `${map3d6DataRoot}/5/roadmap.jpg`,
             scale: [0.30862592168045255, 0.3087651764259517],
             zero: [1760.1684375, 2590.61671875],
             background: [24, 97, 173],
         },
         "radar": {
-            url: "data/5/radar.jpg",
+            url: `${map3d6DataRoot}/5/radar.jpg`,
             scale: [0.28409090909090906, 0.28409090909090906],
             zero: [1177.5, 2389.375],
             background: [56, 73, 80],
         },
         "satellite": {
-            url: "data/5/satellite.jpg",
+            url: `${map3d6DataRoot}/5/satellite.jpg`,
             scale: [0.28409090909090906, 0.28409090909090906],
             zero: [1177.5, 2389.375],
             background: [13, 43, 79],
         },
         "terrain": {
-            url: "data/5/terrain.jpg",
+            url: `${map3d6DataRoot}/5/terrain.jpg`,
             scale: [0.28409090909090906, 0.28409090909090906],
             zero: [1177.5, 2389.375],
             background: [78, 177, 208],
@@ -77,13 +78,13 @@ const map3d6Textures = {
     },
     6: {
         "yanis,0": {
-            url: "data/6/yanis,0.jpg",
+            url: `${map3d6DataRoot}/6/yanis,0.jpg`,
             scale: [0.177424, 0.177424],
             zero: [1902.278, 1721.760],
             background: [78, 167, 196],
         },
         "yanis,16": {
-            url: "data/6/yanis,16.jpg",
+            url: `${map3d6DataRoot}/6/yanis,16.jpg`,
             scale: [0.2, 0.2],
             zero: [2200, 2200],
             background: [44, 103, 164],

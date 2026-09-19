@@ -1,4 +1,5 @@
 const _root_ = new URL(".", document.currentScript.src)
+const _elevationRoot_ = "https://api.gtadb.org/data"
 
 gtadb.Maps = function(options) {
 
@@ -692,7 +693,7 @@ gtadb.Maps = function(options) {
         self.elevationPromise = Promise.all(
             Object.keys(definitions).map(function(v) {
                 const definition = definitions[v]
-                return fetch(new URL(`data/${v}/elevation.bin`, _root_)).then(
+                return fetch(`${_elevationRoot_}/${v}/elevation.bin`).then(
                     function(response) {
                         if (!response.ok) {
                             throw new Error(`Could not load GTA ${v} elevation data`)
