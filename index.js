@@ -14,7 +14,8 @@ function updateBanner() {
         : page == "files" ? "files.gtadb.org"
         : "gtadb.org/images"
     const name = page == "gtadb" ? "Grassrivers"
-        : page == "map" ? (now.getDay() < 7 ? "Paleto Bay" : "LosSantosElevationMapDetail")
+        // : page == "map" ? (now.getDay() < 7 ? "Paleto Bay" : "LosSantosElevationMapDetail")
+        : page == "map" ? "PaletoBay"
         : page == "maps" ? "banner404"
         : page == "api" ? ["WashingtonBeach", "ViceBeach"][now.getDay() % 2]
         : page == "software" ? ["bannerLeonidaKeys", "bannerWatsonBay", "bannerHamletPrison"][hours % 3]
@@ -27,7 +28,7 @@ function updateBanner() {
     if (page == "gtadb") {
         const position = 1 - Math.abs(seconds / 3600 - 1)
         element.style.backgroundPosition = `${position * 100}% center`
-    } else if (page == "map" || page == "api" || page == "files" || page == "links") {
+    } else if (page == "api" || page == "files" || page == "links") {
         const position = 1 - Math.abs(seconds / 3600 - 1)
         element.style.backgroundPosition = `center ${position * 100}%`;
     }
