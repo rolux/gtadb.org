@@ -1,8 +1,11 @@
 var gtadb = window.gtadb || {};
 window.gtadb = gtadb;
 
-const map3d6AssetRoot = new URL(".", document.currentScript.src).href;
-const map3d6DataRoot = "https://api.gtadb.org/data";
+const map3d6TileRoot = ["127.0.0.1", "localhost"].includes(location.hostname)
+    ? "/tiles"
+    : "https://maps.gtadb.org/tiles";
+const map3d6MapSize = 32768;
+const map3d6MapZero = 16384;
 const map3d6Heights = {
     4: {
         width: 540,
@@ -32,64 +35,49 @@ const map3d6Heights = {
 const map3d6Textures = {
     4: {
         "original": {
-            url: `${map3d6DataRoot}/4/original.jpg`,
-            scale: [0.7111111111111111, 0.7111111111111111],
-            zero: [1706.6666666666667, 1705.9555555555555],
             background: [93, 124, 141],
         },
         "elevation": {
-            url: `${map3d6DataRoot}/4/elevation.jpg`,
-            scale: [0.7111111111111111, 0.7111111111111111],
-            zero: [1706.6666666666667, 1705.9555555555555],
             background: [255, 234, 215],
         },
     },
     5: {
         "hybrid": {
-            url: `${map3d6DataRoot}/5/hybrid.jpg`,
-            scale: [0.30862592168045255, 0.3087651764259517],
-            zero: [1760.1684375, 2590.61671875],
             background: [10, 30, 54],
         },
         "roadmap": {
-            url: `${map3d6DataRoot}/5/roadmap.jpg`,
-            scale: [0.30862592168045255, 0.3087651764259517],
-            zero: [1760.1684375, 2590.61671875],
             background: [24, 97, 173],
         },
         "radar": {
-            url: `${map3d6DataRoot}/5/radar.jpg`,
-            scale: [0.28409090909090906, 0.28409090909090906],
-            zero: [1177.5, 2389.375],
             background: [56, 73, 80],
         },
         "satellite": {
-            url: `${map3d6DataRoot}/5/satellite.jpg`,
-            scale: [0.28409090909090906, 0.28409090909090906],
-            zero: [1177.5, 2389.375],
             background: [13, 43, 79],
         },
         "terrain": {
-            url: `${map3d6DataRoot}/5/terrain.jpg`,
-            scale: [0.28409090909090906, 0.28409090909090906],
-            zero: [1177.5, 2389.375],
             background: [78, 177, 208],
         },
     },
     6: {
         "yanis,0": {
-            url: `${map3d6DataRoot}/6/yanis,0.jpg`,
-            scale: [0.177424, 0.177424],
-            zero: [1902.278, 1721.760],
             background: [78, 167, 196],
         },
         "yanis,16": {
-            url: `${map3d6DataRoot}/6/yanis,16.jpg`,
-            scale: [0.2, 0.2],
-            zero: [2200, 2200],
             background: [44, 103, 164],
         },
     },
+};
+
+const map3d6TileSetRanges = {
+    "original": {0: [[1, 1], [2, 2]], 1: [[3, 3], [4, 4]], 2: [[6, 6], [9, 8]], 3: [[13, 13], [18, 17]], 4: [[27, 27], [37, 34]], 5: [[54, 54], [75, 68]], 6: [[109, 109], [151, 137]]},
+    "elevation": {0: [[1, 1], [2, 2]], 1: [[3, 3], [4, 4]], 2: [[6, 6], [9, 8]], 3: [[13, 13], [18, 17]], 4: [[27, 27], [37, 34]], 5: [[54, 54], [75, 68]], 6: [[109, 109], [151, 137]]},
+    "satellite": {0: [[1, 0], [2, 2]], 1: [[2, 1], [5, 5]], 2: [[5, 3], [10, 10]], 3: [[11, 7], [20, 20]], 4: [[23, 15], [41, 41]], 5: [[47, 31], [83, 83]], 6: [[95, 62], [166, 167]]},
+    "hybrid": {0: [[1, 0], [2, 2]], 1: [[2, 1], [5, 4]], 2: [[5, 3], [11, 9]], 3: [[10, 7], [22, 19]], 4: [[20, 15], [45, 39]], 5: [[41, 31], [90, 79]], 6: [[83, 62], [180, 159]]},
+    "terrain": {0: [[1, 0], [2, 2]], 1: [[2, 1], [5, 5]], 2: [[5, 3], [10, 10]], 3: [[11, 7], [20, 20]], 4: [[23, 15], [41, 41]], 5: [[47, 31], [83, 83]], 6: [[95, 62], [166, 167]]},
+    "roadmap": {0: [[1, 0], [2, 2]], 1: [[2, 1], [5, 4]], 2: [[5, 3], [11, 9]], 3: [[10, 7], [22, 19]], 4: [[20, 15], [45, 39]], 5: [[41, 31], [90, 79]], 6: [[83, 62], [180, 159]]},
+    "radar": {0: [[1, 0], [2, 2]], 1: [[2, 1], [5, 5]], 2: [[5, 3], [10, 10]], 3: [[11, 7], [20, 20]], 4: [[23, 15], [41, 41]], 5: [[47, 31], [83, 83]], 6: [[95, 62], [166, 167]]},
+    "yanis,0": {0: [[0, 0], [2, 3]], 1: [[1, 1], [4, 6]], 2: [[2, 3], [9, 12]], 3: [[5, 6], [19, 24]], 4: [[11, 13], [39, 48]], 5: [[22, 26], [79, 97]], 6: [[44, 52], [158, 194]]},
+    "yanis,16": {0: [[0, 0], [3, 3]], 1: [[1, 1], [6, 6]], 2: [[2, 2], [12, 12]], 3: [[5, 5], [25, 24]], 4: [[10, 10], [51, 49]], 5: [[21, 21], [103, 99]], 6: [[42, 42], [206, 198]]},
 };
 
 function map3d6TextureDefinition(v, tileSet) {
@@ -105,7 +93,6 @@ gtadb.Map3D = function(options) {
     let that = this;
     let self = {
         ambient: 0.50,
-        assetRoot: map3d6AssetRoot,
         clickMoveTolerance: 5,
         currentLandmarks: null,
         distance: 17000,
@@ -114,6 +101,8 @@ gtadb.Map3D = function(options) {
         height: null,
         landmarks: [],
         maxPitch: 1.5,
+        maxCachedTiles: 448,
+        maxTilesPerLayer: 192,
         maxX: 4000,
         maxY: 12000,
         maxZ: 6,
@@ -126,6 +115,7 @@ gtadb.Map3D = function(options) {
         selected: null,
         specular: 0.10,
         texture: null,
+        tileRoot: map3d6TileRoot,
         tileSet: "yanis,16",
         v: 6,
         vfov: 45,
@@ -149,8 +139,11 @@ gtadb.Map3D = function(options) {
     self.renderPending = false;
     self.heightPixels = null;
     self.heightTexture = null;
-    self.surfaceTexture = null;
+    self.backgroundTexture = null;
     self.surfaceDefinition = null;
+    self.tiles = new Map();
+    self.tileGeneration = 0;
+    self.renderFrame = 0;
     self.keys = {};
     self.keyboardFrame = null;
     self.keyboardTimestamp = null;
@@ -208,9 +201,6 @@ gtadb.Map3D = function(options) {
         throw new Error("WebGL 2 unavailable");
     }
     self.gl = gl;
-    self.anisotropy = gl.getExtension("EXT_texture_filter_anisotropic")
-        || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-
     function compileShader(type, source) {
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
@@ -249,7 +239,7 @@ gtadb.Map3D = function(options) {
 
         out vec3 v_normal;
         out vec3 v_position;
-        out vec2 v_world;
+        out vec2 v_uv;
         out float v_valid;
 
         float valueAt(vec2 uv) {
@@ -305,7 +295,7 @@ gtadb.Map3D = function(options) {
 
             v_normal = normalize(vec3(-dx, 1.0, dy));
             v_position = position;
-            v_world = world;
+            v_uv = meshUv;
             v_valid = centerValue > 0.0
                 && all(greaterThanEqual(heightUv, vec2(0.0)))
                 && all(lessThanEqual(heightUv, vec2(1.0)))
@@ -316,10 +306,9 @@ gtadb.Map3D = function(options) {
         precision highp float;
 
         uniform sampler2D u_surface;
-        uniform vec2 u_surface_size;
-        uniform vec2 u_surface_zero;
-        uniform vec2 u_surface_scale;
-        uniform vec3 u_background;
+        uniform vec2 u_surface_texel;
+        uniform vec2 u_surface_uv_min;
+        uniform vec2 u_surface_uv_size;
         uniform vec3 u_eye;
         uniform float u_ambient;
         uniform float u_grayscale;
@@ -327,23 +316,16 @@ gtadb.Map3D = function(options) {
 
         in vec3 v_normal;
         in vec3 v_position;
-        in vec2 v_world;
+        in vec2 v_uv;
         in float v_valid;
         out vec4 outColor;
 
         void main() {
             if (v_valid < 0.5) discard;
-            vec2 pixel = vec2(
-                u_surface_zero.x + v_world.x * u_surface_scale.x,
-                u_surface_zero.y - v_world.y * u_surface_scale.y
-            );
-            bool inside = all(greaterThanEqual(pixel, vec2(0.0)))
-                && all(lessThanEqual(pixel, u_surface_size - vec2(1.0)));
-            vec2 uv = vec2(
-                pixel.x / (u_surface_size.x - 1.0),
-                1.0 - pixel.y / (u_surface_size.y - 1.0)
-            );
-            vec3 base = inside ? texture(u_surface, uv).rgb : u_background;
+            vec2 inset = u_surface_texel * 0.5;
+            vec2 uv = u_surface_uv_min + inset
+                + v_uv * (u_surface_uv_size - 2.0 * inset);
+            vec3 base = texture(u_surface, uv).rgb;
             float luminance = dot(base, vec3(0.2126, 0.7152, 0.0722));
             base = mix(base, vec3(luminance), u_grayscale);
             vec3 normal = normalize(v_normal);
@@ -362,7 +344,6 @@ gtadb.Map3D = function(options) {
 
     const uniforms = {
         ambient: gl.getUniformLocation(terrainProgram, "u_ambient"),
-        background: gl.getUniformLocation(terrainProgram, "u_background"),
         elevationOffset: gl.getUniformLocation(terrainProgram, "u_elevation_offset"),
         eye: gl.getUniformLocation(terrainProgram, "u_eye"),
         grayscale: gl.getUniformLocation(terrainProgram, "u_grayscale"),
@@ -375,9 +356,9 @@ gtadb.Map3D = function(options) {
         pixelMeters: gl.getUniformLocation(terrainProgram, "u_pixel_meters"),
         specular: gl.getUniformLocation(terrainProgram, "u_specular"),
         surface: gl.getUniformLocation(terrainProgram, "u_surface"),
-        surfaceScale: gl.getUniformLocation(terrainProgram, "u_surface_scale"),
-        surfaceSize: gl.getUniformLocation(terrainProgram, "u_surface_size"),
-        surfaceZero: gl.getUniformLocation(terrainProgram, "u_surface_zero"),
+        surfaceTexel: gl.getUniformLocation(terrainProgram, "u_surface_texel"),
+        surfaceUvMin: gl.getUniformLocation(terrainProgram, "u_surface_uv_min"),
+        surfaceUvSize: gl.getUniformLocation(terrainProgram, "u_surface_uv_size"),
         texel: gl.getUniformLocation(terrainProgram, "u_texel"),
         worldMin: gl.getUniformLocation(terrainProgram, "u_world_min"),
         worldSize: gl.getUniformLocation(terrainProgram, "u_world_size"),
@@ -766,18 +747,6 @@ gtadb.Map3D = function(options) {
             emitMapChange(true);
         }, 180);
     }
-    function assetUrl(path) {
-        return new URL(path, self.assetRoot).href;
-    }
-    function loadImage(path) {
-        return new Promise(function(resolve, reject) {
-            const image = new Image();
-            image.crossOrigin = "anonymous";
-            image.onload = function() { resolve(image); };
-            image.onerror = function() { reject(new Error(`Could not load ${path}`)); };
-            image.src = assetUrl(path);
-        });
-    }
     async function loadHeight(version) {
         if (typeof self.getElevation !== "function") {
             throw new Error("Elevation service unavailable");
@@ -827,56 +796,326 @@ gtadb.Map3D = function(options) {
         );
         return texture;
     }
-    function createSurfaceTexture(image) {
+    function createTileTexture(image) {
         const texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        gl.generateMipmap(gl.TEXTURE_2D);
-        if (self.anisotropy) {
-            const maximum = gl.getParameter(self.anisotropy.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-            gl.texParameterf(
-                gl.TEXTURE_2D,
-                self.anisotropy.TEXTURE_MAX_ANISOTROPY_EXT,
-                Math.min(8, maximum)
-            );
-        }
         return texture;
     }
-    async function loadSurfaceTexture(version, tileSet) {
-        const definition = map3d6TextureDefinition(version, tileSet);
-        if (!definition) throw new Error(`No terrain texture for ${tileSet}`);
-        const image = await loadImage(definition.url);
-        return {definition, image};
+    function createBackgroundTexture(color) {
+        const texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA8,
+            1,
+            1,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            new Uint8Array([...color, 255])
+        );
+        return texture;
     }
-    function applySurfaceTexture(result) {
-        const {definition, image} = result;
-        if (self.surfaceTexture) gl.deleteTexture(self.surfaceTexture);
-        self.surfaceTexture = createSurfaceTexture(image);
-        self.surfaceDefinition = {
-            ...definition,
-            width: image.naturalWidth,
-            height: image.naturalHeight,
+
+    function tileUrl(version, tileSet, z, x, y) {
+        return `${self.tileRoot}/${version}/${tileSet}/${z}/${z},${y},${x}.jpg`;
+    }
+    function tileWorldBounds(z, x, y) {
+        const tilesPerSide = 4 * Math.pow(2, z);
+        const tileMeters = map3d6MapSize / tilesPerSide;
+        const west = x * tileMeters - map3d6MapZero;
+        const east = west + tileMeters;
+        const north = map3d6MapZero - y * tileMeters;
+        const south = north - tileMeters;
+        return {west, east, north, south, tileMeters};
+    }
+    function clearTileCache() {
+        self.tileGeneration++;
+        self.tiles.forEach(function(tile) {
+            if (tile.texture) gl.deleteTexture(tile.texture);
+        });
+        self.tiles.clear();
+    }
+    function loadTile(version, tileSet, z, x, y) {
+        const key = `${version}/${tileSet}/${z}/${x}/${y}`;
+        if (self.tiles.has(key)) return self.tiles.get(key);
+        const generation = self.tileGeneration;
+        const tile = {
+            failed: false,
+            height: 256,
+            key,
+            lastUsed: self.renderFrame,
+            loaded: false,
+            texture: null,
+            width: 256,
+            x,
+            y,
+            z,
         };
-        const surface = self.surfaceDefinition;
-        surface.minX = -surface.zero[0] / surface.scale[0];
-        surface.maxX = (surface.width - surface.zero[0]) / surface.scale[0];
-        surface.minY = (surface.zero[1] - surface.height) / surface.scale[1];
-        surface.maxY = surface.zero[1] / surface.scale[1];
-        surface.meshMinX = Math.min(height.minX, surface.minX);
-        surface.meshMaxX = Math.max(height.maxX, surface.maxX);
-        surface.meshMinY = Math.min(height.minY, surface.minY);
-        surface.meshMaxY = Math.max(height.maxY, surface.maxY);
-        surface.meshWidth = Math.ceil(
-            (surface.meshMaxX - surface.meshMinX) / height.pixelMeters
-        ) + 1;
-        surface.meshHeight = Math.ceil(
-            (surface.meshMaxY - surface.meshMinY) / height.pixelMeters
-        ) + 1;
+        tile.promise = new Promise(function(resolve) {
+            const image = new Image();
+            image.crossOrigin = "anonymous";
+            image.onload = function() {
+                if (generation !== self.tileGeneration || !self.tiles.has(key)) {
+                    resolve(tile);
+                    return;
+                }
+                tile.width = image.naturalWidth;
+                tile.height = image.naturalHeight;
+                tile.texture = createTileTexture(image);
+                tile.loaded = true;
+                resolve(tile);
+                that.render();
+            };
+            image.onerror = function() {
+                tile.failed = true;
+                resolve(tile);
+            };
+            image.src = tileUrl(version, tileSet, z, x, y);
+        });
+        self.tiles.set(key, tile);
+        return tile;
+    }
+    function tileKey(version, tileSet, z, x, y) {
+        return `${version}/${tileSet}/${z}/${x}/${y}`;
+    }
+    function tileInRange(z, x, y) {
+        const range = map3d6TileSetRanges[self.tileSet]
+            && map3d6TileSetRanges[self.tileSet][z];
+        if (!range) return false;
+        const [[rx0, ry0], [rx1, ry1]] = range;
+        return x >= rx0 && x <= rx1 && y >= ry0 && y <= ry1;
+    }
+    function distanceToSegment(x, y, startX, startY, endX, endY) {
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const lengthSquared = dx * dx + dy * dy;
+        if (!lengthSquared) return Math.hypot(x - startX, y - startY);
+        const t = clamp(
+            ((x - startX) * dx + (y - startY) * dy) / lengthSquared,
+            0,
+            1
+        );
+        return Math.hypot(x - (startX + t * dx), y - (startY + t * dy));
+    }
+    function tileCoordinates(z, radius, limit, eye) {
+        const range = map3d6TileSetRanges[self.tileSet]
+            && map3d6TileSetRanges[self.tileSet][z];
+        if (!range) return [];
+        const [[rx0, ry0], [rx1, ry1]] = range;
+        const tilesPerSide = 4 * Math.pow(2, z);
+        const tileMeters = map3d6MapSize / tilesPerSide;
+        const targetX = self.target[0];
+        const targetY = -self.target[2];
+        const eyeX = eye[0];
+        const eyeY = -eye[2];
+        const minWorldX = Math.min(targetX, eyeX) - radius;
+        const maxWorldX = Math.max(targetX, eyeX) + radius;
+        const minWorldY = Math.min(targetY, eyeY) - radius;
+        const maxWorldY = Math.max(targetY, eyeY) + radius;
+        const minX = clamp(Math.floor((minWorldX + map3d6MapZero) / tileMeters), rx0, rx1);
+        const maxX = clamp(Math.floor((maxWorldX + map3d6MapZero) / tileMeters), rx0, rx1);
+        const minY = clamp(Math.floor((map3d6MapZero - maxWorldY) / tileMeters), ry0, ry1);
+        const maxY = clamp(Math.floor((map3d6MapZero - minWorldY) / tileMeters), ry0, ry1);
+        const coordinates = [];
+        for (let y = minY; y <= maxY; y++) {
+            for (let x = minX; x <= maxX; x++) {
+                const bounds = tileWorldBounds(z, x, y);
+                const centerX = (bounds.west + bounds.east) / 2;
+                const centerY = (bounds.south + bounds.north) / 2;
+                const distance = distanceToSegment(
+                    centerX,
+                    centerY,
+                    targetX,
+                    targetY,
+                    eyeX,
+                    eyeY
+                );
+                if (distance <= radius + tileMeters * Math.SQRT1_2) {
+                    coordinates.push({x, y, distance});
+                }
+            }
+        }
+        coordinates.sort(function(a, b) { return a.distance - b.distance; });
+        return coordinates.slice(0, limit);
+    }
+    function requestTilePyramid(detailZ, radius, limit, eye) {
+        const desired = new Map();
+        function add(z, coordinates) {
+            coordinates.forEach(function(coordinate) {
+                let x = coordinate.x;
+                let y = coordinate.y;
+                for (let level = z; level > 0; level--) {
+                    if (tileInRange(level, x, y)) {
+                        desired.set(`${level}/${x}/${y}`, {z: level, x, y});
+                    }
+                    x = Math.floor(x / 2);
+                    y = Math.floor(y / 2);
+                }
+            });
+        }
+        add(detailZ, tileCoordinates(detailZ, radius, limit, eye));
+        if (detailZ > 1) {
+            const middleZ = detailZ - 1;
+            add(middleZ, tileCoordinates(
+                middleZ,
+                radius * 1.5,
+                Math.ceil(limit * 0.25),
+                eye
+            ));
+        }
+        desired.forEach(function(coordinate) {
+            const tile = loadTile(
+                self.v,
+                self.tileSet,
+                coordinate.z,
+                coordinate.x,
+                coordinate.y
+            );
+            tile.lastUsed = self.renderFrame;
+        });
+    }
+    function currentTileCover(detailZ) {
+        const range = map3d6TileSetRanges[self.tileSet]
+            && map3d6TileSetRanges[self.tileSet][0];
+        if (!range) return [];
+        const [[x0, y0], [x1, y1]] = range;
+        const cover = [];
+        function append(z, x, y, source, uvMin, uvSize) {
+            if (!source || !source.loaded) return;
+            if (z >= detailZ) {
+                cover.push({z, x, y, source, uvMin, uvSize});
+                return;
+            }
+            const childZ = z + 1;
+            for (let dy = 0; dy < 2; dy++) {
+                for (let dx = 0; dx < 2; dx++) {
+                    const childX = x * 2 + dx;
+                    const childY = y * 2 + dy;
+                    const child = self.tiles.get(tileKey(
+                        self.v,
+                        self.tileSet,
+                        childZ,
+                        childX,
+                        childY
+                    ));
+                    if (
+                        tileInRange(childZ, childX, childY)
+                        && child
+                        && child.loaded
+                        && child.lastUsed === self.renderFrame
+                    ) {
+                        append(childZ, childX, childY, child, [0, 0], [1, 1]);
+                    } else {
+                        const childUvSize = [uvSize[0] / 2, uvSize[1] / 2];
+                        const childUvMin = [
+                            uvMin[0] + dx * childUvSize[0],
+                            uvMin[1] + (1 - dy) * childUvSize[1],
+                        ];
+                        cover.push({
+                            z: childZ,
+                            x: childX,
+                            y: childY,
+                            source,
+                            uvMin: childUvMin,
+                            uvSize: childUvSize,
+                        });
+                    }
+                }
+            }
+        }
+        for (let y = y0; y <= y1; y++) {
+            for (let x = x0; x <= x1; x++) {
+                const tile = self.tiles.get(tileKey(self.v, self.tileSet, 0, x, y));
+                append(0, x, y, tile, [0, 0], [1, 1]);
+            }
+        }
+        return cover;
+    }
+    function currentTileZ() {
+        const estimate = Math.round(7.1 - Math.log2(Math.max(900, self.distance) / 850));
+        return clamp(estimate, 0, self.maxZ);
+    }
+    function preloadBaseTiles(version, tileSet) {
+        const range = map3d6TileSetRanges[tileSet] && map3d6TileSetRanges[tileSet][0];
+        if (!range) return Promise.reject(new Error(`No terrain tiles for ${tileSet}`));
+        const [[x0, y0], [x1, y1]] = range;
+        const promises = [];
+        for (let y = y0; y <= y1; y++) {
+            for (let x = x0; x <= x1; x++) {
+                promises.push(loadTile(version, tileSet, 0, x, y).promise);
+            }
+        }
+        return Promise.all(promises).then(function(tiles) {
+            if (!tiles.some(function(tile) { return tile.loaded; })) {
+                throw new Error(`Could not load terrain tiles for ${tileSet}`);
+            }
+        });
+    }
+    function evictTiles() {
+        if (self.tiles.size <= self.maxCachedTiles) return;
+        const candidates = [...self.tiles.values()]
+            .filter(function(tile) {
+                return tile.loaded && tile.lastUsed !== self.renderFrame && tile.z !== 0;
+            })
+            .sort(function(a, b) { return a.lastUsed - b.lastUsed; });
+        while (self.tiles.size > self.maxCachedTiles && candidates.length) {
+            const tile = candidates.shift();
+            gl.deleteTexture(tile.texture);
+            self.tiles.delete(tile.key);
+        }
+    }
+    function drawTile(tile, matrix) {
+        if (!tile.source.loaded) return;
+        const bounds = tileWorldBounds(tile.z, tile.x, tile.y);
+        const meshSize = Math.min(
+            257,
+            Math.max(2, Math.ceil(bounds.tileMeters / height.pixelMeters) + 1)
+        );
+        gl.uniformMatrix4fv(uniforms.matrix, false, matrix);
+        gl.uniform2i(uniforms.meshSize, meshSize, meshSize);
+        gl.uniform2f(uniforms.worldMin, bounds.west, bounds.south);
+        gl.uniform2f(uniforms.worldSize, bounds.tileMeters, bounds.tileMeters);
+        gl.uniform2f(
+            uniforms.surfaceTexel,
+            1 / tile.source.width,
+            1 / tile.source.height
+        );
+        gl.uniform2fv(uniforms.surfaceUvMin, tile.uvMin);
+        gl.uniform2fv(uniforms.surfaceUvSize, tile.uvSize);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, tile.source.texture);
+        gl.uniform1i(uniforms.surface, 1);
+        gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, meshSize * 2, meshSize - 1);
+    }
+    function drawBackgroundTerrain(matrix) {
+        gl.uniformMatrix4fv(uniforms.matrix, false, matrix);
+        gl.uniform2i(uniforms.meshSize, height.width, height.height);
+        gl.uniform2f(uniforms.worldMin, height.minX, height.minY);
+        gl.uniform2f(uniforms.worldSize, height.sizeX, height.sizeY);
+        gl.uniform2f(uniforms.surfaceTexel, 1, 1);
+        gl.uniform2f(uniforms.surfaceUvMin, 0, 0);
+        gl.uniform2f(uniforms.surfaceUvSize, 1, 1);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, self.backgroundTexture);
+        gl.uniform1i(uniforms.surface, 1);
+        gl.drawArraysInstanced(
+            gl.TRIANGLE_STRIP,
+            0,
+            height.width * 2,
+            height.height - 1
+        );
     }
     function requestTerrainLoad() {
         const revision = ++self.loadRevision;
@@ -886,14 +1125,19 @@ gtadb.Map3D = function(options) {
         self.loading.hidden = false;
         self.loading.textContent = "LOADING TERRAIN";
         self.loading.classList.remove("error");
+        clearTileCache();
+        const definition = map3d6TextureDefinition(version, tileSet);
+        if (!definition) return Promise.reject(new Error(`No terrain texture for ${tileSet}`));
+        self.surfaceDefinition = definition;
+        if (self.backgroundTexture) gl.deleteTexture(self.backgroundTexture);
+        self.backgroundTexture = createBackgroundTexture(definition.background);
         const promise = Promise.all([
             loadHeight(version),
-            loadSurfaceTexture(version, tileSet),
+            preloadBaseTiles(version, tileSet),
         ])
             .then(function(results) {
                 if (revision !== self.loadRevision) return;
                 applyHeight(results[0]);
-                applySurfaceTexture(results[1]);
                 self.loaded = true;
                 self.loading.hidden = true;
                 clampTarget();
@@ -1132,35 +1376,16 @@ gtadb.Map3D = function(options) {
             );
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LEQUAL);
             gl.disable(gl.CULL_FACE);
+            gl.enable(gl.POLYGON_OFFSET_FILL);
             gl.useProgram(terrainProgram);
-            gl.uniformMatrix4fv(uniforms.matrix, false, matrix);
-            gl.uniform2i(uniforms.meshSize, definition.meshWidth, definition.meshHeight);
             gl.uniform2f(uniforms.heightWorldMin, height.minX, height.minY);
             gl.uniform2f(uniforms.heightWorldSize, height.sizeX, height.sizeY);
-            gl.uniform2f(uniforms.worldMin, definition.meshMinX, definition.meshMinY);
-            gl.uniform2f(
-                uniforms.worldSize,
-                definition.meshMaxX - definition.meshMinX,
-                definition.meshMaxY - definition.meshMinY
-            );
             gl.uniform2f(uniforms.texel, 1 / height.width, 1 / height.height);
             gl.uniform1f(uniforms.metersPerValue, height.metersPerValue);
             gl.uniform1f(uniforms.elevationOffset, height.elevationOffset);
             gl.uniform1f(uniforms.pixelMeters, height.pixelMeters);
-            gl.uniform2f(uniforms.surfaceSize, definition.width, definition.height);
-            gl.uniform2f(uniforms.surfaceZero, definition.zero[0], definition.zero[1]);
-            gl.uniform2f(
-                uniforms.surfaceScale,
-                definition.scale[0],
-                definition.scale[1]
-            );
-            gl.uniform3f(
-                uniforms.background,
-                background[0] / 255,
-                background[1] / 255,
-                background[2] / 255
-            );
             gl.uniform3fv(uniforms.eye, eye);
             gl.uniform1f(uniforms.ambient, self.ambient);
             gl.uniform1f(uniforms.grayscale, grayscale);
@@ -1168,17 +1393,27 @@ gtadb.Map3D = function(options) {
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, self.heightTexture);
             gl.uniform1i(uniforms.height, 0);
-            gl.activeTexture(gl.TEXTURE1);
-            gl.bindTexture(gl.TEXTURE_2D, self.surfaceTexture);
-            gl.uniform1i(uniforms.surface, 1);
             gl.bindVertexArray(self.vao);
-            gl.drawArraysInstanced(
-                gl.TRIANGLE_STRIP,
-                0,
-                definition.meshWidth * 2,
-                definition.meshHeight - 1
+            gl.polygonOffset(0, 0);
+            drawBackgroundTerrain(matrix);
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+            self.renderFrame++;
+            const detailZ = currentTileZ();
+            const detailRadius = clamp(self.distance * 0.45, 600, 2400);
+            requestTilePyramid(
+                detailZ,
+                detailRadius,
+                self.maxTilesPerLayer,
+                eye
             );
+            gl.polygonOffset(-0.35, -1);
+            currentTileCover(detailZ).forEach(function(tile) {
+                tile.source.lastUsed = self.renderFrame;
+                drawTile(tile, matrix);
+            });
             gl.bindVertexArray(null);
+            gl.disable(gl.POLYGON_OFFSET_FILL);
+            evictTiles();
             renderMarkers(matrix, eye);
         });
     };
