@@ -86,6 +86,9 @@ h2.arrow {
     );
     padding-right: 16px
 }
+html {
+    height: 100%;
+}
 img {
     all: unset;
 }
