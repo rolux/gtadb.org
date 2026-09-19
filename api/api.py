@@ -78,7 +78,7 @@ TILE_SIZE = 256
 TILES_PATH = {
     4: "../maps/tiles/4/elevation",
     5: "../maps/tiles/5/satellite",
-    6: "../maps/tiles/6/yanis,15",
+    6: "../maps/tiles/6/yanis,16",
 }
 
 
