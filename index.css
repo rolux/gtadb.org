@@ -258,7 +258,7 @@ body.api h1, body.api h2, body.api h3 {
     background-color: rgb(255, 255, 0);
     color: rgb(0, 0, 0);
 }
-body.api img
+body.api img,
 body.api pre {
     box-sizing: border-box;
     max-width: 100%;
