@@ -80,10 +80,8 @@ TILES_PATH = {
     5: "../maps/tiles/5/satellite",
     6: "../maps/tiles/6/yanis,16",
 }
+ZERO_RESULTS = {"results": [], "status": "ZERO_RESULTS"}
 
-
-def find(gta, query, max_results=10):
-    query = query.casefold()
 
 def format_address(gta, address, x, y):
     if gta != 6:
@@ -103,12 +101,67 @@ def format_coordinates(coordinates, decimals):
         return
     return [round(v, decimals) for v in coordinates]
 
-def geocode_address(gta, address):
-    # TODO: loop over records, case-insensitive match, first pass ig-address, second pass rl-address
-    raise NotImplementedError
+def geocode_address(gta, address, max_results=10):
+    query = address.strip().casefold()
+    results = []
+    for id, data in LANDMARKS_DATA[gta].items():
+        landmark = parse_landmark(id, data)
+        if query not in landmark["ig_address"].casefold():
+            continue
+        location = landmark["ig_coordinates"]
+        if not location:
+            continue
+        formatted = format_address(gta, landmark["ig_address"], *location)
+        results.append({
+            "address_components": get_address_components(gta, formatted),
+            "formatted_address": formatted,
+            "geometry": {
+                "bounds": get_bounds([location]),
+                "location": location,
+            },
+            "gtadb_id": id
+        })
+        if len(results) == max_results:
+            break
+    if not results:
+        return ZERO_RESULTS
+    return jsonify({
+        "results": results,
+        "status": "OK"
+    })
 
 def geocode_xy(gta, x, y):
-    pass
+    landmark = get_landmark(gta, x, y)
+    if not landmark and gta != 6:
+        return ZERO_RESULTS
+    if landmark:
+        gtadb_id = landmark["id"]
+        location = landmark["ig_coordinates"]
+        bounds = get_bounds([location])
+        address = format_address(gta, landmark["ig_address"], *location)
+    else:
+        region = get_region(gta, x, y)
+        if not region:
+            return ZERO_RESULTS
+        gtadb_id = "S0"
+        location = get_center(region["points"])
+        bounds = get_bounds(region["points"])
+        address = format_address(gta, region["address"], *location)
+    address_components = get_address_components(gta, address)
+    return jsonify({
+        "results": [
+            {
+                "address_components": address_components,
+                "formatted_address": address,
+                "geometry": {
+                    "bounds": bounds,
+                    "location": location
+                },
+                "gtadb_id": gtadb_id
+            }
+        ],
+        "status": "OK",
+    })
 
 def get_address_components(gta, address):
     if gta != 6:
@@ -283,10 +336,7 @@ def elevation():
     x, y = get_float("x"), get_float("y")
     result = get_elevation(gta, x, y)
     if result is None:
-        return jsonify({
-            "results": [],
-            "status": "ZERO_RESULTS",
-        })
+        return ZERO_RESULTS
     return jsonify({
         "results": [
             {
@@ -299,7 +349,6 @@ def elevation():
 
 @app.route("/geocode", methods=["GET"])
 def geocode():
-    zero_results = jsonify({"results": [], "status": "ZERO_RESULTS"})
     gta = get_int("gta")
     if gta not in GTA_VERSIONS:
         raise ValueError(f"Unknown game version: {gta}")
@@ -311,43 +360,13 @@ def geocode():
             raise ValueError("Expected either address or x and y, got both")
         if not address.strip():
             raise ValueError("Empty address")
-        return geocode_address(address)
+        return geocode_address(gta, address)
 
     if not has_x or not has_y:
         raise ValueError("Expected either address or x and y, got none")
-    x = get_float("x")
-    y = get_float("y")
-    landmark = get_landmark(gta, x, y)
-    if not landmark and gta != 6:
-        return zero_results
-    if landmark:
-        gtadb_id = landmark["id"]
-        location = landmark["ig_coordinates"]
-        bounds = get_bounds([location])
-        address = format_address(gta, landmark["ig_address"], *location)
-    else:
-        region = get_region(gta, x, y)
-        if not region:
-            return zero_results
-        gtadb_id = "S0"
-        location = get_center(region["points"])
-        bounds = get_bounds(region["points"])
-        address = format_address(gta, region["address"], *location)
-    address_components = get_address_components(gta, address)
-    return jsonify({
-        "results": [
-            {
-                "address_components": address_components,
-                "formatted_address": address,
-                "geometry": {
-                    "bounds": bounds,
-                    "location": location
-                },
-                "gtadb_id": gtadb_id
-            }
-        ],
-        "status": "OK",
-    })
+    x, y = get_float("x"), get_float("y")
+    return geocode_xy(gta, x, y)
+
 
 @app.route("/landmarks", methods=["GET"])
 def landmarks():
