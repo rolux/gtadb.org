@@ -971,7 +971,7 @@ gtadb.Map3D = function(options) {
             add(middleZ, tileCoordinates(
                 middleZ,
                 radius * 1.5,
-                Math.ceil(limit * 0.25),
+                Math.ceil(limit * 0.5),
                 eye
             ));
         }
