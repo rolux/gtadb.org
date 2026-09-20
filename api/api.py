@@ -322,6 +322,7 @@ def parse_landmark(id, data):
 class JSONProvider(DefaultJSONProvider):
     def dumps(self, obj, **kwargs):
         kwargs["indent"] = 4
+        kwargs["separators"] = (",", ": ")
         return super().dumps(obj, **kwargs)
 
 app = Flask(__name__)
