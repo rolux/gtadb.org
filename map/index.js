@@ -905,7 +905,9 @@ gtadb.Map = function() {
             <p><a href="https://github.com/rolux/gtadb.org"
             target="_blank">https://github.com/rolux/gtadb.org</a></p>
             <p>Please note that this is a desktop app, intentionally.
-            It is not supposed to work on mobile.<p>`
+            It is not supposed to work on mobile. Also: everything 3D is
+            still somewhat experimental, and GTA VI elevation data may
+            still be in flux.<p>`
 
         self.landmarkDataElement = document.createElement("div")
         self.landmarkDataElement.style.margin = "8px"
