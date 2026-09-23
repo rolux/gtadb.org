@@ -295,9 +295,9 @@ gtadb.Map = function() {
                 sort: "igAddress",
                 tileSet: "yanis,16",
                 tileSets: [
+                    "cyber,1",
                     "dupzor,51",
                     "yanis,15",
-                    "yanis,0",
                     "yanis,16",
                 ]
             },
@@ -2804,7 +2804,7 @@ gtadb.Map = function() {
 
     self.getAvailableTileSets = function() {
         return self.defaults.gta6.tileSets.filter(function(tileSet) {
-            return self.sessionId || tileSet != "yanis,0"
+            return self.sessionId || tileSet != "cyber,1"
         })
     }
 
