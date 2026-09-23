@@ -224,9 +224,9 @@ gtadb.Maps = function(options) {
                 z: 1,
                 tileSet: "yanis,16",
                 tileSets: [
-                    "cyber,1",
                     "dupzor,51",
                     "yanis,15",
+                    "cyber,1",
                     "yanis,16",
                 ]
             },
