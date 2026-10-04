@@ -350,11 +350,11 @@ body.files #files div div {
     border-right: 0.5px dashed rgb(0, 255, 0);
     color: rgb(0, 255, 0);
     display: inline-block;
-    height: 48px;
+    height: 46px;
     font-size: 12px;
     padding: 4px 8px;
     text-align: center;
-    width: 179px;
+    width: 175px;
 }
 
 
