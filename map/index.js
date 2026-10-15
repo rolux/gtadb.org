@@ -293,12 +293,12 @@ gtadb.Map = function() {
                 find: "",
                 filter: "all",
                 sort: "igAddress",
-                tileSet: "yanis,16",
+                tileSet: "yanis,17",
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",
                     "cyber,1",
-                    "yanis,16",
+                    "yanis,17",
                 ]
             },
             googlemaps: {

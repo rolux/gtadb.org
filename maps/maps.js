@@ -119,7 +119,7 @@ gtadb.Maps = function(options) {
                 5: [[0, 17], [77, 95]],
                 6: [[0, 34], [155, 190]]
             },
-            "yanis,16": {
+            "yanis,17": {
                 0: [[0, 0], [3, 3]],
                 1: [[1, 1], [6, 6]],
                 2: [[2, 2], [12, 12]],
@@ -222,12 +222,12 @@ gtadb.Maps = function(options) {
                 x: -4000,
                 y: 2000,
                 z: 1,
-                tileSet: "yanis,16",
+                tileSet: "yanis,17",
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",
                     "cyber,1",
-                    "yanis,16",
+                    "yanis,17",
                 ]
             },
             mapMode: "gta",
