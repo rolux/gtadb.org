@@ -16,7 +16,7 @@ gtadb.Guess = function() {
         minY: -8000,
         maxY: 12000,
         minZ: 0,
-        maxZ: 6,
+        maxZ: 7,
         x: null,
         y: null,
         z: null,
@@ -308,7 +308,7 @@ gtadb.Guess = function() {
             <tr><td>← → ↑ ↓</td><td>Pan map</td></tr>
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
-            <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
+            <tr><td>0 1 2 3 4 5 6 7</td><td>Set zoom level</td></tr>
             <tr><td>↑ ↓</td><td>Select previous / next list item</td></tr>
             <tr><td>← →</td><td>Select first / last list item</td></tr>
             <tr><td>TAB</td><td>Switch focus between map and list</td></tr>
@@ -792,7 +792,7 @@ gtadb.Guess = function() {
                 }
             }
 
-            if ("0123456.".includes(e.key)) {
+            if ("01234567.".includes(e.key)) {
                 self.dialogLayer.element.classList.add("clicked")
             }
         }
