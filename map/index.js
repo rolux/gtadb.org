@@ -149,7 +149,7 @@ gtadb.Map = function() {
         minY: -16000,
         maxY: 16000,
         minZ: 0,
-        maxZ: 6,
+        maxZ: 7,
         x: null,
         y: null,
         z: null,
@@ -924,7 +924,7 @@ gtadb.Map = function() {
         self.keyboardShortcutsElement = document.createElement("div")
         self.keyboardShortcutsElement.style.margin = "8px"
         self.keyboardShortcutsElement.innerHTML = `<table>
-            <tr><td>0 1 2 3 4 5 6</td><td>Set zoom level</td></tr>
+            <tr><td>0 1 2 3 4 5 6 7</td><td>Set zoom level</td></tr>
             <tr><td>&ndash;</td><td>Zoom out</td></tr>
             <tr><td>=</td><td>Zoom in</td></tr>
             <tr><td>WHEEL</td><td>Zoom</td></tr>
@@ -2154,7 +2154,7 @@ gtadb.Map = function() {
                 }
             }
 
-            if ("0123456fghftTv".includes(e.key)) {
+            if ("01234567fghftTv".includes(e.key)) {
                 self.dialogLayer.element.classList.add("clicked")
             }
 

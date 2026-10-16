@@ -24,7 +24,7 @@ gtadb.Maps = function(options) {
         minY: -16000,
         maxY: 16000,
         minZ: 0,
-        maxZ: 6,
+        maxZ: 7,
         zeroX: 16384,
         zeroY: 16384,
         tileSize: 256,
@@ -35,8 +35,7 @@ gtadb.Maps = function(options) {
                 2: [[6, 6], [9, 8]],
                 3: [[13, 13], [18, 17]],
                 4: [[27, 27], [37, 34]],
-                5: [[54, 54], [75, 68]],
-                6: [[109, 109], [151, 137]]
+                5: [[54, 54], [75, 68]]
             },
             "elevation": {
                 0: [[1, 1], [2, 2]],
@@ -44,8 +43,7 @@ gtadb.Maps = function(options) {
                 2: [[6, 6], [9, 8]],
                 3: [[13, 13], [18, 17]],
                 4: [[27, 27], [37, 34]],
-                5: [[54, 54], [75, 68]],
-                6: [[109, 109], [151, 137]]
+                5: [[54, 54], [75, 68]]
             },
             "satellite": {
                 0: [[1, 0], [2, 2]],
@@ -62,8 +60,7 @@ gtadb.Maps = function(options) {
                 2: [[5, 3], [11, 9]],
                 3: [[10, 7], [22, 19]],
                 4: [[20, 15], [45, 39]],
-                5: [[41, 31], [90, 79]],
-                6: [[83, 62], [180, 159]]
+                5: [[41, 31], [90, 79]]
             },
             "terrain": {
                 0: [[1, 0], [2, 2]],
@@ -80,8 +77,7 @@ gtadb.Maps = function(options) {
                 2: [[5, 3], [11, 9]],
                 3: [[10, 7], [22, 19]],
                 4: [[20, 15], [45, 39]],
-                5: [[41, 31], [90, 79]],
-                6: [[83, 62], [180, 159]]
+                5: [[41, 31], [90, 79]]
             },
             "radar": {
                 0: [[1, 0], [2, 2]],
@@ -98,8 +94,7 @@ gtadb.Maps = function(options) {
                 2: [[2, 2], [9, 12]],
                 3: [[5, 5], [19, 24]],
                 4: [[10, 10], [39, 49]],
-                5: [[21, 21], [79, 99]],
-                6: [[42, 42], [159, 198]]
+                5: [[21, 21], [79, 99]]
             },
             "dupzor,51": {
                 0: [[0, 0], [2, 2]],
@@ -107,8 +102,7 @@ gtadb.Maps = function(options) {
                 2: [[0, 2], [9, 11]],
                 3: [[0, 4], [19, 23]],
                 4: [[0, 8], [38, 47]],
-                5: [[0, 17], [77, 94]],
-                6: [[1, 34], [155, 188]]
+                5: [[0, 17], [77, 94]]
             },
             "yanis,15": {
                 0: [[0, 0], [2, 2]],
@@ -116,8 +110,7 @@ gtadb.Maps = function(options) {
                 2: [[0, 2], [9, 11]],
                 3: [[0, 4], [19, 23]],
                 4: [[0, 8], [38, 47]],
-                5: [[0, 17], [77, 95]],
-                6: [[0, 34], [155, 190]]
+                5: [[0, 17], [77, 95]]
             },
             "yanis,17": {
                 0: [[0, 0], [3, 3]],
@@ -125,8 +118,7 @@ gtadb.Maps = function(options) {
                 2: [[2, 2], [12, 12]],
                 3: [[5, 5], [25, 24]],
                 4: [[10, 10], [51, 49]],
-                5: [[21, 21], [103, 99]],
-                6: [[42, 42], [206, 198]]
+                5: [[21, 21], [103, 99]]
             }
         },
         tileOverlayRanges: {
@@ -136,8 +128,7 @@ gtadb.Maps = function(options) {
                 2: [[4, 6], [5, 6]],
                 3: [[9, 12], [10, 13]],
                 4: [[18, 25], [20, 27]],
-                5: [[37, 50], [41, 55]],
-                6: [[74, 100], [82, 110]]
+                5: [[37, 50], [41, 55]]
             },
             "martipk,5": {
                 0: [[1, 2], [1, 2]],
@@ -145,8 +136,7 @@ gtadb.Maps = function(options) {
                 2: [[6, 9], [7, 11]],
                 3: [[12, 19], [15, 23]],
                 4: [[24, 39], [31, 46]],
-                5: [[48, 79], [62, 93]],
-                6: [[96, 159], [124, 186]]
+                5: [[48, 79], [62, 93]]
             },
             "rickrick,3": {
                 0: [[1, 1], [2, 2]],
@@ -154,8 +144,7 @@ gtadb.Maps = function(options) {
                 2: [[6, 6], [9, 9]],
                 3: [[12, 13], [18, 19]],
                 4: [[24, 26], [36, 39]],
-                5: [[48, 52], [73, 79]],
-                6: [[96, 104], [147, 159]]
+                5: [[48, 52], [73, 79]]
             }
         },
         x: null,
@@ -244,6 +233,12 @@ gtadb.Maps = function(options) {
             z: null,
         }
     }
+    self.tileSetMaxZ = Object.fromEntries(
+        Object.entries(self.tileSetRanges).map(function([tileSet, ranges]) {
+            return [tileSet, Math.max(...Object.keys(ranges).map(Number))]
+        })
+    )
+    
     self.options = {...self.defaults, ...(options || {})}
     self.options.googlemaps = {...self.defaults.googlemaps, ...((options || {}).googlemaps || {})}
     self.options.gta4 = {...self.defaults.gta4, ...((options || {}).gta4 || {})}
@@ -581,7 +576,7 @@ gtadb.Maps = function(options) {
                 overlays.forEach(function(overlay) {
                     self.tiles[v][tileSet][overlay] = {}
                     self.tilePaths[v][tileSet][overlay] = {}
-                    for (let z = self.minZ; z <= self.maxZ; z++) {
+                    for (let z = self.minZ; z <= self.tileSetMaxZ[tileSet]; z++) {
                         self.tiles[v][tileSet][overlay][z] = {}
                         self.tilePaths[v][tileSet][overlay][z] = {}
                         const [[x0, y0], [x1, y1]] = self.tileSetRanges[tileSet][z]
@@ -970,7 +965,7 @@ gtadb.Maps = function(options) {
             return false
         }
 
-        const zInt = Math.ceil(self.z)
+        const zInt = Math.min(Math.ceil(self.z), self.tileSetMaxZ[self.tileSet])
         const mapSize = 1024 * Math.pow(2, self.z)
         const mppx = mapSize / self.mapW
         const cX = (self.x + self.zeroX) * mppx
@@ -1248,7 +1243,7 @@ gtadb.Maps = function(options) {
             return
         }
 
-        if ("0123456".includes(e.key) && self.mapMode == "gta") {
+        if ("01234567".includes(e.key) && self.mapMode == "gta") {
             self.setTarget(self.targetX, self.targetY, parseInt(e.key))
         } else if ([
             "-", "=", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp"
