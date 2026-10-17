@@ -7,7 +7,7 @@
     const TILES = {
         4: {original: "Original", elevation: "Elevation"},
         5: {satellite: "Satellite", hybrid: "Hybrid", terrain: "Terrain", roadmap: "Roadmap", radar: "Radar"},
-        6: {"yanis,17": "Yanis v17", "cyber,1": "Cyber", "yanis,15": "Yanis v15", "dupzor,51": "DupZor"}
+        6: {"yanis,17": "Yanis v17", "yanis,15": "Yanis v15", "dupzor,51": "DupZor"}
     };
     const DEFAULTS = {4: {x: 0, y: 0, z: 1}, 5: {x: -4000, y: 2000, z: 1}, 6: {x: -4000, y: 2000, z: 1}};
     const nextId = records => {
