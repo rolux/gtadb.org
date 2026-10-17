@@ -1,0 +1,110 @@
+html, body { background: #000; font: 12px sans-serif; height: 100%; margin: 0; overflow: hidden; width: 100%; }
+body { --panel: rgba(255,255,255,.75); --text: #000; --line: rgba(0,0,0,.125); --selected: #e0e0e0; --field: rgba(255,255,255,.4); --image: rgba(0,0,0,.25); color: var(--text); }
+body.dark { --panel: rgba(0,0,0,.75); --text: #e0e0e0; --line: rgba(224,224,224,.2); --selected: #404040; --field: rgba(255,255,255,.08); --image: rgba(224,224,224,.25); color-scheme: dark; }
+body.light, body.dark { filter: none; transform: none; }
+body.michael { filter: brightness(0.75) sepia(1); }
+body.amanda { filter: saturate(4); }
+body.jimmy { filter: invert(1); }
+body.tracey { filter: hue-rotate(90deg); }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; }
+button, input, select, textarea { color: inherit; font: inherit; }
+button { background: none; border: 0; cursor: pointer; padding: 4px; text-transform: uppercase; white-space: nowrap; }
+button:disabled { cursor: default; opacity: .3; }
+button:focus-visible, a:focus-visible { outline: 1px solid #4080c0; outline-offset: -1px; }
+select { appearance: none; -webkit-appearance: none; background: transparent; background-image: none; border: 1px solid transparent; border-radius: 4px; cursor: pointer; min-width: 0; padding: 2px 4px; text-transform: uppercase; }
+select:focus { outline: none; }
+select::-ms-expand { display: none; }
+option, optgroup { background: Canvas; color: CanvasText; }
+input, textarea { background: var(--field); border: 1px solid var(--line); border-radius: 0; height: auto; min-width: 0; padding: 5px; position: static; }
+input:focus, textarea:focus { outline: 1px solid #808080; }
+input[type="checkbox"] { width: auto; }
+.mapPanel { backdrop-filter: blur(4px); background: var(--panel); position: fixed; width: 256px; z-index: 1000; }
+#listPanel { bottom: 0; display: flex; flex-direction: column; left: 0; top: 0; }
+.bar { align-items: center; border-bottom: 1px solid var(--line); box-sizing: content-box; display: flex; flex: 0 0 23px; gap: 0; height: 23px; padding: 4px; position: relative; width: calc(100% - 8px); }
+.bar > button:not(.icon) { margin: 0 4px; padding: 0; }
+.spacer { flex: 1; }
+.icon { background: #3f7703; border-radius: 4px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; height: 20px; min-width: 20px; padding: 3px; text-transform: uppercase; }
+#siteIcon { background: #804060; margin: 0 2px; min-width: 43px; padding: 3px 6px; text-transform: none; }
+#siteIcon:hover { text-decoration: none; }
+#collectionIcon { margin: 0 4px; }
+#game { width: 112px; }
+#game, #filter, #sort { margin: 2px 3px; }
+#find { appearance: none; -webkit-appearance: none; background: transparent; border: 1px solid transparent; border-radius: 0; flex: 1; height: 18px; margin: 3px; padding: 2px 4px; text-transform: uppercase; width: 100%; }
+#find:focus { border-color: transparent; box-shadow: none; outline: none; }
+#find::-webkit-search-cancel-button { display: none; }
+#filter, #sort { flex: 1; width: 100%; }
+#listBody { flex: 1; min-height: 0; overflow-y: auto; }
+.item { border-left: 8px solid; box-sizing: content-box; cursor: pointer; display: block; height: 32px; padding: 0; text-align: left; text-transform: none; width: calc(100% - 8px); }
+.item.selected { background: var(--selected); }
+.item .name, .item .byline { box-sizing: content-box; display: block; overflow: hidden; pointer-events: none; text-overflow: ellipsis; white-space: nowrap; width: calc(100% - 16px); }
+.item .name { font-size: 12px; font-weight: bold; height: 13px; padding: 4px 8px 1px; }
+.item .byline { font-size: 9px; height: 12px; padding: 1px 8px 2px; }
+#listStatusBar { border-bottom: 0; border-top: 1px solid var(--line); }
+#markerCount { font-size: 12px; margin: 0 8px; text-transform: uppercase; white-space: nowrap; }
+#itemPanel { bottom: 32px; right: 0; top: 0; }
+#itemId { font-size: 13px; margin: 0 6px; }
+#itemBody { border-right: 8px solid #000; bottom: 0; font-size: 13px; left: 0; overflow-x: hidden; overflow-y: auto; padding: 4px; position: absolute; right: 0; top: 32px; }
+.markerName { font-size: 13px; font-weight: bold; margin: 4px; min-height: 15px; overflow-wrap: anywhere; }
+.coordinates { font-size: 12px; margin: 8px 4px; }
+.coordinates .link { cursor: pointer; }
+.coordinates .link:hover { text-decoration: underline; }
+.coordinateAction { font-size: 12px; margin-left: 8px; padding: 0; }
+.image { background: var(--image); display: block; height: 139.5px; margin: 4px -4px; position: relative; width: 248px; }
+.image[role="button"] { cursor: pointer; }
+.image.hover { background: rgba(128,192,255,.25); }
+.image img { display: block; height: 100%; width: 100%; }
+.removeImage { background: var(--panel); display: none; font-size: 12px; padding: 2px 4px; position: absolute; right: 0; top: 0; }
+.image:hover .removeImage, .image:focus-within .removeImage { display: block; }
+.markerType, .markerTags { font-size: 12px; margin: 8px 4px; min-height: 14px; overflow-wrap: anywhere; text-transform: uppercase; }
+.edited { font-size: 12px; margin: 8px 4px 4px; opacity: .5; text-transform: uppercase; }
+#itemBody [contenteditable="true"] { cursor: text; outline: 1px dashed #808080; white-space: pre-wrap; }
+#itemBody [contenteditable="true"]:focus { outline-color: #0080ff; }
+.marker { box-sizing: content-box; }
+.field { display: block; margin: 0 0 12px; }
+.field > span { display: block; font-size: 10px; margin-bottom: 5px; text-transform: uppercase; }
+.field input, .field textarea, .field select { width: 100%; }
+.field select { border: 1px solid var(--line); }
+.formRow { display: flex; gap: 8px; }
+.formRow > * { flex: 1; min-width: 0; }
+.actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+.actions button, .outline { border: 1px solid var(--line); padding: 6px 8px; }
+.hint { font-size: 11px; line-height: 1.6; opacity: .65; }
+#coordinatesPanel { border-top: 1px solid var(--line); bottom: 0; height: 32px; padding: 9px 12px; right: 0; }
+#coordinatesPanel.rounded { border-top-left-radius: 8px; }
+#coordinates { font-size: 12px; text-transform: uppercase; white-space: nowrap; }
+/* Use the original ui.css sizing inside the shared Dialog and Panel components. */
+#dialogLayer .dialog, #dialogLayer .dialog * { box-sizing: content-box; }
+#dialogLayer .dialog { outline: none; }
+#dialogLayer .dialog .bar { display: block; position: absolute; }
+#dialogLayer .dialog .content { overflow: hidden; }
+#dialogContent { max-height: 480px; overflow-y: auto; padding: 16px; }
+#dialogContent.panelDialog, #dialogContent.imageDialog { max-height: none; overflow: visible; padding: 0; }
+#dialogLayer p { font-size: 13px; line-height: 18px; margin: 0; padding: 8px; }
+#dialogLayer td { font-size: 12px; padding: 4px; }
+#dialogLayer .field input, #dialogLayer .field select { box-sizing: border-box; }
+#dialogLayer .panel .menuItem:focus-visible { outline: 1px solid #4080c0; outline-offset: -1px; }
+.collectionRow { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 0; margin-right: -4px; padding: 8px 0; }
+.collectionRow .collectionInfo { flex: 1; margin-right: 8px; min-width: 0; overflow-wrap: anywhere; }
+.collectionName { cursor: text; font-weight: bold; }
+.collectionName:focus { outline: 1px dashed #808080; }
+.collectionRow input[type="radio"] { cursor: pointer; margin: 0 8px 0 0; padding: 0; width: auto; }
+.collectionRow button, .collectionActions button { flex: none; margin: 0 4px; padding: 0; }
+.collectionActions { display: flex; justify-content: flex-end; gap: 0; margin-right: -4px; padding: 8px 0; }
+#notice { background: var(--panel); border: 1px solid var(--line); bottom: 44px; left: 272px; line-height: 1.5; max-width: min(440px, calc(100vw - 32px)); padding: 10px 14px; position: fixed; z-index: 3000; }
+#notice.error { border-color: #bf0000; }
+#showUI { background: var(--panel); left: 8px; position: fixed; top: 8px; z-index: 1100; }
+body.hideUI .mapPanel { display: none; }
+#imageDialogImage { border-radius: 0 0 8px 8px; display: block; width: 100%; }
+body.editing .marker.selected { border-color: #c0e0ff; }
+@media (max-width: 620px) {
+    #listPanel { width: 224px; }
+    #titleBar { gap: 0; padding: 4px; }
+    #titleBar button { font-size: 11px; }
+    #siteIcon { min-width: 39px; }
+    #itemPanel { box-shadow: -2px 0 12px #0003; width: min(256px, 100vw); }
+    #coordinatesPanel { width: auto; max-width: calc(100vw - 224px); }
+    #notice { left: 16px; }
+}
