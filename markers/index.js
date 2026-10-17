@@ -1151,11 +1151,11 @@
         map.append(selectSetting("GTA VI tile overlays", {0: "Off", 1: "On"}, preferences.tileOverlays, value => {
             preferences.tileOverlays = Number(value); configureMap();
         }));
-        appearance.append(selectSetting("Color scheme", {rgb: "RGB", grayscale: "Grayscale"}, preferences.mapColors, value => {
-            preferences.mapColors = value; configureMap();
-        }));
         appearance.append(selectSetting("Theme", {light: "Light", dark: "Dark", michael: "Michael", amanda: "Amanda", jimmy: "Jimmy", tracey: "Tracey"}, preferences.theme, value => {
             preferences.theme = value; configureMap();
+        }));
+        appearance.append(selectSetting("Color scheme", {rgb: "RGB", grayscale: "Grayscale"}, preferences.mapColors, value => {
+            preferences.mapColors = value; configureMap();
         }));
         appearance.append(selectSetting("Marker colors", {name: "By name", type: "By type"}, preferences.markerColors, async value => {
             flushFields(); preferences.markerColors = value; await render();
