@@ -569,7 +569,7 @@
     function configureMap() {
         $("game").value = game;
         $("dimensionButton").textContent = preferences.dimension === "2d" ? "3D" : "2D";
-        document.title = `${collection.name} — GTA ${GAMES[game]} Markers`;
+        document.title = `markers.gtadb.org — ${collection.name} — GTA ${GAMES[game]}`;
         document.body.classList.remove("light", "dark", "michael", "amanda", "jimmy", "tracey");
         if (!["light", "dark"].includes(preferences.theme)) document.body.classList.add("light");
         document.body.classList.add(preferences.theme);
