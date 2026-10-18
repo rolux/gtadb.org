@@ -16,7 +16,6 @@ gtadb.Maps = function(options) {
         dimension: "2d",
         dimensions: ["2d", "3d"],
         map3d: null,
-        map3d6: null,
         mapW: 32768,
         mapH: 32768,
         minX: -16000,
@@ -553,9 +552,6 @@ gtadb.Maps = function(options) {
             return map3d
         }
 
-        if (gtadb.Map3DFlat) {
-            self.map3dflat = initMap3d(gtadb.Map3DFlat)
-        }
         if (gtadb.Map3D) {
             self.map3d = initMap3d(gtadb.Map3D)
         }
@@ -1550,14 +1546,14 @@ gtadb.Maps = function(options) {
         if (self.map3d && gtadb.Map3D.supports(self.v, self.tileSet)) {
             return self.map3d
         }
-        return self.map3dflat
+        return null
     }
 
     self.updateMap3dVisibility = function() {
         const active = self.mapMode == "gta" && self.dimension == "3d"
             ? self.getActiveMap3d()
             : null
-        ;[self.map3dflat, self.map3d].filter(Boolean).forEach(function(map3d) {
+        ;[self.map3d].filter(Boolean).forEach(function(map3d) {
             if (map3d != active) {
                 map3d.hide()
                 return
