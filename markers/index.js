@@ -7,7 +7,7 @@
     const TILES = {
         4: {original: "Original", elevation: "Elevation"},
         5: {satellite: "Satellite", hybrid: "Hybrid", terrain: "Terrain", roadmap: "Roadmap", radar: "Radar"},
-        6: {"yanis,17": "Yanis v17", "yanis,15": "Yanis v15", "dupzor,51": "DupZor"}
+        6: {"yanis,18": "Yanis v18", "yanis,15": "Yanis v15", "dupzor,51": "DupZor"}
     };
     const DEFAULTS = {4: {x: 0, y: 0, z: 1}, 5: {x: -4000, y: 2000, z: 1}, 6: {x: -4000, y: 2000, z: 1}};
     const nextId = records => {
@@ -405,7 +405,7 @@
     let lastCoordinates = null;
     let busy = false, applyingHash = false, renderRevision = 0, noticeTimer, channel;
     let preferences = {theme: "light", markerColors: "name", mapColors: "rgb", dimension: "2d", sort: "name", tileOverlays: 0,
-        tiles: {4: "original", 5: "satellite", 6: "yanis,17"}, views: structuredClone(DEFAULTS)};
+        tiles: {4: "original", 5: "satellite", 6: "yanis,18"}, views: structuredClone(DEFAULTS)};
     let activeCollectionId;
 
     function notify(message, error = false) {
