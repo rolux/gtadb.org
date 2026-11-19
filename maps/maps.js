@@ -220,7 +220,7 @@ gtadb.Maps = function(options) {
                 x: -4000,
                 y: 2000,
                 z: 1,
-                tileSet: "yanis,18",
+                tileSet: "day",
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",

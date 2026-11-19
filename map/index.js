@@ -293,7 +293,7 @@ gtadb.Map = function() {
                 find: "",
                 filter: "all",
                 sort: "igAddress",
-                tileSet: "yanis,18",
+                tileSet: "day",
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",

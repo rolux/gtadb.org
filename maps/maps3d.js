@@ -126,7 +126,7 @@ gtadb.Map3D = function(options) {
         specular: 0.10,
         texture: null,
         tileRoot: map3d6TileRoot,
-        tileSet: "yanis,18",
+        tileSet: "day",
         v: 6,
         vfov: 45,
         x: -4000,

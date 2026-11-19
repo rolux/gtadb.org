@@ -72,13 +72,13 @@ with open(f"{DATA_DIR}/tags.json") as f:
 TILE_BACKGROUND = {
     4: (255, 234, 215),
     5: (13, 43, 79),
-    6: (44, 103, 164),
+    6: (47, 144, 176),
 }
 TILE_SIZE = 256
 TILES_PATH = {
     4: "../maps/tiles/4/elevation",
     5: "../maps/tiles/5/satellite",
-    6: "../maps/tiles/6/yanis,18",
+    6: "../maps/tiles/6/day",
 }
 ZERO_RESULTS = {"results": [], "status": "ZERO_RESULTS"}
 
