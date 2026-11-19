@@ -1,5 +1,5 @@
 """
-This script creates 7 levels of 256x256 px tiles, from 0 to 6,
+This script creates levels 0 to 5 of 256x256 px tiles (0 to 6 for --official),
 centered on (0, 0), so that at level 0, the entire map fits into
 1024x1024 px, and at level 5, the map scale is exactly 1 px/m.
 
@@ -12,6 +12,8 @@ import sys
 from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = None
+
+official = len(sys.argv) > 1 and sys.argv[1] == "--official"
 
 aiwe_scale = 0.68
 aiwe_pixel = (290, 306)
@@ -32,12 +34,16 @@ maps = [
 ]
 if len(sys.argv) > 1 and sys.argv[1] == "--latest":
     maps = maps[-1:]
+elif official:
+    maps = [("day", None, 2.000, (24000, 24000), (47, 144, 176))]
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
     ("martipk", 5, 0.558, (2232, -2232)),
     ("rickrick", 3, 2.5, (10000, 7500)),
     # ("vlad", 1, 1.674, (3000 * 1.674, -3000 * 1.674)),
 ]
+if official:
+    overlays = []
 overlays_string  = ",".join([
     f"{name},{version}" for name, version, scale, zero in overlays
 ])
@@ -46,7 +52,11 @@ level_bounds = (
     (-16384, -16384),
     (16384, 16384)
 )
-max_z = 5
+max_z = 6 if official else 5
+
+
+def tileset_name(name, version):
+    return name if version is None else f"{name},{version}"
 
 
 def render_tiles(
@@ -54,7 +64,8 @@ def render_tiles(
     base_map_name=None, base_map_version=None
 ):
 
-    map_image = Image.open(f"maps/6/{map_name},{map_version}.png").convert("RGBA")
+    map_id = tileset_name(map_name, map_version)
+    map_image = Image.open(f"maps/6/{map_id}.png").convert("RGBA")
     map_mppx = 1 / map_scale
     map_size = map_image.size
     map_bounds = (
@@ -97,7 +108,7 @@ def render_tiles(
                     max(tile_ranges[z][1][0], x),
                     max(tile_ranges[z][1][1], y),
                 ]]
-                filename = f"tiles/6/{map_name},{map_version}/{z}/{z},{y},{x}.png"
+                filename = f"tiles/6/{map_id}/{z}/{z},{y},{x}.png"
                 if os.path.exists(filename):
                     continue
                 if base_map_name:
@@ -135,7 +146,7 @@ def render_tiles(
 tile_ranges = {}
 
 for map_name, map_version, map_scale, map_zero, map_color in maps:
-    tile_ranges[f"{map_name},{map_version}"] = render_tiles(map_name, map_version, map_scale, map_zero, map_color)
+    tile_ranges[tileset_name(map_name, map_version)] = render_tiles(map_name, map_version, map_scale, map_zero, map_color)
 
 for map_name, map_version, map_scale, map_zero in overlays:
     for base_map_name, base_map_version, base_map_scale, base_map_zero, base_map_color in maps:

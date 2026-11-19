@@ -119,6 +119,15 @@ gtadb.Maps = function(options) {
                 3: [[5, 5], [25, 24]],
                 4: [[10, 10], [51, 49]],
                 5: [[21, 21], [103, 99]]
+            },
+            "day": {
+                0: [[0, 0], [2, 3]],
+                1: [[1, 1], [5, 6]],
+                2: [[2, 2], [10, 12]],
+                3: [[4, 4], [20, 25]],
+                4: [[8, 8], [41, 51]],
+                5: [[17, 17], [83, 103]],
+                6: [[34, 34], [167, 206]]
             }
         },
         tileOverlayRanges: {
@@ -215,8 +224,8 @@ gtadb.Maps = function(options) {
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",
-                    "cyber,1",
                     "yanis,18",
+                    "day",
                 ]
             },
             mapMode: "gta",
@@ -569,8 +578,8 @@ gtadb.Maps = function(options) {
             let gta = "gta" + v
             self.tiles[v] = {}
             self.tilePaths[v] = {}
-            let overlays = {4: [0], 5: [0], 6: [0, 1]}[v]
             self[gta].tileSets.forEach(function(tileSet) {
+                const overlays = tileSet == "day" ? [0] : {4: [0], 5: [0], 6: [0, 1]}[v]
                 self.tiles[v][tileSet] = {}
                 self.tilePaths[v][tileSet] = {}
                 overlays.forEach(function(overlay) {
@@ -981,7 +990,7 @@ gtadb.Maps = function(options) {
         const minTy = Math.floor(-offsetY / tileSize)
         const maxTy = Math.ceil((self.canvas.height - offsetY) / tileSize)
 
-        const overlays = {4: 0, 5: 0, 6: self.tileOverlays}[self.v]
+        const overlays = self.tileSet == "day" ? 0 : {4: 0, 5: 0, 6: self.tileOverlays}[self.v]
         const tiles = self.tiles[self.v][self.tileSet][overlays]
         const tilePaths = self.tilePaths[self.v][self.tileSet][overlays]
 

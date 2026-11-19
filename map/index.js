@@ -297,8 +297,8 @@ gtadb.Map = function() {
                 tileSets: [
                     "dupzor,51",
                     "yanis,15",
-                    "cyber,1",
                     "yanis,18",
+                    "day",
                 ]
             },
             googlemaps: {
