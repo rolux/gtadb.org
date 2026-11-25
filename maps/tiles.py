@@ -1,5 +1,5 @@
 """
-This script creates levels 0 to 5 of 256x256 px tiles (0 to 6 for --official),
+This script creates levels 0 to 5 of 256x256 px tiles (0 to 6 for --official or --gtadb),
 centered on (0, 0), so that at level 0, the entire map fits into
 1024x1024 px, and at level 5, the map scale is exactly 1 px/m.
 
@@ -14,6 +14,7 @@ from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
 
 official = len(sys.argv) > 1 and sys.argv[1] == "--official"
+gtadb = len(sys.argv) > 1 and sys.argv[1] == "--gtadb"
 
 aiwe_scale = 0.68
 aiwe_pixel = (290, 306)
@@ -36,13 +37,15 @@ if len(sys.argv) > 1 and sys.argv[1] == "--latest":
     maps = maps[-1:]
 elif official:
     maps = [("day", None, 2.000, (24000, 24000), (47, 144, 176))]
+elif gtadb:
+    maps = [("gtadb", 1, 4.000, (43008, 43008), (96, 96, 191))]
 overlays = [
     ("aiwe", 1, aiwe_scale, aiwe_zero),
     ("martipk", 5, 0.558, (2232, -2232)),
     ("rickrick", 3, 2.5, (10000, 7500)),
     # ("vlad", 1, 1.674, (3000 * 1.674, -3000 * 1.674)),
 ]
-if official:
+if official or gtadb:
     overlays = []
 overlays_string  = ",".join([
     f"{name},{version}" for name, version, scale, zero in overlays
@@ -52,7 +55,7 @@ level_bounds = (
     (-16384, -16384),
     (16384, 16384)
 )
-max_z = 6 if official else 5
+max_z = 6 if official or gtadb else 5
 
 
 def tileset_name(name, version):
@@ -154,7 +157,7 @@ for map_name, map_version, map_scale, map_zero in overlays:
             map_name, map_version, map_scale, map_zero, map_color, base_map_name, base_map_version
         )
 
-for path, dirnames, filenames in os.walk("tiles"):
+for path, dirnames, filenames in os.walk("tiles/6/gtadb,1" if gtadb else "tiles"):
     for src_filename in [f"{path}/{filename}" for filename in filenames]:
         if src_filename.endswith(".png"):
             dst_filename = src_filename.replace(".png", ".jpg")

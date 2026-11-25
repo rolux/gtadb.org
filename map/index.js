@@ -299,6 +299,7 @@ gtadb.Map = function() {
                     "yanis,15",
                     "yanis,18",
                     "day",
+                    "gtadb,1",
                 ]
             },
             googlemaps: {
