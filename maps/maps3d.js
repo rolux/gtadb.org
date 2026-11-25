@@ -786,6 +786,8 @@ gtadb.Map3D = function(options) {
         self.heightTexture = createHeightTexture(self.heightPixels);
     }
     function createHeightTexture(pixels) {
+        const unpackAlignment = gl.getParameter(gl.UNPACK_ALIGNMENT);
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
         const texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -804,6 +806,7 @@ gtadb.Map3D = function(options) {
             gl.UNSIGNED_SHORT,
             pixels
         );
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, unpackAlignment);
         return texture;
     }
     function createTileTexture(image) {
