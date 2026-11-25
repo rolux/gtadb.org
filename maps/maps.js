@@ -685,11 +685,11 @@ gtadb.Maps = function(options) {
                 offset: -462.2172786903457
             },
             6: {
-                width: 1536,
-                height: 1748,
-                scaleXY: 0.083188297074,
+                width: 1485,
+                height: 1997,
+                scaleXY: 0.1,
                 scaleZ: 92.466616,
-                zero: [1108.532445611, 938.090772693],
+                zero: [1075, 1075],
                 offset: -303.1033271360121
             }
         }
