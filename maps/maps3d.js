@@ -790,11 +790,20 @@ gtadb.Map3D = function(options) {
         self.heightTexture = createHeightTexture(self.heightPixels);
     }
     function createHeightTexture(pixels) {
+        // Flip integer rows explicitly; Firefox cannot reliably flip R16UI uploads.
+        const flipped = new Uint16Array(pixels.length);
+        for (let row = 0; row < height.height; row++) {
+            flipped.set(
+                pixels.subarray(row * height.width, (row + 1) * height.width),
+                (height.height - 1 - row) * height.width
+            );
+        }
         const unpackAlignment = gl.getParameter(gl.UNPACK_ALIGNMENT);
+        const unpackFlipY = gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL);
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
         const texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -808,9 +817,10 @@ gtadb.Map3D = function(options) {
             0,
             gl.RED_INTEGER,
             gl.UNSIGNED_SHORT,
-            pixels
+            flipped
         );
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, unpackAlignment);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, unpackFlipY);
         return texture;
     }
     function createTileTexture(image) {
