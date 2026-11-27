@@ -1812,7 +1812,7 @@ gtadb.Map = function() {
                 self.filter == "igLatLngConfirmed" && landmark.igAddress.slice(-1) != "?" && landmark.igCoordinates !== null ||
                 self.filter == "igLatLngUnconfirmed" && landmark.igAddress.slice(-1) == "?" ||
                 self.filter == "igLatLngUnknown" && landmark.igCoordinates === null ||
-                self.filter == "igWithNewPhoto" && landmark.igPhotoSize && landmark.igPhotoSize[0] == 3840 && landmark.igPhotoSize[1] == 2160 && landmark.edited >= 1795046400 ||
+                self.filter == "igWithNewPhoto" && landmark.igPhotoSize && landmark.igPhotoSize[0] == 3840 && landmark.igPhotoSize[1] == 2160 && landmark.edited[2] >= 1795046400 ||
                 self.filter == "igWithPhoto" && landmark.igPhotoRatio ||
                 self.filter == "igWithoutPhoto" && !landmark.igPhotoRatio ||
                 self.filter == "igClassified" && landmark.tags.some(function(tag) { return self.landmarkTypes.includes(tag)}) ||
